@@ -8,7 +8,7 @@ Original file is located at
 """
 
 #pip install streamlit
-!pip install ultralytics
+#pip install ultralytics
 
 import streamlit as st
 import time
