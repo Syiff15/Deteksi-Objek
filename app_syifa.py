@@ -23,7 +23,7 @@ import cv2
 # === Load Models ===
 @st.cache_resource
 def load_models():
-    yolo_model = YOLO("/Model/best.pt")  # Model deteksi objek
+    yolo_model = YOLO("Model/best.pt")  # Model deteksi objek
     classifier = tf.keras.models.load_model("Model/Syifa Salsabila_Laporan 2.h5")  # Model klasifikasi
     return yolo_model, classifier
 
