@@ -10,6 +10,7 @@ Original file is located at
 #pip install streamlit
 #pip install ultralytics
 
+# === Import Library ===
 import streamlit as st
 import time
 from PIL import Image
@@ -20,17 +21,17 @@ import numpy as np
 from PIL import Image
 import cv2
 
-# === Load Models ===
+# === LOAD MODELS ===
 @st.cache_resource
 def load_models():
-    yolo_model = YOLO("Model/best.pt")  # Model deteksi objek
+    yolo_model = YOLO("Model/best.pt")  # Model deteksi Gambar
     classifier = tf.keras.models.load_model("Model/Syifa Salsabila_Laporan 2.h5")  # Model klasifikasi
     return yolo_model, classifier
 
 yolo_model, classifier = load_models()
 
-# === KONFIGURASI DASAR ===
-st.set_page_config(page_title="Ursidetect", page_icon="🐻", layout="centered")
+# === KONFIGURASI DASAR HALAMAN WEB ===
+st.set_page_config(page_title="Ursidetect", page_icon="🐻🐼", layout="centered")
 
 # === STATE MANAGEMENT ===
 if "step" not in st.session_state:
@@ -54,100 +55,147 @@ if st.session_state.step == 1:
     progress_bar(1)
     st.image("https://images.unsplash.com/photo-1640622653142-4e8c184a99b1", use_container_width=True)
     st.title("Welcome to Ursidetect")
-    st.write("Your intelligent image analysis companion powered by advanced AI technology.")
-    st.write("Discover what's in your images with precision and ease.")
-    if st.button("Get Started"):
-        st.session_state.step = 2
-        st.rerun()
-    # === STEP 2 ===
+    st.write("Kami membantu Anda mengenali isi gambar dengan cepat dan mudah melalui teknologi AI yang cerdas.")
+    st.write("Yuk, cari tahu apa yang tersembunyi di setiap gambar Anda.")
+    
+    col_kiri, col_kanan = st.columns([4, 1])
+    with col_kanan:
+        if st.button("Ayo Mulai!!!"):
+            st.session_state.step = 2
+            st.rerun()  
+            
+# === STEP 2 ===
 elif st.session_state.step == 2:
     progress_bar(2)
     st.image("https://images.unsplash.com/photo-1625580916819-6efb3a3f26f7", use_container_width=True)
-    st.title("About Ursidetect")
+    st.title("Tentang Ursidetect")
     st.markdown("""
-    **Ursidetect** is an advanced AI-powered image analysis platform that offers two powerful features:
-    - 🔍 **Object Detection:** Identify and locate multiple objects within your images with bounding boxes.
-    - 🖼️ **Image Classification:** Classify your entire image into specific categories with confidence scores.
+    **Ursidetect** adalah platform analisis gambar berbasis kecerdasan buatan (AI) yang dirancang khusus untuk mendeteksi dan mengklasifikasikan gambar **panda** serta **beruang** dengan cepat dan akurat.
+    """)  
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        st.markdown("""
+        **Deteksi Gambar:** Fitur ini mampu mengenali dan menandai posisi panda atau beruang yang muncul di dalam gambar menggunakan kotak pembatas (bounding box).""")
+    with col2:
+        st.markdown("""
+        **Klasifikasi Gambar:** Fitur ini akan mengidentifikasi apakah gambar yang Anda unggah adalah panda atau beruang, lengkap dengan tingkat kepercayaan (confidence score) dari hasil analisis AI.""")
+    st.markdown("""
+    Cukup unggah gambar Anda, pilih metode analisis, dan biarkan Ursidetect menentukan apakah itu panda atau beruang.
+    Ayo Kita Lanjutkan!!!
+    """) 
+    
+    col_kiri, col_kanan = st.columns([4, 1])
+    with col_kanan:
+        if st.button("Lanjut"):
+            st.session_state.step = 3
+            st.rerun()
 
-    Simply upload your image, choose your preferred analysis method, and let our AI do the rest!
-    """)
-    if st.button("Continue"):
-        st.session_state.step = 3
-        st.rerun()
-      # === STEP 3 ===
+        
+# === STEP 3 ===
 elif st.session_state.step == 3:
     progress_bar(3)
-    st.image("https://cdn.dribbble.com/users/1162077/screenshots/3848914/programmer.gif", width=400)
-    st.title("What's Your Name?")
-    st.write("Let's personalize your experience with Ursidetect.")
-    name_input = st.text_input("Enter your name:")
-    if st.button("Continue") and name_input.strip() != "":
-        st.session_state.name = name_input.strip()
-        st.session_state.step = 4
-        st.rerun()
-    # === STEP 4 ===
+    st.image("https://cdn.dribbble.com/users/1162077/screenshots/3848914/programmer.gif", width=300)
+    st.title("Siapa Nama Kamu?")
+    st.write("Masukkan namamu di bawah, biar Ursidetect tahu siapa partner barunya dalam berpetualang.🐾")
+    name_input = st.text_input("Ketik namamu di bawah ini:")
+
+    col_kiri, col_kanan = st.columns([4, 1])
+    with col_kanan:
+        if st.button("Lanjut") and name_input.strip() != "":
+            st.session_state.name = name_input.strip()
+            st.session_state.step = 4
+            st.rerun()
+            
+# === STEP 4 ===
 elif st.session_state.step == 4:
     progress_bar(4)
-    st.title(f"hello, {st.session_state.name.lower().split()[0]}! 👋")
-    st.caption("readyToStart")
+    st.title(f"Hai, {st.session_state.name.lower().split()[0]}! 👋")
+    st.caption("Senang berkenalan denganmu. Selanjutnya, mari kita mulai petualangannya!!")
+    st.caption("Pilih mode favoritmu: mau jadi pemburu hewan (deteksi) atau peneliti hewan (klasifikasi)?")
 
-    col1, col2 = st.columns([1, 1])
-
-    # === KIRI: UPLOAD & PILIH TIPE ANALISIS ===
+    st.markdown("### Mode Petualang")
+    col1, col2 = st.columns(2)
     with col1:
-        st.subheader("uploadImage")
-        uploaded_file = st.file_uploader("", type=["jpg", "jpeg", "png"], label_visibility="collapsed")
-
-        if uploaded_file:
-            image = Image.open(uploaded_file)
-            st.image(image, caption=uploaded_file.name, use_container_width=True)
-        else:
-            st.info("Upload an image first.")
-
-        st.write("selectAnalysisType")
-        analysis_type = st.radio(
-            "",
-            ["objectDetection", "imageClassification"],
-            captions=["objectDetectionDesc", "imageClassificationDesc"],
-        )
-
-        analyze_button = st.button("analyze", use_container_width=True)
-
-    # === KANAN: HASIL ===
+        st.markdown("""
+        #### 🔍 Deteksi Gambar  
+        Mode ini akan mendeteksi keberadaan dan posisi **panda** atau **beruang** di dalam gambar.
+        """)
     with col2:
-        st.subheader("results")
+        st.markdown("""
+        #### 🖼️ Klasifikasi Gambar  
+        Mode ini akan menentukan apakah gambar yang diunggah adalah **panda** atau **beruang**.
+        """)
+        
+    analysis_type = st.radio(
+        "Pilih Mode Petualang:",
+        ["Deteksi Gambar", "Klasifikasi Gambar"],
+        horizontal=True,
+        index=0,
+    )
+    st.divider()
 
-        if analyze_button:
-            if not uploaded_file:
-                st.warning("Please upload an image before analyzing.")
-            else:
-                # Simulasi proses analisis
-                with st.spinner("processing\npleaseWait"):
-                    time.sleep(2)
+    st.markdown("### Masukkan Gambar")
+    st.caption("Untuk mulai berpetualang, {st.session_state.name.lower().split()[0]} harus memasukkan gambar berbentuk jpg, jpeg atau png yaa.")
+    uploaded_file = st.file_uploader("Pilih gambar (jpg, jpeg, png):", type=["jpg", "jpeg", "png"])
+    if uploaded_file:
+        image = Image.open(uploaded_file)
+        st.image(image, caption=uploaded_file.name, use_container_width=True)
+    else:
+        st.info("Silahkan masukkan gambar terlebih dahulu.")
+    st.divider()
 
-                # === Dummy hasil simulasi ===
-                if analysis_type == "objectDetection":
-                    st.write("**objectDetection**")
-                    st.write("Person — 95%")
-                    st.write("Car — 87%")
-                    st.write("Tree — 76%")
+    st.markdown("### Hasil Petualang")
+    analyze_button = st.button("🔎 Mulai Petualangan", use_container_width=True)
+    if analyze_button:
+        if not uploaded_file:
+            st.warning("⚠️ Silakan masukkan gambar terlebih dahulu sebelum berpetualang.")
+        else:
+            with st.spinner("⏳ Sedang Berpetualang..."):
+                time.sleep(2)  # simulasi proses
+
+            # === Dummy hasil simulasi ===
+            if analysis_type == "Deteksi Gambar":
+                results = st.session_state.yolo_model(image)
+                result_img = results[0].plot()
+                st.image(result_img, caption="Hasil Deteksi", use_container_width=True)
+                boxes = results[0].boxes
+                names = results[0].names
+                detected_classes = [names[int(cls)] for cls in boxes.cls.cpu().numpy()]
+                if len(detected_classes) > 0:
+                    st.success("**Hasil Buruanmu:**")
+                    for obj in detected_classes:
+                        st.write(f"- {obj}")
                 else:
-                    st.write("**imageClassification**")
-                    st.write("Certificate — 98%")
+                    st.warning("Tidak ada objek panda atau beruang yang terdeteksi.")
 
-                # === FEEDBACK BOX ===
-                st.markdown("---")
-                st.subheader("💬 Feedback")
-                feedback_text = st.text_area("How was your experience?", placeholder="Share your thoughts here...")
-                if st.button("Submit Feedback"):
-                    if feedback_text.strip() == "":
-                        st.warning("Please write some feedback before submitting.")
-                    else:
-                        st.success("✅ Thank you for your feedback!")
+            else:
+                img_resized = image.resize((224, 224))  # sesuaikan ukuran modelmu
+                img_array = tf.keras.preprocessing.image.img_to_array(img_resized)
+                img_array = np.expand_dims(img_array, axis=0) / 255.0
+
+                prediction = st.session_state.cnn_model.predict(img_array)
+                class_index = np.argmax(prediction)
+                confidence = np.max(prediction) * 100
+                label_names = ["Beruang", "Panda"]  # sesuaikan labelmu
+
+                st.success("**Hasil Penelitianmu:**")
+                st.write(f"Gambar diklasifikasikan sebagai **{label_names[class_index]}** 🐼🐻")
+                st.write(f"Confidence: {confidence:.2f}%")
+
+# === FEEDBACK BOX ===
+st.markdown("---")
+st.subheader("💬 Feedback")
+feedback_text = st.text_area("How was your experience?", placeholder="Share your thoughts here...")
+if st.button("Submit Feedback"):
+    if feedback_text.strip() == "":
+        st.warning("Please write some feedback before submitting.")
+    else:
+        st.success("✅ Thank you for your feedback!")
 
     # === RESTART BUTTON ===
     st.markdown("---")
     if st.button("🔁 Restart"):
-        st.session_state.step = 1
+        st.session_state.step = 4
         st.session_state.name = ""
         st.rerun()
