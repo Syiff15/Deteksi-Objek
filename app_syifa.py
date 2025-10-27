@@ -53,7 +53,7 @@ def progress_bar(step):
 # === STEP 1 ===
 if st.session_state.step == 1:
     #progress_bar(1)
-    st.image("https://drive.google.com/file/d/1Ai5zG5LO575ubmn3jl89xjK1tG7nFB_h/view?usp=drive_link", use_container_width=True)
+    st.image("slide 1.jpg", use_container_width=True)
     st.title("Welcome to Ursidetect")
     st.write("Kami membantu Anda mengenali isi gambar dengan cepat dan mudah melalui teknologi AI yang cerdas.")
     st.write("Yuk, cari tahu apa yang tersembunyi di setiap gambar Anda.")
