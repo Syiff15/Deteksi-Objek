@@ -56,16 +56,15 @@ if st.session_state.step == 1:
 
     # === Judul & Intro ===
     st.markdown(
-        """
-        <h1 style='text-align:center; color:#1E1E1E;'>Selamat datang di <span style="color:#2563EB;">Ursidetect</span> 🐻‍❄️🐼</h1>
-        <p style='text-align:center; font-size:18px; color:#4B5563;'>
-        Sebelum kita mulai berpetualang, kenalan dulu yuk dengan <b>Ursidetect</b>!  
-        Platform ini berbasis <b>kecerdasan buatan (AI)</b> yang dirancang untuk <b>mendeteksi</b> dan <b>mengklasifikasikan</b> hewan <b>panda</b> serta <b>beruang</b>.
-        </p>
-        """,
-        unsafe_allow_html=True
+    """
+    <h1 style='text-align:center; color:#1E1E1E;'>
+        Selamat datang di 
+        <span style="color:#2563EB;">Ursidetect</span>
+        <span style="vertical-align:middle; position:relative; top:-2px;">🐻‍❄️🐼</span>
+    </h1>
+    """,
+    unsafe_allow_html=True
     )
-
     st.markdown("<br>", unsafe_allow_html=True)
 
     # === Dua Fitur dalam Kotak ===
@@ -83,7 +82,7 @@ if st.session_state.step == 1:
             <h3>🔎 Deteksi Gambar</h3>
             <p style="color:#374151; font-size:16px;">
             Ursidetect dapat menemukan dan menandai posisi panda atau beruang di dalam gambar 
-            menggunakan <b>kotak pembatas (bounding box)</b>.
+            menggunakan kotak pembatas (<i>bounding box</i>).
             </p>
         </div>
         """, unsafe_allow_html=True)
@@ -99,8 +98,8 @@ if st.session_state.step == 1:
             transition: transform 0.2s ease;">
             <h3>🐼 Klasifikasi Gambar</h3>
             <p style="color:#374151; font-size:16px;">
-            Ursidetect dapat menentukan apakah gambar tersebut termasuk <b>panda</b> 
-            atau <b>beruang</b>, lengkap dengan tingkat kepercayaan (<i>confidence score</i>).
+            Ursidetect dapat menentukan apakah gambar tersebut termasuk panda 
+            atau beruang, lengkap dengan tingkat kepercayaan (<i>confidence score</i>).
             </p>
         </div>
         """, unsafe_allow_html=True)
