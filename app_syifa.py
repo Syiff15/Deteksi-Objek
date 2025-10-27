@@ -54,12 +54,7 @@ def progress_bar(step):
 if st.session_state.step == 1:
     st.image("slide 1.jpg", use_container_width=True)
     st.title("Selamat datang di **Ursidetect**")
-
-    st.markdown("""   
-Sebelum kita mulai berpetualang, kenalan dulu yuk dengan Ursidetect! 🐼🐻
----
-""")
-
+    st.markdown("Sebelum kita mulai berpetualang, kenalan dulu yuk dengan Ursidetect! 🐼🐻")
     st.markdown("Ursidetect adalah platform berbasis **kecerdasan buatan (AI)** yang dirancang untuk **mendeteksi** dan **mengklasifikasikan** hewan **panda** serta **beruang**.")
     
     col1, col2 = st.columns(2)
