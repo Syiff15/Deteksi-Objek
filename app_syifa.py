@@ -160,83 +160,53 @@ elif st.session_state.step == 3:
     </div>
     """.format(name=st.session_state.name.lower().split()[0]), unsafe_allow_html=True)
 
-    # === Pilihan Mode ===
-    # === Judul Mode Petualang ===
-# === Blok Pilih Mode Petualang (Rata Tengah & Estetik) ===
-st.markdown(
-    """
+    # === Pilih Mode Petualang ===
+    st.markdown("""
     <div style='
         background-color:#f2e6d6;
         padding:25px;
         border-radius:20px;
         box-shadow:0 4px 10px rgba(0,0,0,0.1);
         text-align:center;
-        margin-top:20px;
-        margin-bottom:20px;
-    '>
-        <h4 style='color:#966543; margin-bottom:15px;'>
-            Pilih Mode Petualang:
-        </h4>
-    """,
-    unsafe_allow_html=True
-)
+        margin-top:10px;
+        margin-bottom:20px;'>
+        <h4 style='color:#966543; margin-bottom:15px;'>Pilih Mode Petualang:</h4>
+    </div>
+    """, unsafe_allow_html=True)
 
-# CSS tambahan agar radio button rata tengah
-st.markdown("""
-    <style>
-        div[data-testid="stRadio"] {
-            justify-content: center !important;
-        }
-        div[data-testid="stRadio"] > label {
-            justify-content: center !important;
-        }
-    </style>
-""", unsafe_allow_html=True)
+    # CSS agar radio button rata tengah
+    st.markdown("""
+        <style>
+            div[data-testid="stRadio"] {
+                justify-content: center !important;
+            }
+            div[data-testid="stRadio"] > label {
+                justify-content: center !important;
+            }
+        </style>
+    """, unsafe_allow_html=True)
 
-# Komponen radio di tengah
-analysis_type = st.radio(
-    "",
-    ["🐾 Pemburu Hewan (Deteksi)", "🔬 Peneliti Hewan (Klasifikasi)"],
-    horizontal=True,
-    index=0
-)
+    analysis_type = st.radio(
+        "",
+        ["🐾 Pemburu Hewan (Deteksi)", "🔬 Peneliti Hewan (Klasifikasi)"],
+        horizontal=True,
+        index=0
+    )
 
-st.markdown("</div>", unsafe_allow_html=True)
+    st.divider()
 
-
-st.markdown("</div>", unsafe_allow_html=True)
-
-    # === Upload Gambar ===
-    st.markdown("<h4 style='color:#966543;'> Masukkan Gambar</h4>", unsafe_allow_html=True)
-    st.info(f"Untuk mulai petualangan, Kamu harus memasukkan gambar berbentuk jpg, jpeg, atau png oke👌")
+    # === Masukkan Gambar ===
+    st.markdown("<h4 style='color:#966543;'>Masukkan Gambar</h4>", unsafe_allow_html=True)
+    st.caption(f"Untuk mulai petualangannya, {st.session_state.name.lower().split()[0]} harus memasukkan gambar berbentuk jpg, jpeg atau png yaa.")
     
-    uploaded_file = st.file_uploader("", type=["jpg", "jpeg", "png"])
-    
+    uploaded_file = st.file_uploader("Pilih gambar (jpg, jpeg, png):", type=["jpg", "jpeg", "png"])
+
     if uploaded_file:
         image = Image.open(uploaded_file)
         st.image(image, caption=uploaded_file.name, use_container_width=True)
-    
-    st.divider()
 
-    # === Tombol Aksi ===
-    st.markdown(
-        """
-        <div style='text-align:center;'>
-            <button style='
-                background-color:#966543;
-                color:white;
-                border:none;
-                padding:12px 30px;
-                font-size:16px;
-                border-radius:10px;
-                cursor:pointer;
-                box-shadow:0 3px 8px rgba(0,0,0,0.15);'>
-                🔎 Mulai Petualangan
-            </button>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+    st.divider()
+    analyze_button = st.button("🔎 Mulai Petualangan", use_container_width=True)
 
     if analyze_button:
         st.markdown("### Hasil Petualangan")
