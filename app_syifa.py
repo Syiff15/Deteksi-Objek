@@ -33,6 +33,60 @@ yolo_model, classifier = load_models()
 # === KONFIGURASI DASAR HALAMAN WEB ===
 st.set_page_config(page_title="Ursidetect", page_icon="🐻🐼", layout="centered")
 
+import streamlit as st
+
+st.markdown("""
+<style>
+h1 {
+    text-align: center;
+    color: #3B3B3B;
+    font-weight: 800;
+    margin-bottom: 20px;
+}
+.container {
+    background-color: #FFF8E7; /* warna krim lembut */
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+.section {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+.column {
+    width: 48%;
+    text-align: justify;
+}
+p {
+    font-size: 17px;
+    line-height: 1.7;
+    color: #333333;
+}
+b {
+    color: #2C2C2C;
+}
+</style>
+
+<div class="container">
+    <h1>Tentang Ursidetect 🐻‍❄️</h1>
+
+    <p><b>Ursidetect</b> adalah platform analisis gambar berbasis kecerdasan buatan (AI) yang dirancang khusus untuk mendeteksi dan mengklasifikasikan gambar <b>panda</b> serta <b>beruang</b> dengan cepat dan akurat.</p>
+
+    <div class="section">
+        <div class="column">
+            <p><b>Deteksi Gambar:</b> Fitur ini mampu mengenali dan menandai posisi panda atau beruang yang muncul di dalam gambar menggunakan kotak pembatas (bounding box).</p>
+        </div>
+        <div class="column">
+            <p><b>Klasifikasi Gambar:</b> Fitur ini akan mengidentifikasi apakah gambar yang Anda unggah adalah panda atau beruang, lengkap dengan tingkat kepercayaan (confidence score) dari hasil analisis AI.</p>
+        </div>
+    </div>
+
+    <p style="margin-top:25px;"><b>Cukup unggah gambar Anda</b>, pilih metode analisis, dan biarkan Ursidetect menentukan apakah itu panda atau beruang. <b>Ayo Kita Lanjutkan!!!</b></p>
+</div>
+""", unsafe_allow_html=True)
+
 # === STATE MANAGEMENT ===
 if "step" not in st.session_state:
     st.session_state.step = 1
@@ -54,9 +108,9 @@ def progress_bar(step):
 if st.session_state.step == 1:
     #progress_bar(1)
     st.image("slide 1.jpg", use_container_width=True)
-    st.title("Welcome to Ursidetect")
-    st.write("Kami membantu Anda mengenali isi gambar dengan cepat dan mudah melalui teknologi AI yang cerdas.")
-    st.write("Yuk, cari tahu apa yang tersembunyi di setiap gambar Anda.")
+    st.title("Selamat Datang di Ursidetect")
+    st.write("Kami membantu untuk mengenali isi gambar dengan cepat dan mudah melalui teknologi AI yang cerdas.")
+    st.write("Yuk, cari tahu apa yang tersembunyi di setiap gambarmu.")
     
     col_kiri, col_kanan = st.columns([4, 1])
     with col_kanan:
@@ -76,10 +130,10 @@ elif st.session_state.step == 2:
     col1, col2 = st.columns(2)
     with col1:
         st.markdown("""
-        **Deteksi Gambar:** Fitur ini mampu mengenali dan menandai posisi panda atau beruang yang muncul di dalam gambar menggunakan kotak pembatas (bounding box).""")
+        **Deteksi Gambar:** Fitur ini dapat mengenali dan menandai posisi panda atau beruang yang muncul di dalam gambar menggunakan kotak pembatas (bounding box).""")
     with col2:
         st.markdown("""
-        **Klasifikasi Gambar:** Fitur ini akan mengidentifikasi apakah gambar yang Anda unggah adalah panda atau beruang, lengkap dengan tingkat kepercayaan (confidence score) dari hasil analisis AI.""")
+        **Klasifikasi Gambar:** Fitur ini akan mengidentifikasi apakah gambar yang Kamu unggah adalah panda atau beruang, lengkap dengan tingkat kepercayaan (confidence score) dari hasil analisis AI.""")
     st.markdown("""
     Cukup unggah gambar Anda, pilih metode analisis, dan biarkan Ursidetect menentukan apakah itu panda atau beruang.
     Ayo Kita Lanjutkan!!!
@@ -97,8 +151,8 @@ elif st.session_state.step == 3:
     #progress_bar(3)
     st.image("slide 3-1.png", width=300)
     st.title("Siapa Nama Kamu?")
-    st.write("Masukkan namamu di bawah, biar Ursidetect tahu siapa partner barunya dalam berpetualang.🐾")
-    name_input = st.text_input("Ketik namamu di bawah ini:")
+    st.write("Masukkan namamu di bawah, supaya Ursidetect tahu siapa partner barunya dalam berpetualang.🐾")
+    name_input = ""
 
     col_kiri, col_kanan = st.columns([4, 1])
     with col_kanan:
