@@ -33,79 +33,87 @@ yolo_model, classifier = load_models()
 # === KONFIGURASI DASAR HALAMAN WEB ===
 st.set_page_config(page_title="Ursidetect", page_icon="🐻🐼", layout="centered")
 
-# === TEMA WARNA (COKLAT-KRIM) ===
 st.markdown("""
     <style>
-        /* --- Background dan warna utama --- */
+        /* === Tema Soft Blue & Cream === */
         body {
-            background-color: #FDF6EC; /* warna krim lembut */
-            color: #3E2723; /* teks coklat tua */
+            background-color: #FAF8F4;  /* cream lembut */
+            color: #2C3E50;  /* biru keabu tua */
         }
 
-        /* --- Semua container utama --- */
         .stApp {
-            background-color: #FDF6EC; /* krim */
-            color: #3E2723;
+            background-color: #FAF8F4;  /* latar krim lembut */
+            color: #2C3E50;
+            font-family: 'Poppins', sans-serif;
         }
 
-        /* --- Header dan judul --- */
+        /* === Header === */
         h1, h2, h3, h4, h5, h6 {
-            color: #4E342E; /* coklat medium */
+            color: #1E3A8A;  /* biru navy lembut */
             font-family: 'Poppins', sans-serif;
         }
 
-        /* --- Teks biasa --- */
+        /* === Paragraf & teks biasa === */
         p, span, label, div {
-            color: #3E2723;
+            color: #2C3E50;
             font-family: 'Poppins', sans-serif;
         }
 
-        /* --- Tombol utama --- */
-        button[kind="primary"], div.stButton > button {
-            background-color: #8D6E63; /* coklat lembut */
-            color: white;
+        /* === Tombol utama === */
+        div.stButton > button {
+            background-color: #AEC8E1; /* biru pastel */
+            color: #0F172A;
             border: none;
-            border-radius: 10px;
+            border-radius: 12px;
             padding: 0.6em 1.2em;
             font-size: 1em;
-            transition: 0.3s;
+            transition: all 0.3s ease;
         }
 
-        /* --- Hover tombol --- */
+        /* Hover tombol */
         div.stButton > button:hover {
-            background-color: #5D4037; /* coklat tua saat hover */
-            color: #fff;
+            background-color: #8FB9E1; /* biru sedikit lebih gelap */
+            color: white;
             transform: scale(1.05);
         }
 
-        /* --- Garis pemisah --- */
-        hr {
-            border: 1px solid #D7CCC8;
-        }
-
-        /* --- Input teks & radio --- */
+        /* === Input & Textarea === */
         input, textarea {
-            background-color: #FFF8E1 !important;
-            color: #3E2723 !important;
+            background-color: #F2F7FB !important;
+            color: #1E3A8A !important;
+            border-radius: 8px;
         }
 
-        /* --- Radio button --- */
-        .stRadio > div {
-            background-color: #FBE9E7;
+        /* === Radio button dan select === */
+        .stRadio > div, .stSelectbox > div {
+            background-color: #EFF6FF;
             border-radius: 10px;
-            padding: 5px 10px;
+            padding: 6px 10px;
         }
 
-        /* --- Scrollbar custom --- */
+        /* === Garis pemisah === */
+        hr {
+            border: 1px solid #E0E7FF;
+        }
+
+        /* === Scrollbar lembut === */
         ::-webkit-scrollbar {
             width: 8px;
         }
         ::-webkit-scrollbar-thumb {
-            background: #A1887F;
+            background: #A7C7E7;
             border-radius: 10px;
         }
         ::-webkit-scrollbar-thumb:hover {
-            background: #795548;
+            background: #6B9AC4;
+        }
+
+        /* === Card style (optional untuk section tertentu) === */
+        .stCard {
+            background-color: #FFFFFFAA;
+            border-radius: 16px;
+            box-shadow: 0px 4px 10px rgba(0,0,0,0.05);
+            padding: 1.5em;
         }
     </style>
 """, unsafe_allow_html=True)
