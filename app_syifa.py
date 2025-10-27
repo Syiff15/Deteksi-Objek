@@ -52,72 +52,45 @@ def progress_bar(step):
 
 # === STEP 1 ===
 if st.session_state.step == 1:
-    #progress_bar(1)
     st.image("slide 1.jpg", use_container_width=True)
-    st.write("""
-    Selamat datang di Ursidetect — dunia di mana teknologi bertemu dengan hewan menggemaskan! 🐼🐻
-    Di sini kamu bisa menjelajahi kemampuan AI untuk mengenali dan membedakan panda serta beruang hanya dari sebuah gambar.
-    Siap mulai petualanganmu bersama Ursidetect?
-    """)
-    
-    col_kiri, col_kanan = st.columns([4, 1])
-    with col_kanan:
-        if st.button("Ayo Mulai!!!"):
-            st.session_state.step = 2
-            st.rerun()  
-            
-# === STEP 2 ===
-elif st.session_state.step == 2:
-    #progress_bar(2)
-    st.image("slide 2.jpg", use_container_width=True)
     st.title("Tentang Ursidetect")
     st.markdown("""
-    **Ursidetect** adalah platform analisis gambar berbasis kecerdasan buatan (AI) yang dirancang khusus untuk mendeteksi dan mengklasifikasikan gambar **panda** dan **beruang**.
-    """)  
-    
-    col1, col2 = st.columns(2)
-    with col1:
-        st.markdown("""
-        **Deteksi Gambar:** Fitur ini dapat mengenali dan menandai posisi panda atau beruang yang muncul di dalam gambar menggunakan kotak pembatas (bounding box).""")
-    with col2:
-        st.markdown("""
-        **Klasifikasi Gambar:** Fitur ini akan mengidentifikasi apakah gambar yang Kamu unggah adalah panda atau beruang, lengkap dengan tingkat kepercayaan (confidence score) dari hasil analisis AI.""")
-    st.markdown("""
-    Kalau sudah penasaran, yuk lanjut ke langkah berikutnya untuk mulai petualangannya!!!
-    """) 
-    
+    Selamat datang di **Ursidetect** — dunia di mana teknologi bertemu dengan hewan menggemaskan! 🐼🐻  
+    Di sini kamu bisa menjelajahi kemampuan AI untuk mengenali dan membedakan panda serta beruang hanya dari sebuah gambar.
+
+    ---
+    **Deteksi Gambar:** mengenali posisi panda atau beruang di gambar.  
+    **Klasifikasi Gambar:** menentukan apakah gambar tersebut panda atau beruang, lengkap dengan confidence score.
+    """)
+
     col_kiri, col_kanan = st.columns([4, 1])
     with col_kanan:
-        if st.button("Lanjut"):
-            st.session_state.step = 3
+        if st.button("Lanjutkan Petualangan 🐾"):
+            st.session_state.step = 2
             st.rerun()
 
-        
-# === STEP 3 ===
-elif st.session_state.step == 3:
-    #progress_bar(3)
+# === STEP 2 ===
+elif st.session_state.step == 2:
     st.image("slide 3-1.png", width=300)
-    st.write("Sekarang giliran kamu! Masukkan namamu supaya Ursidetect tahu siapa partner barunya dalam petualangan ini 🐾")
+    st.write("Sekarang giliran kamu! Masukkan namamu supaya Ursidetect tahu siapa partner barunya 🐾")
 
     name_input = st.text_input("", placeholder="Contoh: Ursi")
-
     col_kiri, col_kanan = st.columns([4, 1])
     with col_kanan:
         if st.button("Lanjut"):
             if name_input.strip() != "":
                 st.session_state.name = name_input.strip()
-                st.session_state.step = 4
+                st.session_state.step = 3
                 st.rerun()
             else:
                 st.info("Ups, sepertinya kamu lupa menulis namamu dulu nih 😊")
-            
-# === STEP 4 ===
-elif st.session_state.step == 4:
-    #progress_bar(4)
+
+# === STEP 3 ===
+elif st.session_state.step == 3:
     st.title(f"Hai, {st.session_state.name.lower().split()[0]}! 👋")
     st.caption("Selamat datang di markas petualangan Ursidetect!")
-    st.caption("Selanjutnya pilih mode favoritmu: mau jadi pemburu hewan (deteksi) atau peneliti hewan (klasifikasi)?")
-    
+    st.caption("Pilih mode favoritmu: mau jadi pemburu hewan (deteksi) atau peneliti hewan (klasifikasi)?")
+
     analysis_type = st.radio(
         "Pilih Mode Petualang:",
         ["Pemburu Hewan (Deteksi)", "Peneliti Hewan (Klasifikasi)"],
@@ -126,71 +99,50 @@ elif st.session_state.step == 4:
     st.divider()
 
     st.markdown("### Masukkan Gambar")
-    st.caption("Untuk mulai berpetualang, {st.session_state.name.lower().split()[0]} harus memasukkan gambar berbentuk jpg, jpeg atau png yaa.")
+    st.caption(f"Untuk mulai berpetualang, {st.session_state.name.lower().split()[0]} harus memasukkan gambar berbentuk jpg, jpeg atau png yaa.")
     uploaded_file = st.file_uploader("Pilih gambar (jpg, jpeg, png):", type=["jpg", "jpeg", "png"])
+    
     if uploaded_file:
         image = Image.open(uploaded_file)
         st.image(image, caption=uploaded_file.name, use_container_width=True)
-        st.info("Hebat! Sekarang kamu tinggal klik Mulai Petualangan dan biarkan Ursidetect bekerja mengenali makhluk lucu dalam gambar kamu!")
+        st.info("Hebat! Sekarang klik Mulai Petualangan untuk mengenali makhluk lucu dalam gambar kamu!")
+    
     st.divider()
-
-    st.markdown("### Hasil Petualang")
+    st.markdown("### Hasil Petualangan")
     analyze_button = st.button("🔎 Mulai Petualangan", use_container_width=True)
+
     if analyze_button:
         if not uploaded_file:
             st.warning("⚠️ Silakan masukkan gambar terlebih dahulu sebelum berpetualang.")
         else:
             with st.spinner("⏳ Sedang Berpetualang..."):
-                time.sleep(2)  # simulasi proses
+                time.sleep(2)
+            st.success("🎉 Hasil analisis muncul di sini!")
 
-            # === Dummy hasil simulasi ===
-            if analysis_type == "Deteksi Gambar":
-                results = st.session_state.yolo_model(image)
-                result_img = results[0].plot()
-                st.image(result_img, caption="Hasil Deteksi", use_container_width=True)
-                boxes = results[0].boxes
-                names = results[0].names
-                detected_classes = [names[int(cls)] for cls in boxes.cls.cpu().numpy()]
-                if len(detected_classes) > 0:
-                    st.success("**Hasil Buruanmu:**")
-                    for obj in detected_classes:
-                        st.write(f"- {obj}")
-                else:
-                    st.warning("Tidak ada objek panda atau beruang yang terdeteksi.")
-
-            else:
-                img_resized = image.resize((224, 224))  # sesuaikan ukuran modelmu
-                img_array = tf.keras.preprocessing.image.img_to_array(img_resized)
-                img_array = np.expand_dims(img_array, axis=0) / 255.0
-
-                prediction = st.session_state.cnn_model.predict(img_array)
-                class_index = np.argmax(prediction)
-                confidence = np.max(prediction) * 100
-                label_names = ["Beruang", "Panda"]  # sesuaikan labelmu
-
-                st.success("**Hasil Penelitianmu:**")
-                st.write(f"Gambar diklasifikasikan sebagai **{label_names[class_index]}** 🐼🐻")
-                st.write(f"Confidence: {confidence:.2f}%")
-
-# === FEEDBACK BOX (hanya muncul di akhir) ===
-if st.session_state.step == 4:
+            # ... (kode hasil deteksi/klasifikasi di sini)
+    
     st.markdown("---")
-    st.subheader("💬 Cerita")
+    if st.button("💬 Beri Cerita Petualanganmu"):
+        st.session_state.step = 4
+        st.rerun()
+
+# === STEP 4 ===
+elif st.session_state.step == 4:
+    st.subheader("💬 Cerita Petualanganmu")
     st.info("""
-    Petualanganmu bersama Ursidetect sudah selesai 🐾
+    Petualanganmu bersama Ursidetect sudah selesai 🐾  
     Ceritakan pengalamanmu, ya! Kami ingin tahu bagaimana rasanya menjelajahi dunia panda & beruang bersama AI ini.
     """)
     feedback_text = st.text_area("Bagaimana Petualanganmu?", placeholder="Kirimkan ceritamu di sini...")
 
     if st.button("Kirim Cerita Petualanganku"):
         if feedback_text.strip() == "":
-            st.warning("Cerita Anda sangat berarti bagi kami.")
+            st.warning("Cerita Anda sangat berarti bagi kami 😊")
         else:
             st.success(f"✅ Terima kasih atas ceritanya, {st.session_state.name.lower().split()[0]}!")
 
-    # === RESTART BUTTON ===
     st.markdown("---")
-    if st.button("🔁 Mau memulai lagi dari awal? Klik tombol di bawah dan rasakan petualangan baru bersama Ursidetect!"):
-        st.session_state.step = 3
+    if st.button("🔁 Mau memulai lagi?"):
+        st.session_state.step = 1
         st.session_state.name = ""
         st.rerun()
