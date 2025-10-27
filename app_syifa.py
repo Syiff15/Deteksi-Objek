@@ -77,7 +77,7 @@ if st.session_state.step == 1:
     with col1:
         st.markdown("""
         <div style="
-            background-color:#F5EBD0;
+            background-color:#f9ead1;
             padding:25px;
             border-radius:20px;
             box-shadow:0 4px 15px rgba(0,0,0,0.07);
@@ -94,7 +94,7 @@ if st.session_state.step == 1:
     with col2:
         st.markdown("""
         <div style="
-            background-color:#F5EBD0;
+            background-color:#f9ead1;
             padding:25px;
             border-radius:20px;
             box-shadow:0 4px 15px rgba(0,0,0,0.07);
@@ -112,7 +112,7 @@ if st.session_state.step == 1:
 
     # === Tombol Lanjut ===
     st.markdown(
-        "<p style='text-align:center; color:#282328; font-size:17px;'>Yuk lanjut ke langkah berikutnya untuk mulai berpetualang!</p>",
+        "<p style='text-align:center; color:#282328; font-size:18px;'>Yuk lanjut ke langkah berikutnya untuk mulai berpetualang!</p>",
         unsafe_allow_html=True
     )
     
