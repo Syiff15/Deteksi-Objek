@@ -161,9 +161,9 @@ elif st.session_state.step == 3:
     
     col_kiri, col_kanan = st.columns([4, 1])
     with col_kanan:
-    if st.button("Lanjutkan 🐾"):
-        st.session_state.step = 4
-        st.rerun()
+        if st.button("Lanjutkan 🐾"):
+            st.session_state.step = 4
+            st.rerun()
 
 # === STEP 4 ===
 elif st.session_state.step == 4:
