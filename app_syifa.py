@@ -142,7 +142,7 @@ elif st.session_state.step == 2:
 # === STEP 3 ===
 elif st.session_state.step == 3:
     # === Judul Halaman ===
-    st.markdown("""
+    st.markdown(f"""
     <div style='
         background-color:#f2e6d6;
         padding:25px;
@@ -151,83 +151,80 @@ elif st.session_state.step == 3:
         text-align:center;
         margin-bottom:25px;'>
         <h1 style='color:#966543; margin-bottom:10px;'>
-            Hai, <span style='text-transform:capitalize;'>{name}</span>! 👋
+            Hai, <span style='text-transform:capitalize;'>{st.session_state.name.lower().split()[0]}</span>! 👋
         </h1>
         <p style='font-size:18px; color:#5b4636;'>
             Selamat datang di markas petualangan <b>Ursidetect</b>!  
             Pilih mode favoritmu — mau jadi <b>pemburu hewan</b> (deteksi) atau <b>peneliti hewan</b> (klasifikasi)?
         </p>
     </div>
-    """.format(name=st.session_state.name.lower().split()[0]), unsafe_allow_html=True)
+    """, unsafe_allow_html=True)
 
-# === Pilihan Mode dalam Dua Kotak Terpisah ===
-st.markdown("""
-<h4 style='color:#966543; text-align:center;'>Pilih Mode Petualang:</h4>
-<div style='display:flex; justify-content:center; gap:30px; margin-top:15px;'>
-    <div style='
-        background-color:#f2e6d6;
-        padding:20px 35px;
-        border-radius:15px;
-        box-shadow:0 4px 10px rgba(0,0,0,0.1);
-        text-align:center;
-        width:250px;
-        cursor:pointer;
-        transition: all 0.3s ease;
-    ' onclick="window.parent.postMessage({type:'selectMode', value:'deteksi'}, '*')">
-        <h4 style='color:#966543;'>🐾 Pemburu Hewan</h4>
-        <p style='color:#5b4636; font-size:14px;'>Mode <b>Deteksi</b> untuk menemukan lokasi panda dan beruang di gambar.</p>
-    </div>
+    # === Pilihan Mode dalam Dua Kotak ===
+    st.markdown("<h4 style='color:#966543; text-align:center;'>Pilih Mode Petualang:</h4>", unsafe_allow_html=True)
+    col1, col2 = st.columns(2, gap="large")
 
-    <div style='
-        background-color:#f2e6d6;
-        padding:20px 35px;
-        border-radius:15px;
-        box-shadow:0 4px 10px rgba(0,0,0,0.1);
-        text-align:center;
-        width:250px;
-        cursor:pointer;
-        transition: all 0.3s ease;
-    ' onclick="window.parent.postMessage({type:'selectMode', value:'klasifikasi'}, '*')">
-        <h4 style='color:#966543;'>🔬 Peneliti Hewan</h4>
-        <p style='color:#5b4636; font-size:14px;'>Mode <b>Klasifikasi</b> untuk mengenali apakah itu panda atau beruang.</p>
-    </div>
-</div>
-""", unsafe_allow_html=True)
+    with col1:
+        with st.container():
+            st.markdown("""
+            <div style='
+                background-color:#f2e6d6;
+                padding:25px;
+                border-radius:15px;
+                box-shadow:0 4px 12px rgba(0,0,0,0.1);
+                text-align:center;
+            '>
+                <h4 style='color:#966543;'>🐾 Pemburu Hewan</h4>
+                <p style='color:#5b4636; font-size:14px;'>Mode <b>Deteksi</b> untuk menemukan lokasi panda dan beruang di gambar.</p>
+            </div>
+            """, unsafe_allow_html=True)
+            if st.button("Pilih Mode Deteksi 🐾", use_container_width=True):
+                st.session_state.mode = "deteksi"
+                st.success("Mode dipilih: 🐾 Pemburu Hewan (Deteksi)")
+
+    with col2:
+        with st.container():
+            st.markdown("""
+            <div style='
+                background-color:#f2e6d6;
+                padding:25px;
+                border-radius:15px;
+                box-shadow:0 4px 12px rgba(0,0,0,0.1);
+                text-align:center;
+            '>
+                <h4 style='color:#966543;'>🔬 Peneliti Hewan</h4>
+                <p style='color:#5b4636; font-size:14px;'>Mode <b>Klasifikasi</b> untuk mengenali apakah itu panda atau beruang.</p>
+            </div>
+            """, unsafe_allow_html=True)
+            if st.button("Pilih Mode Klasifikasi 🔬", use_container_width=True):
+                st.session_state.mode = "klasifikasi"
+                st.success("Mode dipilih: 🔬 Peneliti Hewan (Klasifikasi)")
+
+    st.divider()
 
     # === Upload Gambar ===
     st.markdown("<h4 style='color:#966543;'>🖼️ Masukkan Gambar</h4>", unsafe_allow_html=True)
     st.caption(f"Untuk mulai petualangannya, {st.session_state.name.lower().split()[0]} harus memasukkan gambar berbentuk jpg, jpeg, atau png yaa.")
-    
+
     uploaded_file = st.file_uploader("Pilih gambar (jpg, jpeg, png):", type=["jpg", "jpeg", "png"])
-    
+
     if uploaded_file:
         image = Image.open(uploaded_file)
         st.image(image, caption=uploaded_file.name, use_container_width=True)
-    
+
     st.divider()
 
     # === Tombol Aksi ===
-    st.markdown(
-        """
-        <div style='text-align:center;'>
-            <button style='
-                background-color:#966543;
-                color:white;
-                border:none;
-                padding:12px 30px;
-                font-size:16px;
-                border-radius:10px;
-                cursor:pointer;
-                box-shadow:0 3px 8px rgba(0,0,0,0.15);
-                transition:0.3s;
-            ' onmouseover="this.style.backgroundColor='#7d5238'" 
-              onmouseout="this.style.backgroundColor='#966543'">
-                🔎 Mulai Petualangan
-            </button>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+    start_disabled = not uploaded_file or "mode" not in st.session_state
+
+    if st.button("🔎 Mulai Petualangan", disabled=start_disabled, use_container_width=True):
+        if "mode" not in st.session_state:
+            st.warning("Pilih dulu mode petualanganmu, ya!")
+        elif not uploaded_file:
+            st.warning("Unggah dulu gambar petualanganmu!")
+        else:
+            st.session_state.step = 4
+            st.experimental_rerun()
 
     if analyze_button:
         st.markdown("### Hasil Petualangan")
