@@ -54,9 +54,10 @@ def progress_bar(step):
 if st.session_state.step == 1:
     #progress_bar(1)
     st.image("slide 1.jpg", use_container_width=True)
-    st.title("Selamat Datang di Ursidetect")
-    st.write("Apa itu Ursidetect?")
-    st.write("Ayo ")
+    st.write("“Selamat datang di Ursidetect — dunia di mana teknologi bertemu dengan hewan menggemaskan! 🐼🐻
+    Di sini kamu bisa menjelajahi kemampuan AI untuk mengenali dan membedakan panda serta beruang hanya dari sebuah gambar.
+    Siap mulai petualanganmu bersama Ursidetect?”")
+    st.write("Sebelum kita mulai berpetualang, kenalan dulu yuk dengan Ursidetect!")
     
     col_kiri, col_kanan = st.columns([4, 1])
     with col_kanan:
@@ -70,7 +71,7 @@ elif st.session_state.step == 2:
     st.image("slide 2.jpg", use_container_width=True)
     st.title("Tentang Ursidetect")
     st.markdown("""
-    **Ursidetect** adalah platform analisis gambar berbasis kecerdasan buatan (AI) yang dirancang khusus untuk mendeteksi dan mengklasifikasikan gambar **panda** serta **beruang** dengan cepat dan akurat.
+    **Ursidetect** adalah platform analisis gambar berbasis kecerdasan buatan (AI) yang dirancang khusus untuk mendeteksi dan mengklasifikasikan gambar **panda** dan **beruang**.
     """)  
     
     col1, col2 = st.columns(2)
@@ -81,8 +82,7 @@ elif st.session_state.step == 2:
         st.markdown("""
         **Klasifikasi Gambar:** Fitur ini akan mengidentifikasi apakah gambar yang Kamu unggah adalah panda atau beruang, lengkap dengan tingkat kepercayaan (confidence score) dari hasil analisis AI.""")
     st.markdown("""
-    Cukup unggah gambar Anda, pilih metode analisis, dan biarkan Ursidetect menentukan apakah itu panda atau beruang.
-    Ayo Kita Lanjutkan!!!
+    Kalau sudah penasaran, yuk lanjut ke langkah berikutnya untuk mulai menjelajah!!!
     """) 
     
     col_kiri, col_kanan = st.columns([4, 1])
@@ -96,43 +96,30 @@ elif st.session_state.step == 2:
 elif st.session_state.step == 3:
     #progress_bar(3)
     st.image("slide 3-1.png", width=300)
-    st.title("Siapa Nama Kamu?")
-    st.write("Masukkan namamu di bawah, supaya Ursidetect tahu siapa partner barunya dalam berpetualang.🐾")
-    name_input = ("")
+    st.write("Sekarang giliran kamu! Masukkan namamu supaya Ursidetect tahu siapa partner barunya dalam petualangan ini 🐾")
+    name_input = st.text_input()
 
     col_kiri, col_kanan = st.columns([4, 1])
     with col_kanan:
-        if st.button("Lanjut") and name_input.strip() != "":
+        if st.button("Lanjutkan Petualangan") and name_input.strip() != "":
             st.session_state.name = name_input.strip()
             st.session_state.step = 4
             st.rerun()
+        else:
+            st.info("Ups, sepertinya kamu lupa menulis namamu dulu nih 😊")
             
 # === STEP 4 ===
 elif st.session_state.step == 4:
     #progress_bar(4)
     st.title(f"Hai, {st.session_state.name.lower().split()[0]}! 👋")
-    st.caption("Senang berkenalan denganmu. Selanjutnya, mari kita mulai petualangannya!!")
-    st.caption("Pilih mode favoritmu: mau jadi pemburu hewan (deteksi) atau peneliti hewan (klasifikasi)?")
-
-    st.markdown("### Mode Petualang")
-    col1, col2 = st.columns(2)
-    with col1:
-        st.markdown("""
-        #### 🔍 Deteksi Gambar  
-        Mode ini akan mendeteksi keberadaan dan posisi **panda** atau **beruang** di dalam gambar.
-        """)
-    with col2:
-        st.markdown("""
-        #### 🖼️ Klasifikasi Gambar  
-        Mode ini akan menentukan apakah gambar yang diunggah adalah **panda** atau **beruang**.
-        """)
-        
+    st.caption("Selamat datang di markas petualangan Ursidetect!")
+    st.caption("Selanjutnya pilih mode favoritmu: mau jadi pemburu hewan (deteksi) atau peneliti hewan (klasifikasi)?")
+    
     analysis_type = st.radio(
         "Pilih Mode Petualang:",
-        ["Deteksi Gambar", "Klasifikasi Gambar"],
+        ["Pemburu Hewan (Deteksi)", "Peneliti Hewan (Klasifikasi)"],
         horizontal=True,
-        index=0,
-    )
+        index=0)
     st.divider()
 
     st.markdown("### Masukkan Gambar")
@@ -141,6 +128,7 @@ elif st.session_state.step == 4:
     if uploaded_file:
         image = Image.open(uploaded_file)
         st.image(image, caption=uploaded_file.name, use_container_width=True)
+        st.info("Hebat! Sekarang kamu tinggal klik Mulai Petualangan dan biarkan Ursidetect bekerja mengenali makhluk lucu dalam gambar kamu!")
     else:
         st.info("Silahkan masukkan gambar terlebih dahulu.")
     st.divider()
@@ -186,18 +174,20 @@ elif st.session_state.step == 4:
 # === FEEDBACK BOX (hanya muncul di akhir) ===
 if st.session_state.step == 4:
     st.markdown("---")
-    st.subheader("💬 Saran")
+    st.subheader("💬 Cerita")
+    st.info("Petualanganmu bersama Ursidetect sudah selesai 🐾
+    Ceritakan pengalamanmu, ya! Kami ingin tahu bagaimana rasanya menjelajahi dunia panda & beruang bersama AI ini.")
     feedback_text = st.text_area("Bagaimana Petualanganmu?", placeholder="Kirimkan ceritamu di sini...")
 
-    if st.button("Kirim Saran"):
+    if st.button("Kirim Cerita Petualanganku"):
         if feedback_text.strip() == "":
-            st.warning("Saran Anda sangat berarti bagi kami.")
+            st.warning("Cerita Anda sangat berarti bagi kami.")
         else:
-            st.success(f"✅ Terima kasih atas sarannya, {st.session_state.name.lower().split()[0]}!")
+            st.success(f"✅ Terima kasih atas ceritanya, {st.session_state.name.lower().split()[0]}!")
 
     # === RESTART BUTTON ===
     st.markdown("---")
-    if st.button("🔁 Restart"):
-        st.session_state.step = 1
+    if st.button("🔁 Mau memulai lagi dari awal? Klik tombol di bawah dan rasakan petualangan baru bersama Ursidetect!"):
+        st.session_state.step = 3
         st.session_state.name = ""
         st.rerun()
