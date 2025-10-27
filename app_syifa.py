@@ -60,9 +60,6 @@ if st.session_state.step == 1:
     <h1 style='text-align:center; color:#1E1E1E;'>
         Selamat datang di 
         <span style="color:#2563EB;">Ursidetect</span>
-        <span style="display:inline-block; white-space:nowrap; vertical-align:middle; position:relative; top:-2px;">
-            🐻‍❄️🐼
-        </span>
     </h1>
     <p style='text-align:center; font-size:18px; color:#4B5563;'>
         Sebelum kita mulai berpetualang, kenalan dulu yuk dengan <b>Ursidetect</b>!<br>
@@ -86,7 +83,7 @@ if st.session_state.step == 1:
             box-shadow:0 4px 15px rgba(0,0,0,0.07);
             text-align:center;
             transition: transform 0.2s ease;">
-            <h3>🔎 Deteksi Gambar</h3>
+            <h3>🐻‍❄️ Deteksi Gambar</h3>
             <p style="color:#374151; font-size:16px;">
             Ursidetect dapat menemukan dan menandai posisi panda atau beruang di dalam gambar 
             menggunakan kotak pembatas (<i>bounding box</i>).
