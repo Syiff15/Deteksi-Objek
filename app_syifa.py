@@ -64,7 +64,7 @@ if st.session_state.step == 1:
     </h1>
     <p style='text-align:center; font-size:18px; color:#4B5563;'>
         Sebelum kita mulai berpetualang, kenalan dulu yuk dengan <b>Ursidetect</b>!<br>
-        Platform ini berbasis <b>kecerdasan buatan (AI)</b> yang dirancang untuk 
+        Ursidetect adalah platform berbasis <b>kecerdasan buatan (AI)</b> yang dirancang untuk 
         <b>mendeteksi</b> dan <b>mengklasifikasikan</b> hewan <b>panda</b> serta <b>beruang</b>.
     </p>
     """,
