@@ -99,11 +99,11 @@ elif st.session_state.step == 3:
     st.image("slide 3-1.png", width=300)
     st.write("Sekarang giliran kamu! Masukkan namamu supaya Ursidetect tahu siapa partner barunya dalam petualangan ini 🐾")
 
-    name_input = st.text_input("Masukkan namamu di sini:", placeholder="Contoh: Syifa")
+    name_input = st.text_input("", placeholder="Contoh: Ursi")
 
     col_kiri, col_kanan = st.columns([4, 1])
     with col_kanan:
-        if st.button("Lanjutkan Petualangan"):
+        if st.button("Lanjut"):
             if name_input.strip() != "":
                 st.session_state.name = name_input.strip()
                 st.session_state.step = 4
@@ -133,7 +133,6 @@ elif st.session_state.step == 4:
         st.image(image, caption=uploaded_file.name, use_container_width=True)
         st.info("Hebat! Sekarang kamu tinggal klik Mulai Petualangan dan biarkan Ursidetect bekerja mengenali makhluk lucu dalam gambar kamu!")
     else:
-        st.info("Silahkan masukkan gambar terlebih dahulu.")
     st.divider()
 
     st.markdown("### Hasil Petualang")
