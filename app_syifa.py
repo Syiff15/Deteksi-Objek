@@ -32,38 +32,6 @@ yolo_model, classifier = load_models()
 
 # === KONFIGURASI DASAR HALAMAN WEB ===
 st.set_page_config(page_title="Ursidetect", page_icon="🐻🐼", layout="centered")
-import streamlit as st
-
-st.markdown("""
-<style>
-.container {
-    background-color: #FFF8E7; /* warna krim lembut */
-    padding: 25px;
-    border-radius: 15px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-}
-h1 {
-    text-align: center;
-    color: #2E2E2E;
-    margin-bottom: 15px;
-}
-p {
-    text-align: justify;
-    color: #333;
-    line-height: 1.6;
-}
-b {
-    color: #222;
-}
-</style>
-
-<div class="container">
-    <h1>Tentang Ursidetect 🐼</h1>
-    <p><b>Ursidetect</b> adalah platform berbasis kecerdasan buatan (AI) yang dirancang untuk mendeteksi dan mengklasifikasikan gambar <b>panda</b> serta <b>beruang</b> dengan cepat dan akurat.</p>
-    <p>Fitur <b>Deteksi Gambar</b> akan menandai posisi objek dalam gambar menggunakan kotak pembatas, sedangkan <b>Klasifikasi Gambar</b> menentukan apakah gambar tersebut panda atau beruang, lengkap dengan tingkat kepercayaannya.</p>
-    <p><b>Unggah gambar Anda</b> dan biarkan Ursidetect melakukan sisanya. Ayo kita mulai!</p>
-</div>
-""", unsafe_allow_html=True)
 
 # === STATE MANAGEMENT ===
 if "step" not in st.session_state:
