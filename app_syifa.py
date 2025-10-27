@@ -59,7 +59,6 @@ if st.session_state.step == 1:
     Di sini kamu bisa menjelajahi kemampuan AI untuk mengenali dan membedakan panda serta beruang hanya dari sebuah gambar.
     Siap mulai petualanganmu bersama Ursidetect?
     """)
-    st.write("Sebelum kita mulai berpetualang, kenalan dulu yuk dengan Ursidetect!")
     
     col_kiri, col_kanan = st.columns([4, 1])
     with col_kanan:
@@ -84,7 +83,7 @@ elif st.session_state.step == 2:
         st.markdown("""
         **Klasifikasi Gambar:** Fitur ini akan mengidentifikasi apakah gambar yang Kamu unggah adalah panda atau beruang, lengkap dengan tingkat kepercayaan (confidence score) dari hasil analisis AI.""")
     st.markdown("""
-    Kalau sudah penasaran, yuk lanjut ke langkah berikutnya untuk mulai menjelajah!!!
+    Kalau sudah penasaran, yuk lanjut ke langkah berikutnya untuk mulai petualangannya!!!
     """) 
     
     col_kiri, col_kanan = st.columns([4, 1])
@@ -99,7 +98,7 @@ elif st.session_state.step == 3:
     #progress_bar(3)
     st.image("slide 3-1.png", width=300)
     st.write("Sekarang giliran kamu! Masukkan namamu supaya Ursidetect tahu siapa partner barunya dalam petualangan ini 🐾")
-    name_input = st.text_input()
+    name_input = st.text_input("")
 
     col_kiri, col_kanan = st.columns([4, 1])
     with col_kanan:
