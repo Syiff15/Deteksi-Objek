@@ -67,7 +67,7 @@ if st.session_state.step == 1:
 # === STEP 2 ===
 elif st.session_state.step == 2:
     #progress_bar(2)
-    st.image("https://drive.google.com/file/d/1EjbCIR1BvSA4stVU58xQAry1GSszpO36/view?usp=drive_link", use_container_width=True)
+    st.image("slide 2.jpg", use_container_width=True)
     st.title("Tentang Ursidetect")
     st.markdown("""
     **Ursidetect** adalah platform analisis gambar berbasis kecerdasan buatan (AI) yang dirancang khusus untuk mendeteksi dan mengklasifikasikan gambar **panda** serta **beruang** dengan cepat dan akurat.
@@ -95,7 +95,7 @@ elif st.session_state.step == 2:
 # === STEP 3 ===
 elif st.session_state.step == 3:
     #progress_bar(3)
-    st.image("https://drive.google.com/file/d/1OV2rCaeLxghb-etRyxnJK0M0CZfwyRRk/view?usp=drive_link", width=300)
+    st.image("slide 3-1.png", width=300)
     st.title("Siapa Nama Kamu?")
     st.write("Masukkan namamu di bawah, biar Ursidetect tahu siapa partner barunya dalam berpetualang.🐾")
     name_input = st.text_input("Ketik namamu di bawah ini:")
