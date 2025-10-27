@@ -160,31 +160,33 @@ elif st.session_state.step == 3:
     </div>
     """.format(name=st.session_state.name.lower().split()[0]), unsafe_allow_html=True)
 
-    # === CSS untuk meratakan radio button ke tengah ===
+    # === CSS agar radio button rata tengah ===
     st.markdown("""
         <style>
-            /* Mengatur posisi radio button agar rata tengah */
             div[data-testid="stRadio"] {
                 display: flex;
                 justify-content: center;
             }
             div[data-testid="stRadio"] label {
-                margin-right: 25px;
-                color: #5b4636;
+                color: #5b4636 !important;
                 font-weight: 500;
                 font-size: 16px;
+                margin-right: 25px;
             }
         </style>
     """, unsafe_allow_html=True)
 
-    # === Pilihan Mode ===
-    st.markdown("<h4 style='color:#966543; text-align:center;'>Pilih Mode Petualang:</h4>", unsafe_allow_html=True)
-    analysis_type = st.radio(
-        "",
-        ["🐾 Pemburu Hewan (Deteksi)", "🔬 Peneliti Hewan (Klasifikasi)"],
-        horizontal=True,
-        index=0
-    )
+    # === Pilihan Mode (Rata Tengah) ===
+    st.markdown("<h4 style='color:#966543; text-align:left;'>Pilih Mode Petualang:</h4>", unsafe_allow_html=True)
+    with st.container():
+        st.markdown("<div style='display:flex; justify-content:center;'>", unsafe_allow_html=True)
+        analysis_type = st.radio(
+            "",
+            ["🐾 Pemburu Hewan (Deteksi)", "🔬 Peneliti Hewan (Klasifikasi)"],
+            horizontal=True,
+            index=0
+        )
+        st.markdown("</div>", unsafe_allow_html=True)
 
     st.divider()
 
@@ -199,6 +201,49 @@ elif st.session_state.step == 3:
         st.image(image, caption=uploaded_file.name, use_container_width=True)
     
     st.divider()
+
+    # === Tombol Aksi ===
+    st.markdown(
+        """
+        <div style='text-align:center;'>
+            <button style='
+                background-color:#966543;
+                color:white;
+                border:none;
+                padding:12px 30px;
+                font-size:16px;
+                border-radius:10px;
+                cursor:pointer;
+                box-shadow:0 3px 8px rgba(0,0,0,0.15);
+                transition:0.3s;
+            ' onmouseover="this.style.backgroundColor='#7d5238'" 
+              onmouseout="this.style.backgroundColor='#966543'">
+                🔎 Mulai Petualangan
+            </button>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+    # === Tombol Aksi ===
+    st.markdown(
+        """
+        <div style='text-align:center;'>
+            <button style='
+                background-color:#966543;
+                color:white;
+                border:none;
+                padding:12px 30px;
+                font-size:16px;
+                border-radius:10px;
+                cursor:pointer;
+                box-shadow:0 3px 8px rgba(0,0,0,0.15);'>
+                🔎 Mulai Petualangan
+            </button>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
     # === Tombol Aksi ===
     st.markdown(
