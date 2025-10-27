@@ -52,8 +52,8 @@ def progress_bar(step):
 
 # === STEP 1 ===
 if st.session_state.step == 1:
-    progress_bar(1)
-    st.image("https://images.unsplash.com/photo-1640622653142-4e8c184a99b1", use_container_width=True)
+    #progress_bar(1)
+    st.image("C:\Users\Syifa Salsabila\Pictures\Camera Roll\buat tulisannya lebih estetik.jpg", use_container_width=True)
     st.title("Welcome to Ursidetect")
     st.write("Kami membantu Anda mengenali isi gambar dengan cepat dan mudah melalui teknologi AI yang cerdas.")
     st.write("Yuk, cari tahu apa yang tersembunyi di setiap gambar Anda.")
@@ -66,8 +66,8 @@ if st.session_state.step == 1:
             
 # === STEP 2 ===
 elif st.session_state.step == 2:
-    progress_bar(2)
-    st.image("https://images.unsplash.com/photo-1625580916819-6efb3a3f26f7", use_container_width=True)
+    #progress_bar(2)
+    st.image("C:\Users\Syifa Salsabila\Pictures\Camera Roll\Ursidetect adalah platform analisis gambar berbasis kecerdasan buatan (AI) yang dirancang khusus untuk mendeteksi dan mengklasifikasikan gambar panda serta beruang dengan cepat dan akurat.__Deteksi Gambar.jpg", use_container_width=True)
     st.title("Tentang Ursidetect")
     st.markdown("""
     **Ursidetect** adalah platform analisis gambar berbasis kecerdasan buatan (AI) yang dirancang khusus untuk mendeteksi dan mengklasifikasikan gambar **panda** serta **beruang** dengan cepat dan akurat.
@@ -94,8 +94,8 @@ elif st.session_state.step == 2:
         
 # === STEP 3 ===
 elif st.session_state.step == 3:
-    progress_bar(3)
-    st.image("https://cdn.dribbble.com/users/1162077/screenshots/3848914/programmer.gif", width=300)
+    #progress_bar(3)
+    st.image("C:\Users\Syifa Salsabila\Pictures\Camera Roll\SIAPA NAMA ANDA.png", width=300)
     st.title("Siapa Nama Kamu?")
     st.write("Masukkan namamu di bawah, biar Ursidetect tahu siapa partner barunya dalam berpetualang.🐾")
     name_input = st.text_input("Ketik namamu di bawah ini:")
@@ -109,7 +109,7 @@ elif st.session_state.step == 3:
             
 # === STEP 4 ===
 elif st.session_state.step == 4:
-    progress_bar(4)
+    #progress_bar(4)
     st.title(f"Hai, {st.session_state.name.lower().split()[0]}! 👋")
     st.caption("Senang berkenalan denganmu. Selanjutnya, mari kita mulai petualangannya!!")
     st.caption("Pilih mode favoritmu: mau jadi pemburu hewan (deteksi) atau peneliti hewan (klasifikasi)?")
@@ -183,19 +183,21 @@ elif st.session_state.step == 4:
                 st.write(f"Gambar diklasifikasikan sebagai **{label_names[class_index]}** 🐼🐻")
                 st.write(f"Confidence: {confidence:.2f}%")
 
-# === FEEDBACK BOX ===
-st.markdown("---")
-st.subheader("💬 Feedback")
-feedback_text = st.text_area("How was your experience?", placeholder="Share your thoughts here...")
-if st.button("Submit Feedback"):
-    if feedback_text.strip() == "":
-        st.warning("Please write some feedback before submitting.")
-    else:
-        st.success("✅ Thank you for your feedback!")
+# === FEEDBACK BOX (hanya muncul di akhir) ===
+if st.session_state.step == 4:
+    st.markdown("---")
+    st.subheader("💬 Saran")
+    feedback_text = st.text_area("Bagaimana Petualanganmu?", placeholder="Kirimkan ceritamu di sini...")
+
+    if st.button("Kirim Saran"):
+        if feedback_text.strip() == "":
+            st.warning("Saran Anda sangat berarti bagi kami.")
+        else:
+            st.success(f"✅ Terima kasih atas sarannya, {st.session_state.name.lower().split()[0]}!")
 
     # === RESTART BUTTON ===
     st.markdown("---")
     if st.button("🔁 Restart"):
-        st.session_state.step = 4
+        st.session_state.step = 1
         st.session_state.name = ""
         st.rerun()
