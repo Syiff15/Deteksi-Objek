@@ -56,12 +56,11 @@ if st.session_state.step == 1:
     st.title("Tentang Ursidetect")
 
     st.markdown("""
-Selamat datang di **Ursidetect** — tempat di mana teknologi bertemu dengan hewan menggemaskan! 🐼🐻  
-Sebelum kita mulai berpetualang, kenalan dulu yuk dengan Ursidetect!  
-Ursidetect adalah platform berbasis **kecerdasan buatan (AI)** yang dirancang untuk **mendeteksi** dan **mengklasifikasikan** hewan **panda** serta **beruang**.
+### Selamat datang di **Ursidetect**   
+Sebelum kita mulai berpetualang, kenalan dulu yuk dengan Ursidetect! 🐼🐻
 """)
 
-    st.markdown("### 🌟 Dua Fitur Utama Ursidetect")
+    st.markdown("Ursidetect adalah platform berbasis **kecerdasan buatan (AI)** yang dirancang untuk **mendeteksi** dan **mengklasifikasikan** hewan **panda** serta **beruang**.")
     
     col1, col2 = st.columns(2)
     with col1:
@@ -98,7 +97,7 @@ Ursidetect adalah platform berbasis **kecerdasan buatan (AI)** yang dirancang un
 
     st.markdown("""
 ---
-Kalau sudah penasaran, yuk lanjut ke langkah berikutnya untuk mulai menjelajah! 🐾
+Yuk lanjut ke langkah berikutnya untuk mulai berpetualang!
 """)
 
     col_kiri, col_kanan = st.columns([4, 1])
@@ -110,7 +109,7 @@ Kalau sudah penasaran, yuk lanjut ke langkah berikutnya untuk mulai menjelajah! 
 # === STEP 2 ===
 elif st.session_state.step == 2:
     st.image("slide 3-1.png", width=300)
-    st.write("Sekarang giliran kamu! Masukkan namamu supaya Ursidetect tahu siapa partner barunya 🐾")
+    st.write("Sekarang giliran kamu! Masukkan namamu supaya Ursidetect tahu siapa partner barunya.")
 
     name_input = st.text_input("", placeholder="Contoh: Ursi")
     col_kiri, col_kanan = st.columns([4, 1])
@@ -155,9 +154,103 @@ elif st.session_state.step == 3:
         else:
             with st.spinner("⏳ Sedang Berpetualang..."):
                 time.sleep(2)
-            st.success("🎉 Hasil analisis muncul di sini!")
+            st.success("⬇️ Hasil analisis muncul di sini!")
 
-            # ... (kode hasil deteksi/klasifikasi di sini)
+            # === Mulai: kode hasil deteksi/klasifikasi ===
+            pil_img = Image.open(uploaded_file).convert("RGB")
+            # Jalankan deteksi YOLO
+            results = yolo_model(pil_img)
+
+            # Ambil hasil dari frame pertama
+            res = results[0]
+
+            # Ekstraksi box / confidence / kelas dari hasil YOLO (kompatibilitas CPU/GPU)
+            try:
+                boxes = res.boxes.xyxy.cpu().numpy()
+                scores = res.boxes.conf.cpu().numpy()
+                det_classes = res.boxes.cls.cpu().numpy().astype(int)
+            except Exception:
+                boxes = res.boxes.xyxy.numpy()
+                scores = res.boxes.conf.numpy()
+                det_classes = res.boxes.cls.numpy().astype(int)
+
+            # Salin image ke format OpenCV untuk menggambar
+            cv_img = np.array(pil_img)[:, :, ::-1].copy()  # RGB -> BGR untuk cv2
+            annotated = cv_img.copy()
+
+            # Ambil nama kelas dari model deteksi jika tersedia
+            try:
+                det_names = yolo_model.names
+            except Exception:
+                det_names = {}
+
+            # Siapkan nama kelas untuk model klasifikasi (ubah jika modelmu punya label berbeda)
+            classifier_names = ["Panda", "Beruang"]
+
+            # Cek ukuran input classifier
+            try:
+                in_shape = classifier.input_shape
+                in_h = in_shape[1] or 224
+                in_w = in_shape[2] or 224
+            except Exception:
+                in_h, in_w = 224, 224
+
+            detections_summary = []
+            for i, box in enumerate(boxes):
+                x1, y1, x2, y2 = map(int, box)
+                det_conf = float(scores[i]) if i < len(scores) else 0.0
+                det_cls_idx = int(det_classes[i]) if i < len(det_classes) else -1
+                det_label = det_names.get(det_cls_idx, str(det_cls_idx))
+
+                # Gambar bounding box dan label deteksi
+                color = (0, 255, 0)
+                cv2.rectangle(annotated, (x1, y1), (x2, y2), color, 2)
+                text = f"{det_label} {det_conf:.2f}"
+                cv2.putText(annotated, text, (x1, max(y1 - 10, 10)), cv2.FONT_HERSHEY_SIMPLEX, 0.6, color, 2)
+
+                # Crop untuk klasifikasi
+                try:
+                    crop_pil = pil_img.crop((x1, y1, x2, y2)).convert("RGB")
+                    crop_resized = crop_pil.resize((in_w, in_h))
+                    x = tf.keras.preprocessing.image.img_to_array(crop_resized)
+                    x = x / 255.0
+                    x = np.expand_dims(x, 0)
+                    preds = classifier.predict(x)
+                    cls_idx = int(np.argmax(preds[0]))
+                    cls_conf = float(np.max(preds[0]))
+                    cls_name = classifier_names[cls_idx] if cls_idx < len(classifier_names) else str(cls_idx)
+                except Exception as e:
+                    cls_name = "N/A"
+                    cls_conf = 0.0
+
+                # Tulis hasil klasifikasi pada gambar
+                cls_text = f"{cls_name} {cls_conf:.2f}"
+                cv2.putText(annotated, cls_text, (x1, y2 + 20), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 165, 0), 2)
+
+                detections_summary.append({
+                    "box": [int(x1), int(y1), int(x2), int(y2)],
+                    "detected_label": det_label,
+                    "detected_confidence": round(det_conf, 4),
+                    "classified_label": cls_name,
+                    "classification_confidence": round(cls_conf, 4)
+                })
+
+            # Tampilkan hasil terannotasi
+            annotated_rgb = cv2.cvtColor(annotated, cv2.COLOR_BGR2RGB)
+            annotated_pil = Image.fromarray(annotated_rgb)
+            st.image(annotated_pil, caption="Hasil Deteksi & Klasifikasi", use_container_width=True)
+
+            # Tampilkan ringkasan deteksi
+            if len(detections_summary) == 0:
+                st.info("Tidak ada objek terdeteksi.")
+            else:
+                st.markdown("### Ringkasan Deteksi")
+                for idx, d in enumerate(detections_summary, start=1):
+                    st.markdown(
+                        f"- **Objek {idx}**: Deteksi = **{d['detected_label']}** ({d['detected_confidence']:.2f}) | "
+                        f"Klasifikasi = **{d['classified_label']}** ({d['classification_confidence']:.2f}) | "
+                        f"Box = {d['box']}"
+                    )
     
     col_kiri, col_kanan = st.columns([4, 1])
     with col_kanan:
@@ -176,7 +269,7 @@ elif st.session_state.step == 4:
 
     if st.button("Kirim Cerita Petualanganku"):
         if feedback_text.strip() == "":
-            st.warning("Cerita Anda sangat berarti bagi kami 😊")
+            st.warning("Cerita Kamu sangat berarti bagi kami 😊")
         else:
             st.success(f"✅ Terima kasih atas ceritanya, {st.session_state.name.lower().split()[0]}!")
 
