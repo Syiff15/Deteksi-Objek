@@ -55,17 +55,51 @@ if st.session_state.step == 1:
     st.image("slide 1.jpg", use_container_width=True)
     st.title("Tentang Ursidetect")
     st.markdown("""
-    Selamat datang di **Ursidetect** — dunia di mana teknologi bertemu dengan hewan menggemaskan! 🐼🐻  
-    Di sini kamu bisa menjelajahi kemampuan AI untuk mengenali dan membedakan panda serta beruang hanya dari sebuah gambar.
-
-    ---
-    **Deteksi Gambar:** mengenali posisi panda atau beruang di gambar.  
-    **Klasifikasi Gambar:** menentukan apakah gambar tersebut panda atau beruang, lengkap dengan confidence score.
+    Selamat datang di **Ursidetect** 
+    st.write("""
+    Sebelum kita mulai berpetualang, kenalan dulu yuk dengan Ursidetect!
+    Ursidetect adalah platform berbasis kecerdasan buatan (AI) yang dapat mendeteksi dan mengklasifikasikan hewan panda dan beruang.
     """)
+    col1, col2 = st.columns(2)
+    with col1:
+        st.markdown("""
+        <div style="
+            background-color:#E6F0FF;
+            padding:20px;
+            border-radius:15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            text-align:center;">
+            <h4>🔎 Deteksi Gambar</h4>
+            <p style="color:#333;">
+            Ursidetect dapat menemukan dan menandai posisi panda atau beruang di dalam gambar 
+            menggunakan <b>kotak pembatas (bounding box)</b>.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+    with col2:
+        st.markdown("""
+        <div style="
+            background-color:#FFF7E6;
+            padding:20px;
+            border-radius:15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            text-align:center;">
+            <h4>🐼 Klasifikasi Gambar</h4>
+            <p style="color:#333;">
+            Ursidetect mampu menentukan apakah gambar tersebut termasuk <b>panda</b> 
+            atau <b>beruang</b>, lengkap dengan tingkat kepercayaan (confidence score).
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+    st.markdown("""
+    ---
+    Kalau sudah penasaran, yuk lanjut ke langkah berikutnya untuk mulai menjelajah!
+    """)
+
 
     col_kiri, col_kanan = st.columns([4, 1])
     with col_kanan:
-        if st.button("Lanjutkan Petualangan 🐾"):
+        if st.button("Lanjutkan 🐾"):
             st.session_state.step = 2
             st.rerun()
 
@@ -77,7 +111,7 @@ elif st.session_state.step == 2:
     name_input = st.text_input("", placeholder="Contoh: Ursi")
     col_kiri, col_kanan = st.columns([4, 1])
     with col_kanan:
-        if st.button("Lanjut"):
+        if st.button("Lanjutkan 🐾"):
             if name_input.strip() != "":
                 st.session_state.name = name_input.strip()
                 st.session_state.step = 3
@@ -122,7 +156,7 @@ elif st.session_state.step == 3:
             # ... (kode hasil deteksi/klasifikasi di sini)
     
     st.markdown("---")
-    if st.button("💬 Beri Cerita Petualanganmu"):
+    if st.button("Lanjutkan 🐾"):
         st.session_state.step = 4
         st.rerun()
 
