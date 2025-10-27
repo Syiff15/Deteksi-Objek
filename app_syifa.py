@@ -107,7 +107,7 @@ elif st.session_state.step == 3:
             st.session_state.step = 4
             st.rerun()
         else:
-            st.info("Ups, sepertinya kamu lupa menulis namamu dulu nih 😊")
+            print("Ups, sepertinya kamu lupa menulis namamu dulu nih 😊")
             
 # === STEP 4 ===
 elif st.session_state.step == 4:
