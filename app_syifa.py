@@ -55,16 +55,21 @@ if st.session_state.step == 1:
     st.image("slide 1.jpg", use_container_width=True)
 
     # === Judul & Intro ===
-    st.markdown(
+st.markdown(
     """
     <h1 style='text-align:center; color:#1E1E1E;'>
         Selamat datang di 
         <span style="color:#2563EB;">Ursidetect</span>
         <span style="vertical-align:middle; position:relative; top:-2px;">🐻‍❄️🐼</span>
     </h1>
+    <p style='text-align:center; font-size:18px; color:#4B5563;'>
+        Sebelum kita mulai berpetualang, kenalan dulu yuk dengan <b>Ursidetect</b>!<br>
+        Platform ini berbasis <b>kecerdasan buatan (AI)</b> yang dirancang untuk 
+        <b>mendeteksi</b> dan <b>mengklasifikasikan</b> hewan <b>panda</b> serta <b>beruang</b>.
+    </p>
     """,
     unsafe_allow_html=True
-    )
+)      
     st.markdown("<br>", unsafe_allow_html=True)
 
     # === Dua Fitur dalam Kotak ===
