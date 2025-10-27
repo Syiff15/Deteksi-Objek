@@ -53,53 +53,71 @@ def progress_bar(step):
 # === STEP 1 ===
 if st.session_state.step == 1:
     st.image("slide 1.jpg", use_container_width=True)
-    st.title("Selamat datang di **Ursidetect**")
-    st.markdown("Sebelum kita mulai berpetualang, kenalan dulu yuk dengan Ursidetect! 🐼🐻")
-    st.markdown("Ursidetect adalah platform berbasis **kecerdasan buatan (AI)** yang dirancang untuk **mendeteksi** dan **mengklasifikasikan** hewan **panda** serta **beruang**.")
-    
+
+    # === Judul & Intro ===
+    st.markdown(
+        """
+        <h1 style='text-align:center; color:#1E1E1E;'>Selamat datang di <span style="color:#2563EB;">Ursidetect</span> 🐻‍❄️🐼</h1>
+        <p style='text-align:center; font-size:18px; color:#4B5563;'>
+        Sebelum kita mulai berpetualang, kenalan dulu yuk dengan <b>Ursidetect</b>!  
+        Platform ini berbasis <b>kecerdasan buatan (AI)</b> yang dirancang untuk <b>mendeteksi</b> dan <b>mengklasifikasikan</b> hewan <b>panda</b> serta <b>beruang</b>.
+        </p>
+        """,
+        unsafe_allow_html=True
+    )
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    # === Dua Fitur dalam Kotak ===
     col1, col2 = st.columns(2)
+
     with col1:
         st.markdown("""
-<div style="
-    background-color:#E6F0FF;
-    padding:20px;
-    border-radius:15px;
-    box-shadow:0 4px 10px rgba(0,0,0,0.1);
-    text-align:center;">
-    <h4>🔎 Deteksi Gambar</h4>
-    <p style="color:#333;">
-    Ursidetect dapat menemukan dan menandai posisi panda atau beruang di dalam gambar 
-    menggunakan <b>kotak pembatas (bounding box)</b>.
-    </p>
-</div>
-""", unsafe_allow_html=True)
+        <div style="
+            background-color:#E6F0FF;
+            padding:25px;
+            border-radius:20px;
+            box-shadow:0 4px 15px rgba(0,0,0,0.07);
+            text-align:center;
+            transition: transform 0.2s ease;">
+            <h3>🔎 Deteksi Gambar</h3>
+            <p style="color:#374151; font-size:16px;">
+            Ursidetect dapat menemukan dan menandai posisi panda atau beruang di dalam gambar 
+            menggunakan <b>kotak pembatas (bounding box)</b>.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
 
     with col2:
         st.markdown("""
-<div style="
-    background-color:#FFF7E6;
-    padding:20px;
-    border-radius:15px;
-    box-shadow:0 4px 10px rgba(0,0,0,0.1);
-    text-align:center;">
-    <h4>🐼 Klasifikasi Gambar</h4>
-    <p style="color:#333;">
-    Ursidetect dapat menentukan apakah gambar tersebut termasuk <b>panda</b> 
-    atau <b>beruang</b>, lengkap dengan tingkat kepercayaan (confidence score).
-    </p>
-</div>
-""", unsafe_allow_html=True)
+        <div style="
+            background-color:#FFF8E6;
+            padding:25px;
+            border-radius:20px;
+            box-shadow:0 4px 15px rgba(0,0,0,0.07);
+            text-align:center;
+            transition: transform 0.2s ease;">
+            <h3>🐼 Klasifikasi Gambar</h3>
+            <p style="color:#374151; font-size:16px;">
+            Ursidetect dapat menentukan apakah gambar tersebut termasuk <b>panda</b> 
+            atau <b>beruang</b>, lengkap dengan tingkat kepercayaan (<i>confidence score</i>).
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
 
-    st.markdown("""
----
-Yuk lanjut ke langkah berikutnya untuk mulai berpetualang!
-""")
+    st.markdown("<br><hr>", unsafe_allow_html=True)
 
-    col_kiri, col_kanan = st.columns([4, 1])
-    with col_kanan:
-        if st.button("Lanjutkan 🐾"):
-            st.session_state.step = 2
-            st.rerun()
+    # === Tombol Lanjut ===
+    st.markdown(
+        "<p style='text-align:center; color:#4B5563; font-size:17px;'>Yuk lanjut ke langkah berikutnya untuk mulai berpetualang!</p>",
+        unsafe_allow_html=True
+    )
+
+    st.markdown("<div style='text-align:center;'>", unsafe_allow_html=True)
+    if st.button("🚀 Lanjutkan Petualangan 🐾", use_container_width=False):
+        st.session_state.step = 2
+        st.rerun()
+    st.markdown("</div>", unsafe_allow_html=True)
 
 # === STEP 2 ===
 elif st.session_state.step == 2:
