@@ -54,9 +54,9 @@ def progress_bar(step):
 if st.session_state.step == 1:
     #progress_bar(1)
     st.image("slide 1.jpg", use_container_width=True)
-    st.write("“Selamat datang di Ursidetect — dunia di mana teknologi bertemu dengan hewan menggemaskan! 🐼🐻
+    st.write("Selamat datang di Ursidetect — dunia di mana teknologi bertemu dengan hewan menggemaskan! 🐼🐻
     Di sini kamu bisa menjelajahi kemampuan AI untuk mengenali dan membedakan panda serta beruang hanya dari sebuah gambar.
-    Siap mulai petualanganmu bersama Ursidetect?”")
+    Siap mulai petualanganmu bersama Ursidetect?")
     st.write("Sebelum kita mulai berpetualang, kenalan dulu yuk dengan Ursidetect!")
     
     col_kiri, col_kanan = st.columns([4, 1])
