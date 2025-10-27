@@ -53,7 +53,7 @@ def progress_bar(step):
 # === STEP 1 ===
 if st.session_state.step == 1:
     #progress_bar(1)
-    st.image("C:\Users\Syifa Salsabila\Pictures\Camera Roll\buat tulisannya lebih estetik.jpg", use_container_width=True)
+    st.image("C:/Users/Syifa Salsabila/Pictures/Camera Roll/buat tulisannya lebih estetik.jpg", use_container_width=True)
     st.title("Welcome to Ursidetect")
     st.write("Kami membantu Anda mengenali isi gambar dengan cepat dan mudah melalui teknologi AI yang cerdas.")
     st.write("Yuk, cari tahu apa yang tersembunyi di setiap gambar Anda.")
@@ -67,7 +67,7 @@ if st.session_state.step == 1:
 # === STEP 2 ===
 elif st.session_state.step == 2:
     #progress_bar(2)
-    st.image("C:\Users\Syifa Salsabila\Pictures\Camera Roll\Ursidetect adalah platform analisis gambar berbasis kecerdasan buatan (AI) yang dirancang khusus untuk mendeteksi dan mengklasifikasikan gambar panda serta beruang dengan cepat dan akurat.__Deteksi Gambar.jpg", use_container_width=True)
+    st.image("C:/Users/Syifa Salsabila/Pictures/Camera Roll/Ursidetect adalah platform analisis gambar berbasis kecerdasan buatan (AI) yang dirancang khusus untuk mendeteksi dan mengklasifikasikan gambar panda serta beruang dengan cepat dan akurat.__Deteksi Gambar.jpg", use_container_width=True)
     st.title("Tentang Ursidetect")
     st.markdown("""
     **Ursidetect** adalah platform analisis gambar berbasis kecerdasan buatan (AI) yang dirancang khusus untuk mendeteksi dan mengklasifikasikan gambar **panda** serta **beruang** dengan cepat dan akurat.
@@ -95,7 +95,7 @@ elif st.session_state.step == 2:
 # === STEP 3 ===
 elif st.session_state.step == 3:
     #progress_bar(3)
-    st.image("C:\Users\Syifa Salsabila\Pictures\Camera Roll\SIAPA NAMA ANDA.png", width=300)
+    st.image("C:/Users/Syifa Salsabila/Pictures/Camera Roll/SIAPA NAMA ANDA.png", width=300)
     st.title("Siapa Nama Kamu?")
     st.write("Masukkan namamu di bawah, biar Ursidetect tahu siapa partner barunya dalam berpetualang.🐾")
     name_input = st.text_input("Ketik namamu di bawah ini:")
