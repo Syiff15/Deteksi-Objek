@@ -216,10 +216,10 @@ elif st.session_state.step == 3:
 
     # === Tombol Aksi ===
     if st.button("🔎 Mulai Petualangan", disabled=start_disabled, use_container_width=True):
-    if "mode" not in st.session_state:
-        st.warning("Pilih dulu mode petualanganmu, ya!")
-    elif not uploaded_file:
-        st.warning("Unggah dulu gambar petualanganmu!")
+        if "mode" not in st.session_state:
+            st.warning("Pilih dulu mode petualanganmu, ya!")
+        elif not uploaded_file:
+            st.warning("Unggah dulu gambar petualanganmu!")
     else:
         st.session_state.step = 4
         st.rerun()
