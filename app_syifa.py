@@ -215,6 +215,7 @@ elif st.session_state.step == 3:
     st.divider()
 
     # === Tombol Aksi ===
+    start_disabled = uploaded_file is None
     if st.button("🔎 Mulai Petualangan", disabled=start_disabled, use_container_width=True):
         if "mode" not in st.session_state:
             st.warning("Pilih dulu mode petualanganmu, ya!")
