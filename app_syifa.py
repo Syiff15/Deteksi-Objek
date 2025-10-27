@@ -162,31 +162,47 @@ elif st.session_state.step == 3:
 
     # === Pilihan Mode ===
     # === Judul Mode Petualang ===
+# === Blok Pilih Mode Petualang (Rata Tengah & Estetik) ===
 st.markdown(
     """
-    <h4 style='color:#966543; text-align:center; margin-bottom:10px;'>
-        Pilih Mode Petualang:
-    </h4>
+    <div style='
+        background-color:#f2e6d6;
+        padding:25px;
+        border-radius:20px;
+        box-shadow:0 4px 10px rgba(0,0,0,0.1);
+        text-align:center;
+        margin-top:20px;
+        margin-bottom:20px;
+    '>
+        <h4 style='color:#966543; margin-bottom:15px;'>
+            Pilih Mode Petualang:
+        </h4>
     """,
     unsafe_allow_html=True
 )
 
-# === Radio Button di Tengah ===
+# CSS tambahan agar radio button rata tengah
 st.markdown("""
-    <div style='display:flex; justify-content:center;'>
-        <style>
-            div[data-testid="stRadio"] > label {
-                justify-content: center !important;
-            }
-        </style>
+    <style>
+        div[data-testid="stRadio"] {
+            justify-content: center !important;
+        }
+        div[data-testid="stRadio"] > label {
+            justify-content: center !important;
+        }
+    </style>
 """, unsafe_allow_html=True)
 
+# Komponen radio di tengah
 analysis_type = st.radio(
     "",
     ["🐾 Pemburu Hewan (Deteksi)", "🔬 Peneliti Hewan (Klasifikasi)"],
     horizontal=True,
     index=0
 )
+
+st.markdown("</div>", unsafe_allow_html=True)
+
 
 st.markdown("</div>", unsafe_allow_html=True)
 
