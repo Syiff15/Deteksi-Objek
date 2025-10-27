@@ -77,7 +77,7 @@ if st.session_state.step == 1:
         menggunakan <b>kotak pembatas (bounding box)</b>.
         </p>
     </div>
-    """, 
+        """, 
         unsafe_allow_html=True)
         
     with col2:
@@ -95,7 +95,7 @@ if st.session_state.step == 1:
         atau <b>beruang</b>, lengkap dengan tingkat kepercayaan (confidence score).
         </p>
     </div>
-    """, 
+        """, 
         unsafe_allow_html=True)
         
     st.markdown("""
