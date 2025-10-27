@@ -40,7 +40,7 @@ def t(id_text, en_text):
 
 # === STEP 0: Pemilihan Bahasa ===
 if st.session_state.step == 0:
-    st.image("slide_bahasa.jpg", use_container_width=True)
+    st.image("slide 1.jpg", use_container_width=True)
     st.markdown(
         """
         <h2 style='text-align:center; color:#1E1E1E;'>🌍 Pilih Bahasa / Choose Your Language</h2>
