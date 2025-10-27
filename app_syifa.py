@@ -125,7 +125,7 @@ if st.session_state.step == 1:
 
 # === STEP 2 ===
 elif st.session_state.step == 2:
-    st.image("slide 3-1.png", width=300)
+    st.image("slide 3-1.png", use_container_width=True)
     st.write("Sekarang giliran kamu! Masukkan namamu supaya Ursidetect tahu siapa partner barunya.")
 
     name_input = st.text_input("", placeholder="Contoh: Ursi")
@@ -141,19 +141,40 @@ elif st.session_state.step == 2:
 
 # === STEP 3 ===
 elif st.session_state.step == 3:
-    st.title(f"Hai, {st.session_state.name.lower().split()[0]}! 👋")
-    st.info("Selamat datang di markas petualangan Ursidetect!")
-    st.info("Pilih mode favoritmu: mau jadi pemburu hewan (deteksi) atau peneliti hewan (klasifikasi)?")
+    # === Judul Halaman ===
+    st.markdown("""
+    <div style='
+        background-color:#f2e6d6;
+        padding:25px;
+        border-radius:15px;
+        box-shadow:0 4px 15px rgba(0,0,0,0.1);
+        text-align:center;
+        margin-bottom:25px;'>
+        <h1 style='color:#966543; margin-bottom:10px;'>
+            Hai, <span style='text-transform:capitalize;'>{name}</span>! 👋
+        </h1>
+        <p style='font-size:18px; color:#5b4636;'>
+            Selamat datang di markas petualangan <b>Ursidetect</b>!  
+            Pilih mode favoritmu — mau jadi <b>pemburu hewan</b> (deteksi) atau <b>peneliti hewan</b> (klasifikasi)?
+        </p>
+    </div>
+    """.format(name=st.session_state.name.lower().split()[0]), unsafe_allow_html=True)
 
+    # === Pilihan Mode ===
+    st.markdown("<h4 style='color:#966543;'>Pilih Mode Petualang:</h4>", unsafe_allow_html=True)
     analysis_type = st.radio(
-        "Pilih Mode Petualang:",
-        ["Pemburu Hewan (Deteksi)", "Peneliti Hewan (Klasifikasi)"],
+        "",
+        ["🐾 Pemburu Hewan (Deteksi)", "🔬 Peneliti Hewan (Klasifikasi)"],
         horizontal=True,
-        index=0)
+        index=0
+    )
+
     st.divider()
 
-    st.markdown("#### Masukkan Gambar")
-    st.caption(f"Untuk mulai petualangannya, {st.session_state.name.lower().split()[0]} harus memasukkan gambar berbentuk jpg, jpeg atau png yaa.")
+    # === Upload Gambar ===
+    st.markdown("<h4 style='color:#966543;'>🖼️ Masukkan Gambar</h4>", unsafe_allow_html=True)
+    st.caption(f"Untuk mulai petualangannya, {st.session_state.name.lower().split()[0]} harus memasukkan gambar berbentuk jpg, jpeg, atau png yaa.")
+    
     uploaded_file = st.file_uploader("Pilih gambar (jpg, jpeg, png):", type=["jpg", "jpeg", "png"])
     
     if uploaded_file:
@@ -161,7 +182,26 @@ elif st.session_state.step == 3:
         st.image(image, caption=uploaded_file.name, use_container_width=True)
     
     st.divider()
-    analyze_button = st.button("🔎 Mulai Petualangan", use_container_width=True)
+
+    # === Tombol Aksi ===
+    st.markdown(
+        """
+        <div style='text-align:center;'>
+            <button style='
+                background-color:#966543;
+                color:white;
+                border:none;
+                padding:12px 30px;
+                font-size:16px;
+                border-radius:10px;
+                cursor:pointer;
+                box-shadow:0 3px 8px rgba(0,0,0,0.15);'>
+                🔎 Mulai Petualangan
+            </button>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
     if analyze_button:
         st.markdown("### Hasil Petualangan")
