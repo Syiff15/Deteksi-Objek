@@ -33,6 +33,83 @@ yolo_model, classifier = load_models()
 # === KONFIGURASI DASAR HALAMAN WEB ===
 st.set_page_config(page_title="Ursidetect", page_icon="🐻🐼", layout="centered")
 
+# === TEMA WARNA (COKLAT-KRIM) ===
+st.markdown("""
+    <style>
+        /* --- Background dan warna utama --- */
+        body {
+            background-color: #FDF6EC; /* warna krim lembut */
+            color: #3E2723; /* teks coklat tua */
+        }
+
+        /* --- Semua container utama --- */
+        .stApp {
+            background-color: #FDF6EC; /* krim */
+            color: #3E2723;
+        }
+
+        /* --- Header dan judul --- */
+        h1, h2, h3, h4, h5, h6 {
+            color: #4E342E; /* coklat medium */
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* --- Teks biasa --- */
+        p, span, label, div {
+            color: #3E2723;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* --- Tombol utama --- */
+        button[kind="primary"], div.stButton > button {
+            background-color: #8D6E63; /* coklat lembut */
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 0.6em 1.2em;
+            font-size: 1em;
+            transition: 0.3s;
+        }
+
+        /* --- Hover tombol --- */
+        div.stButton > button:hover {
+            background-color: #5D4037; /* coklat tua saat hover */
+            color: #fff;
+            transform: scale(1.05);
+        }
+
+        /* --- Garis pemisah --- */
+        hr {
+            border: 1px solid #D7CCC8;
+        }
+
+        /* --- Input teks & radio --- */
+        input, textarea {
+            background-color: #FFF8E1 !important;
+            color: #3E2723 !important;
+        }
+
+        /* --- Radio button --- */
+        .stRadio > div {
+            background-color: #FBE9E7;
+            border-radius: 10px;
+            padding: 5px 10px;
+        }
+
+        /* --- Scrollbar custom --- */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #A1887F;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #795548;
+        }
+    </style>
+""", unsafe_allow_html=True)
+
 # === STATE MANAGEMENT ===
 if "step" not in st.session_state:
     st.session_state.step = 1
