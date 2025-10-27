@@ -161,21 +161,40 @@ elif st.session_state.step == 3:
     """.format(name=st.session_state.name.lower().split()[0]), unsafe_allow_html=True)
 
     # === Pilihan Mode ===
-    st.markdown("<h4 style='color:#966543;'>Pilih Mode Petualang:</h4>", unsafe_allow_html=True)
-    analysis_type = st.radio(
-        "",
-        ["🐾 Pemburu Hewan (Deteksi)", "🔬 Peneliti Hewan (Klasifikasi)"],
-        horizontal=True,
-        index=0
-    )
+    # === Judul Mode Petualang ===
+st.markdown(
+    """
+    <h4 style='color:#966543; text-align:center; margin-bottom:10px;'>
+        Pilih Mode Petualang:
+    </h4>
+    """,
+    unsafe_allow_html=True
+)
 
-    st.divider()
+# === Radio Button di Tengah ===
+st.markdown("""
+    <div style='display:flex; justify-content:center;'>
+        <style>
+            div[data-testid="stRadio"] > label {
+                justify-content: center !important;
+            }
+        </style>
+""", unsafe_allow_html=True)
+
+analysis_type = st.radio(
+    "",
+    ["🐾 Pemburu Hewan (Deteksi)", "🔬 Peneliti Hewan (Klasifikasi)"],
+    horizontal=True,
+    index=0
+)
+
+st.markdown("</div>", unsafe_allow_html=True)
 
     # === Upload Gambar ===
-    st.markdown("<h4 style='color:#966543;'>🖼️ Masukkan Gambar</h4>", unsafe_allow_html=True)
-    st.caption(f"Untuk mulai petualangannya, {st.session_state.name.lower().split()[0]} harus memasukkan gambar berbentuk jpg, jpeg, atau png yaa.")
+    st.markdown("<h4 style='color:#966543;'> Masukkan Gambar</h4>", unsafe_allow_html=True)
+    st.info(f"Untuk mulai petualangan, Kamu harus memasukkan gambar berbentuk jpg, jpeg, atau png oke👌")
     
-    uploaded_file = st.file_uploader("Pilih gambar (jpg, jpeg, png):", type=["jpg", "jpeg", "png"])
+    uploaded_file = st.file_uploader("", type=["jpg", "jpeg", "png"])
     
     if uploaded_file:
         image = Image.open(uploaded_file)
