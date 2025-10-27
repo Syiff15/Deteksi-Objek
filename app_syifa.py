@@ -59,7 +59,7 @@ if st.session_state.step == 1:
     """
     <h1 style='text-align:center; color:#1E1E1E;'>
         Selamat datang di 
-        <span style="color:#6600ff;">Ursidetect</span>
+        <span style="color:#966543;">Ursidetect</span>
     </h1>
     <p style='text-align:center; font-size:18px; color:#1E1E1E;'>
         Sebelum kita mulai berpetualang, kenalan dulu yuk dengan <b>Ursidetect</b>!<br>
@@ -77,7 +77,7 @@ if st.session_state.step == 1:
     with col1:
         st.markdown("""
         <div style="
-            background-color:#f9ead1;
+            background-color:#f2e6d6;
             padding:25px;
             border-radius:20px;
             box-shadow:0 4px 15px rgba(0,0,0,0.07);
@@ -94,7 +94,7 @@ if st.session_state.step == 1:
     with col2:
         st.markdown("""
         <div style="
-            background-color:#f9ead1;
+            background-color:#f2e6d6;
             padding:25px;
             border-radius:20px;
             box-shadow:0 4px 15px rgba(0,0,0,0.07);
