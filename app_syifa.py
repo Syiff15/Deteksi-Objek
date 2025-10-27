@@ -115,25 +115,13 @@ if st.session_state.step == 1:
         "<p style='text-align:center; color:#4B5563; font-size:17px;'>Yuk lanjut ke langkah berikutnya untuk mulai berpetualang!</p>",
         unsafe_allow_html=True
     )
+    
+    col1, col2, col3 = st.columns([4, 1, 1])
+    with col3:
+        if st.button("Lanjut 🐾"):
+            st.session_state.step = 2
+            st.rerun()
 
-st.markdown("""
-<div style='text-align:right;'>
-    <form action='#' method='get'>
-        <button style='
-            background-color:#2563EB;
-            color:white;
-            border:none;
-            padding:10px 22px;
-            border-radius:10px;
-            font-size:16px;
-            cursor:pointer;
-            box-shadow:0 3px 10px rgba(0,0,0,0.1);
-        '>
-            Lanjut 🐾
-        </button>
-    </form>
-</div>
-""", unsafe_allow_html=True)
 
 # === STEP 2 ===
 elif st.session_state.step == 2:
