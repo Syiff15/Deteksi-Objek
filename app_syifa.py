@@ -177,8 +177,10 @@ elif st.session_state.step == 4:
 if st.session_state.step == 4:
     st.markdown("---")
     st.subheader("💬 Cerita")
-    st.info("Petualanganmu bersama Ursidetect sudah selesai 🐾
-    Ceritakan pengalamanmu, ya! Kami ingin tahu bagaimana rasanya menjelajahi dunia panda & beruang bersama AI ini.")
+    st.info("""
+    Petualanganmu bersama Ursidetect sudah selesai 🐾
+    Ceritakan pengalamanmu, ya! Kami ingin tahu bagaimana rasanya menjelajahi dunia panda & beruang bersama AI ini.
+    """)
     feedback_text = st.text_area("Bagaimana Petualanganmu?", placeholder="Kirimkan ceritamu di sini...")
 
     if st.button("Kirim Cerita Petualanganku"):
