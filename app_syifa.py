@@ -84,7 +84,7 @@ if st.session_state.step == 1:
             text-align:center;
             transition: transform 0.2s ease;">
             <h3>🐻‍❄️ Deteksi Gambar</h3>
-            <p style="color:#6600ff; font-size:16px;">
+            <p style="color:#282328; font-size:16px;">
             Ursidetect dapat menemukan dan menandai posisi panda atau beruang di dalam gambar 
             menggunakan kotak pembatas (<i>bounding box</i>).
             </p>
@@ -101,7 +101,7 @@ if st.session_state.step == 1:
             text-align:center;
             transition: transform 0.2s ease;">
             <h3>🐼 Klasifikasi Gambar</h3>
-            <p style="color:#6600ff; font-size:16px;">
+            <p style="color:#282328; font-size:16px;">
             Ursidetect dapat menentukan apakah gambar tersebut termasuk panda 
             atau beruang, lengkap dengan tingkat kepercayaan (<i>confidence score</i>).
             </p>
@@ -112,7 +112,7 @@ if st.session_state.step == 1:
 
     # === Tombol Lanjut ===
     st.markdown(
-        "<p style='text-align:center; color:#6600ff; font-size:17px;'>Yuk lanjut ke langkah berikutnya untuk mulai berpetualang!</p>",
+        "<p style='text-align:center; color:#282328; font-size:17px;'>Yuk lanjut ke langkah berikutnya untuk mulai berpetualang!</p>",
         unsafe_allow_html=True
     )
     
