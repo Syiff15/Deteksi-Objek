@@ -53,11 +53,11 @@ def progress_bar(step):
 # === STEP 1 ===
 if st.session_state.step == 1:
     st.image("slide 1.jpg", use_container_width=True)
-    st.title("Tentang Ursidetect")
+    st.title("Selamat datang di **Ursidetect**")
 
-    st.markdown("""
-### Selamat datang di **Ursidetect**   
+    st.markdown("""   
 Sebelum kita mulai berpetualang, kenalan dulu yuk dengan Ursidetect! 🐼🐻
+---
 """)
 
     st.markdown("Ursidetect adalah platform berbasis **kecerdasan buatan (AI)** yang dirancang untuk **mendeteksi** dan **mengklasifikasikan** hewan **panda** serta **beruang**.")
@@ -89,7 +89,7 @@ Sebelum kita mulai berpetualang, kenalan dulu yuk dengan Ursidetect! 🐼🐻
     text-align:center;">
     <h4>🐼 Klasifikasi Gambar</h4>
     <p style="color:#333;">
-    Ursidetect mampu menentukan apakah gambar tersebut termasuk <b>panda</b> 
+    Ursidetect dapat menentukan apakah gambar tersebut termasuk <b>panda</b> 
     atau <b>beruang</b>, lengkap dengan tingkat kepercayaan (confidence score).
     </p>
 </div>
@@ -125,8 +125,8 @@ elif st.session_state.step == 2:
 # === STEP 3 ===
 elif st.session_state.step == 3:
     st.title(f"Hai, {st.session_state.name.lower().split()[0]}! 👋")
-    st.caption("Selamat datang di markas petualangan Ursidetect!")
-    st.caption("Pilih mode favoritmu: mau jadi pemburu hewan (deteksi) atau peneliti hewan (klasifikasi)?")
+    st.info("Selamat datang di markas petualangan Ursidetect!")
+    st.info("Pilih mode favoritmu: mau jadi pemburu hewan (deteksi) atau peneliti hewan (klasifikasi)?")
 
     analysis_type = st.radio(
         "Pilih Mode Petualang:",
@@ -135,20 +135,19 @@ elif st.session_state.step == 3:
         index=0)
     st.divider()
 
-    st.markdown("### Masukkan Gambar")
-    st.caption(f"Untuk mulai berpetualang, {st.session_state.name.lower().split()[0]} harus memasukkan gambar berbentuk jpg, jpeg atau png yaa.")
+    st.markdown("#### Masukkan Gambar")
+    st.caption(f"Untuk mulai petualangannya, {st.session_state.name.lower().split()[0]} harus memasukkan gambar berbentuk jpg, jpeg atau png yaa.")
     uploaded_file = st.file_uploader("Pilih gambar (jpg, jpeg, png):", type=["jpg", "jpeg", "png"])
     
     if uploaded_file:
         image = Image.open(uploaded_file)
         st.image(image, caption=uploaded_file.name, use_container_width=True)
-        st.info("Hebat! Sekarang klik Mulai Petualangan untuk mengenali makhluk lucu dalam gambar kamu!")
     
     st.divider()
-    st.markdown("### Hasil Petualangan")
     analyze_button = st.button("🔎 Mulai Petualangan", use_container_width=True)
 
     if analyze_button:
+        st.markdown("### Hasil Petualangan")
         if not uploaded_file:
             st.warning("⚠️ Silakan masukkan gambar terlebih dahulu sebelum berpetualang.")
         else:
