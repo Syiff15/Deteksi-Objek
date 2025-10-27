@@ -32,58 +32,36 @@ yolo_model, classifier = load_models()
 
 # === KONFIGURASI DASAR HALAMAN WEB ===
 st.set_page_config(page_title="Ursidetect", page_icon="🐻🐼", layout="centered")
-
 import streamlit as st
 
 st.markdown("""
 <style>
-h1 {
-    text-align: center;
-    color: #3B3B3B;
-    font-weight: 800;
-    margin-bottom: 20px;
-}
 .container {
     background-color: #FFF8E7; /* warna krim lembut */
-    padding: 30px;
-    border-radius: 20px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
-.section {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    margin-top: 20px;
-}
-.column {
-    width: 48%;
-    text-align: justify;
+h1 {
+    text-align: center;
+    color: #2E2E2E;
+    margin-bottom: 15px;
 }
 p {
-    font-size: 17px;
-    line-height: 1.7;
-    color: #333333;
+    text-align: justify;
+    color: #333;
+    line-height: 1.6;
 }
 b {
-    color: #2C2C2C;
+    color: #222;
 }
 </style>
 
 <div class="container">
-    <h1>Tentang Ursidetect 🐻‍❄️</h1>
-
-    <p><b>Ursidetect</b> adalah platform analisis gambar berbasis kecerdasan buatan (AI) yang dirancang khusus untuk mendeteksi dan mengklasifikasikan gambar <b>panda</b> serta <b>beruang</b> dengan cepat dan akurat.</p>
-
-    <div class="section">
-        <div class="column">
-            <p><b>Deteksi Gambar:</b> Fitur ini mampu mengenali dan menandai posisi panda atau beruang yang muncul di dalam gambar menggunakan kotak pembatas (bounding box).</p>
-        </div>
-        <div class="column">
-            <p><b>Klasifikasi Gambar:</b> Fitur ini akan mengidentifikasi apakah gambar yang Anda unggah adalah panda atau beruang, lengkap dengan tingkat kepercayaan (confidence score) dari hasil analisis AI.</p>
-        </div>
-    </div>
-
-    <p style="margin-top:25px;"><b>Cukup unggah gambar Anda</b>, pilih metode analisis, dan biarkan Ursidetect menentukan apakah itu panda atau beruang. <b>Ayo Kita Lanjutkan!!!</b></p>
+    <h1>Tentang Ursidetect 🐼</h1>
+    <p><b>Ursidetect</b> adalah platform berbasis kecerdasan buatan (AI) yang dirancang untuk mendeteksi dan mengklasifikasikan gambar <b>panda</b> serta <b>beruang</b> dengan cepat dan akurat.</p>
+    <p>Fitur <b>Deteksi Gambar</b> akan menandai posisi objek dalam gambar menggunakan kotak pembatas, sedangkan <b>Klasifikasi Gambar</b> menentukan apakah gambar tersebut panda atau beruang, lengkap dengan tingkat kepercayaannya.</p>
+    <p><b>Unggah gambar Anda</b> dan biarkan Ursidetect melakukan sisanya. Ayo kita mulai!</p>
 </div>
 """, unsafe_allow_html=True)
 
