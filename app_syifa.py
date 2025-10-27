@@ -98,16 +98,18 @@ elif st.session_state.step == 3:
     #progress_bar(3)
     st.image("slide 3-1.png", width=300)
     st.write("Sekarang giliran kamu! Masukkan namamu supaya Ursidetect tahu siapa partner barunya dalam petualangan ini 🐾")
-    name_input = st.text_input("")
+
+    name_input = st.text_input("Masukkan namamu di sini:", placeholder="Contoh: Syifa")
 
     col_kiri, col_kanan = st.columns([4, 1])
     with col_kanan:
-        if st.button("Lanjutkan Petualangan") and name_input.strip() != "":
-            st.session_state.name = name_input.strip()
-            st.session_state.step = 4
-            st.rerun()
-        else:
-            print("Ups, sepertinya kamu lupa menulis namamu dulu nih 😊")
+        if st.button("Lanjutkan Petualangan"):
+            if name_input.strip() != "":
+                st.session_state.name = name_input.strip()
+                st.session_state.step = 4
+                st.rerun()
+            else:
+                st.info("Ups, sepertinya kamu lupa menulis namamu dulu nih 😊")
             
 # === STEP 4 ===
 elif st.session_state.step == 4:
