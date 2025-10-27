@@ -54,16 +54,18 @@ def progress_bar(step):
 if st.session_state.step == 1:
     st.image("slide 1.jpg", use_container_width=True)
     st.title("Tentang Ursidetect")
+
     st.markdown("""
-    Selamat datang di **Ursidetect** 
-    st.write("""
-    Sebelum kita mulai berpetualang, kenalan dulu yuk dengan Ursidetect!
-    Ursidetect adalah platform berbasis kecerdasan buatan (AI) yang dapat mendeteksi dan mengklasifikasikan hewan panda dan beruang.
-    """)
+Selamat datang di **Ursidetect** — tempat di mana teknologi bertemu dengan hewan menggemaskan! 🐼🐻  
+Sebelum kita mulai berpetualang, kenalan dulu yuk dengan Ursidetect!  
+Ursidetect adalah platform berbasis **kecerdasan buatan (AI)** yang dirancang untuk **mendeteksi** dan **mengklasifikasikan** hewan **panda** serta **beruang**.
+""")
+
+    st.markdown("### 🌟 Dua Fitur Utama Ursidetect")
     
     col1, col2 = st.columns(2)
-with col1:
-    st.markdown("""
+    with col1:
+        st.markdown("""
 <div style="
     background-color:#E6F0FF;
     padding:20px;
@@ -78,8 +80,8 @@ with col1:
 </div>
 """, unsafe_allow_html=True)
 
-with col2:
-    st.markdown("""
+    with col2:
+        st.markdown("""
 <div style="
     background-color:#FFF7E6;
     padding:20px;
@@ -93,11 +95,11 @@ with col2:
     </p>
 </div>
 """, unsafe_allow_html=True)
-        
+
     st.markdown("""
-    ---
-    Kalau sudah penasaran, yuk lanjut ke langkah berikutnya untuk mulai menjelajah!
-    """)
+---
+Kalau sudah penasaran, yuk lanjut ke langkah berikutnya untuk mulai menjelajah! 🐾
+""")
 
     col_kiri, col_kanan = st.columns([4, 1])
     with col_kanan:
