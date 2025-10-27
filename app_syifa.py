@@ -202,75 +202,78 @@ elif st.session_state.step == 3:
 
     # === Upload Gambar ===
     st.markdown("<h4 style='color:#966543;'>🖼️ Masukkan Gambar</h4>", unsafe_allow_html=True)
-    st.caption("Untuk mulai petualangannya, Kamu harus memasukkan gambar berbentuk jpg, jpeg, atau png yaa.")
+    st.caption("Kamu bisa mengunggah satu atau beberapa gambar (jpg, jpeg, png).")
 
-    uploaded_file = st.file_uploader("", type=["jpg", "jpeg", "png"])
+    uploaded_files = st.file_uploader(
+        "",
+        type=["jpg", "jpeg", "png"],
+        accept_multiple_files=True
+    )
 
-# === Tampilan Hasil Deteksi/Klasifikasi ===
-if uploaded_files:
-    st.markdown("<h4 style='color:#966543;'>📸 Hasil Petualangan Kamu</h4>", unsafe_allow_html=True)
-    st.write("")
+    # === Tampilan Hasil Deteksi/Klasifikasi ===
+    if uploaded_files:
+        st.markdown("<h4 style='color:#966543;'>📸 Hasil Petualangan Kamu</h4>", unsafe_allow_html=True)
+        st.write("")
 
-    # Tampilan satu atau banyak gambar
-    cols = st.columns(2) if len(uploaded_files) > 1 else [st]
+        mode = st.session_state.get("mode", "deteksi")  # default mode
+        cols = st.columns(2) if len(uploaded_files) > 1 else [st]
 
-    for i, file in enumerate(uploaded_files):
-        col = cols[i % len(cols)]
-        with col:
-            with st.container():
-                st.markdown(
-                    """
-                    <div style="
-                        background-color:#FFF8E7;
-                        border-radius:20px;
-                        box-shadow:0 4px 12px rgba(0,0,0,0.1);
-                        padding:20px;
-                        margin-bottom:20px;
-                        text-align:center;">
-                    """,
-                    unsafe_allow_html=True
-                )
+        for i, file in enumerate(uploaded_files):
+            col = cols[i % len(cols)]
+            with col:
+                with st.container():
+                    st.markdown(
+                        """
+                        <div style="
+                            background-color:#FFF8E7;
+                            border-radius:20px;
+                            box-shadow:0 4px 12px rgba(0,0,0,0.1);
+                            padding:20px;
+                            margin-bottom:20px;
+                            text-align:center;">
+                        """,
+                        unsafe_allow_html=True
+                    )
 
-                img = Image.open(file).convert("RGB")
-                st.image(img, caption=f"🖼️ {file.name}", use_container_width=True)
+                    img = Image.open(file).convert("RGB")
+                    st.image(img, caption=f"🖼️ {file.name}", use_container_width=True)
 
-                if mode == "Deteksi Objek (YOLO)":
-                    with st.spinner(f"🔍 Mendeteksi objek pada {file.name}..."):
-                        results = yolo_model.predict(img, conf=0.6, verbose=False)
-                        boxes = results[0].boxes
+                    if mode == "deteksi":
+                        with st.spinner(f"🔍 Mendeteksi objek pada {file.name}..."):
+                            results = yolo_model.predict(img, conf=0.6, verbose=False)
+                            boxes = results[0].boxes
 
-                        if boxes is not None and len(boxes) > 0:
-                            st.image(results[0].plot(), caption="🎀 Hasil Deteksi Objek 🎀", use_container_width=True)
-                            st.success("✅ Objek berhasil terdeteksi!")
-                        else:
-                            st.warning("🚫 Tidak ada objek yang terdeteksi.")
-                            st.info("💡 Coba gunakan gambar Spongebob atau Patrick untuk hasil terbaik.")
+                            if boxes is not None and len(boxes) > 0:
+                                st.image(results[0].plot(), caption="Hasil Petualangan", use_container_width=True)
+                                st.success("✅ Objek berhasil terdeteksi!")
+                            else:
+                                st.warning("🚫 Tidak ada objek yang terdeteksi.")
+                                st.info("Coba gunakan gambar panda atau beruang yang lebih jelas untuk hasil terbaik.")
 
-                else:
-                    with st.spinner(f"🧠 Mengklasifikasi {file.name}..."):
-                        img_resized = img.resize((128, 128))
-                        img_array = image.img_to_array(img_resized)
-                        img_array = np.expand_dims(img_array, axis=0) / 255.0
+                    elif mode == "klasifikasi":
+                        with st.spinner(f"🧠 Mengklasifikasi {file.name}..."):
+                            img_resized = img.resize((128, 128))
+                            img_array = image.img_to_array(img_resized)
+                            img_array = np.expand_dims(img_array, axis=0) / 255.0
 
-                        prediction = classifier.predict(img_array)
-                        class_index = np.argmax(prediction)
-                        confidence = np.max(prediction)
-                        labels = ["Indoor", "Outdoor"]
-                        predicted_label = labels[class_index]
+                            prediction = classifier.predict(img_array)
+                            class_index = np.argmax(prediction)
+                            confidence = np.max(prediction)
+                            labels = ["Panda", "Beruang"]
+                            predicted_label = labels[class_index]
 
-                        st.write(f"🎯 **Hasil Prediksi:** *{predicted_label}*")
-                        st.progress(float(confidence))
+                            st.write(f"🎯 **Hasil Prediksi:** *{predicted_label}* ({confidence:.2f})")
+                            st.progress(float(confidence))
 
-                        if confidence > 0.85:
-                            st.success("🌈 Model sangat yakin dengan hasil prediksi ini!")
-                        elif confidence > 0.6:
-                            st.warning("🌤 Model agak ragu, tapi masih cukup yakin.")
-                        else:
-                            st.error("😅 Model tidak yakin — mungkin ini bukan gambar indoor/outdoor.")
-                            st.markdown("💡 Saran: Gunakan gambar yang lebih jelas 📷")
+                            if confidence > 0.85:
+                                st.success("Model sangat yakin dengan hasil prediksi ini!")
+                            elif confidence > 0.6:
+                                st.warning("Model agak ragu, tapi masih cukup yakin.")
+                            else:
+                                st.error("Model tidak yakin, mungkin ini bukan gambar panda atau beruang.")
+                                st.markdown("💡 Saran: Gunakan gambar yang lebih jelas.")
 
-                st.markdown("</div>", unsafe_allow_html=True)
-
+                    st.markdown("</div>", unsafe_allow_html=True)
     
     col_kiri, col_kanan = st.columns([4, 1])
     with col_kanan:
