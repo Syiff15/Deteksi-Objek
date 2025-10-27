@@ -116,11 +116,24 @@ if st.session_state.step == 1:
         unsafe_allow_html=True
     )
 
-    st.markdown("<div style='text-align:center;'>", unsafe_allow_html=True)
-    if st.button("🚀 Lanjutkan Petualangan 🐾", use_container_width=False):
-        st.session_state.step = 2
-        st.rerun()
-    st.markdown("</div>", unsafe_allow_html=True)
+st.markdown("""
+<div style='text-align:right;'>
+    <form action='#' method='get'>
+        <button style='
+            background-color:#2563EB;
+            color:white;
+            border:none;
+            padding:10px 22px;
+            border-radius:10px;
+            font-size:16px;
+            cursor:pointer;
+            box-shadow:0 3px 10px rgba(0,0,0,0.1);
+        '>
+            Lanjut 🐾
+        </button>
+    </form>
+</div>
+""", unsafe_allow_html=True)
 
 # === STEP 2 ===
 elif st.session_state.step == 2:
