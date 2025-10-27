@@ -55,8 +55,8 @@ if st.session_state.step == 1:
     #progress_bar(1)
     st.image("slide 1.jpg", use_container_width=True)
     st.title("Selamat Datang di Ursidetect")
-    st.write("Kami membantu untuk mengenali isi gambar dengan cepat dan mudah melalui teknologi AI yang cerdas.")
-    st.write("Yuk, cari tahu apa yang tersembunyi di setiap gambarmu.")
+    st.write("Apa itu Ursidetect?")
+    st.write("Ayo ")
     
     col_kiri, col_kanan = st.columns([4, 1])
     with col_kanan:
@@ -98,7 +98,7 @@ elif st.session_state.step == 3:
     st.image("slide 3-1.png", width=300)
     st.title("Siapa Nama Kamu?")
     st.write("Masukkan namamu di bawah, supaya Ursidetect tahu siapa partner barunya dalam berpetualang.🐾")
-    name_input = ""
+    name_input = ("")
 
     col_kiri, col_kanan = st.columns([4, 1])
     with col_kanan:
