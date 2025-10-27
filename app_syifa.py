@@ -165,46 +165,44 @@ elif st.session_state.step == 3:
     col1, col2 = st.columns(2, gap="large")
 
     with col1:
-        with st.container():
-            st.markdown("""
-            <div style='
-                background-color:#f2e6d6;
-                padding:25px;
-                border-radius:15px;
-                box-shadow:0 4px 12px rgba(0,0,0,0.1);
-                text-align:center;
-            '>
-                <h4 style='color:#966543;'>🐾 Pemburu Hewan</h4>
-                <p style='color:#5b4636; font-size:14px;'>Mode <b>Deteksi</b> untuk menemukan lokasi panda dan beruang di gambar.</p>
-            </div>
-            """, unsafe_allow_html=True)
-            if st.button("Pilih Mode Deteksi 🐾", use_container_width=True):
-                st.session_state.mode = "deteksi"
-                st.success("Mode dipilih: 🐾 Pemburu Hewan (Deteksi)")
+        st.markdown("""
+        <div style='
+            background-color:#f2e6d6;
+            padding:25px;
+            border-radius:15px;
+            box-shadow:0 4px 12px rgba(0,0,0,0.1);
+            text-align:center;
+        '>
+            <h4 style='color:#966543;'>🐾 Pemburu Hewan</h4>
+            <p style='color:#5b4636; font-size:14px;'>Mode <b>Deteksi</b> untuk menemukan lokasi panda dan beruang di gambar.</p>
+        </div>
+        """, unsafe_allow_html=True)
+        if st.button("Pilih Mode Deteksi 🐾", use_container_width=True):
+            st.session_state.mode = "deteksi"
+            st.success("Mode dipilih: 🐾 Pemburu Hewan (Deteksi)")
 
     with col2:
-        with st.container():
-            st.markdown("""
-            <div style='
-                background-color:#f2e6d6;
-                padding:25px;
-                border-radius:15px;
-                box-shadow:0 4px 12px rgba(0,0,0,0.1);
-                text-align:center;
-            '>
-                <h4 style='color:#966543;'>🔬 Peneliti Hewan</h4>
-                <p style='color:#5b4636; font-size:14px;'>Mode <b>Klasifikasi</b> untuk mengenali apakah itu panda atau beruang.</p>
-            </div>
-            """, unsafe_allow_html=True)
-            if st.button("Pilih Mode Klasifikasi 🔬", use_container_width=True):
-                st.session_state.mode = "klasifikasi"
-                st.success("Mode dipilih: 🔬 Peneliti Hewan (Klasifikasi)")
+        st.markdown("""
+        <div style='
+            background-color:#f2e6d6;
+            padding:25px;
+            border-radius:15px;
+            box-shadow:0 4px 12px rgba(0,0,0,0.1);
+            text-align:center;
+        '>
+            <h4 style='color:#966543;'>🔬 Peneliti Hewan</h4>
+            <p style='color:#5b4636; font-size:14px;'>Mode <b>Klasifikasi</b> untuk mengenali apakah itu panda atau beruang.</p>
+        </div>
+        """, unsafe_allow_html=True)
+        if st.button("Pilih Mode Klasifikasi 🔬", use_container_width=True):
+            st.session_state.mode = "klasifikasi"
+            st.success("Mode dipilih: 🔬 Peneliti Hewan (Klasifikasi)")
 
     st.divider()
 
     # === Upload Gambar ===
     st.markdown("<h4 style='color:#966543;'>🖼️ Masukkan Gambar</h4>", unsafe_allow_html=True)
-    st.caption(f"Untuk mulai petualangan, Kamu harus memasukkan gambar berbentuk jpg, jpeg, atau png yaa.")
+    st.caption("Untuk mulai petualangan, Kamu harus memasukkan gambar berbentuk jpg, jpeg, atau png yaa.")
 
     uploaded_file = st.file_uploader("", type=["jpg", "jpeg", "png"])
 
@@ -214,16 +212,21 @@ elif st.session_state.step == 3:
 
     st.divider()
 
-    # === Tombol Aksi ===
-    start_disabled = uploaded_file is None
+    # === Tombol Mulai Petualangan ===
+    start_disabled = ("mode" not in st.session_state) or (uploaded_file is None)
+
     if st.button("🔎 Mulai Petualangan", disabled=start_disabled, use_container_width=True):
         if "mode" not in st.session_state:
             st.warning("Pilih dulu mode petualanganmu, ya!")
         elif not uploaded_file:
             st.warning("Unggah dulu gambar petualanganmu!")
-    else:
-        st.session_state.step = 4
-        st.rerun()
+        else:
+            st.session_state.step = 4
+            st.rerun()
+
+    # Pesan bantuan jika tombol masih nonaktif
+    if start_disabled:
+        st.caption("⚠️ Pilih mode dan unggah gambar untuk memulai petualanganmu!")
 
     if analyze_button:
         st.markdown("### Hasil Petualangan")
