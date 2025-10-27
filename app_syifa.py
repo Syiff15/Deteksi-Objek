@@ -62,41 +62,37 @@ if st.session_state.step == 1:
     """)
     
     col1, col2 = st.columns(2)
-    with col1:
-        st.markdown(
-        """
-    <div style="
-        background-color:#E6F0FF;
-        padding:20px;
-        border-radius:15px;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        text-align:center;">
-        <h4>🔎 Deteksi Gambar</h4>
-        <p style="color:#333;">
-        Ursidetect dapat menemukan dan menandai posisi panda atau beruang di dalam gambar 
-        menggunakan <b>kotak pembatas (bounding box)</b>.
-        </p>
-    </div>
-        """, 
-        unsafe_allow_html=True)
-        
-    with col2:
-        st.markdown(
-        """
-    <div style="
-        background-color:#FFF7E6;
-        padding:20px;
-        border-radius:15px;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        text-align:center;">
-        <h4>🐼 Klasifikasi Gambar</h4>
-        <p style="color:#333;">
-        Ursidetect mampu menentukan apakah gambar tersebut termasuk <b>panda</b> 
-        atau <b>beruang</b>, lengkap dengan tingkat kepercayaan (confidence score).
-        </p>
-    </div>
-        """, 
-        unsafe_allow_html=True)
+with col1:
+    st.markdown("""
+<div style="
+    background-color:#E6F0FF;
+    padding:20px;
+    border-radius:15px;
+    box-shadow:0 4px 10px rgba(0,0,0,0.1);
+    text-align:center;">
+    <h4>🔎 Deteksi Gambar</h4>
+    <p style="color:#333;">
+    Ursidetect dapat menemukan dan menandai posisi panda atau beruang di dalam gambar 
+    menggunakan <b>kotak pembatas (bounding box)</b>.
+    </p>
+</div>
+""", unsafe_allow_html=True)
+
+with col2:
+    st.markdown("""
+<div style="
+    background-color:#FFF7E6;
+    padding:20px;
+    border-radius:15px;
+    box-shadow:0 4px 10px rgba(0,0,0,0.1);
+    text-align:center;">
+    <h4>🐼 Klasifikasi Gambar</h4>
+    <p style="color:#333;">
+    Ursidetect mampu menentukan apakah gambar tersebut termasuk <b>panda</b> 
+    atau <b>beruang</b>, lengkap dengan tingkat kepercayaan (confidence score).
+    </p>
+</div>
+""", unsafe_allow_html=True)
         
     st.markdown("""
     ---
