@@ -132,7 +132,6 @@ elif st.session_state.step == 4:
         image = Image.open(uploaded_file)
         st.image(image, caption=uploaded_file.name, use_container_width=True)
         st.info("Hebat! Sekarang kamu tinggal klik Mulai Petualangan dan biarkan Ursidetect bekerja mengenali makhluk lucu dalam gambar kamu!")
-    else:
     st.divider()
 
     st.markdown("### Hasil Petualang")
