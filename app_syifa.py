@@ -35,80 +35,86 @@ st.set_page_config(page_title="Ursidetect", page_icon="🐻🐼", layout="center
 
 st.markdown("""
     <style>
-        /* === Tema Soft Blue & Cream === */
+        /* === Tema Monokrom Biru === */
         body {
-            background-color: #FAF8F4;  /* cream lembut */
-            color: #2C3E50;  /* biru keabu tua */
+            background-color: #F9FAFB;  /* putih keabu */
+            color: #1E1E1E;  /* teks utama hitam lembut */
         }
 
         .stApp {
-            background-color: #FAF8F4;  /* latar krim lembut */
-            color: #2C3E50;
+            background-color: #F9FAFB;
+            color: #1E1E1E;
             font-family: 'Poppins', sans-serif;
         }
 
         /* === Header === */
         h1, h2, h3, h4, h5, h6 {
-            color: #1E3A8A;  /* biru navy lembut */
-            font-family: 'Poppins', sans-serif;
+            color: #111827;  /* hitam pekat */
+            font-weight: 700;
+            letter-spacing: -0.5px;
         }
 
-        /* === Paragraf & teks biasa === */
+        /* Aksen biru halus pada kata penting */
+        strong, b {
+            color: #2563EB;  /* biru cerah elegan */
+        }
+
+        /* === Paragraf & teks === */
         p, span, label, div {
-            color: #2C3E50;
+            color: #1E1E1E;
             font-family: 'Poppins', sans-serif;
         }
 
         /* === Tombol utama === */
         div.stButton > button {
-            background-color: #AEC8E1; /* biru pastel */
-            color: #0F172A;
+            background-color: #2563EB;  /* biru utama */
+            color: white;
             border: none;
-            border-radius: 12px;
+            border-radius: 10px;
             padding: 0.6em 1.2em;
             font-size: 1em;
+            font-weight: 500;
             transition: all 0.3s ease;
+            box-shadow: 0px 2px 5px rgba(0,0,0,0.1);
         }
 
         /* Hover tombol */
         div.stButton > button:hover {
-            background-color: #8FB9E1; /* biru sedikit lebih gelap */
-            color: white;
+            background-color: #1E3A8A;  /* biru gelap */
             transform: scale(1.05);
         }
 
         /* === Input & Textarea === */
         input, textarea {
-            background-color: #F2F7FB !important;
-            color: #1E3A8A !important;
+            background-color: #FFFFFF !important;
+            color: #111827 !important;
+            border: 1px solid #D1D5DB !important;
             border-radius: 8px;
         }
 
-        /* === Radio button dan select === */
+        /* === Radio, Selectbox, dan lainnya === */
         .stRadio > div, .stSelectbox > div {
-            background-color: #EFF6FF;
+            background-color: #FFFFFF;
             border-radius: 10px;
+            border: 1px solid #E5E7EB;
             padding: 6px 10px;
         }
 
         /* === Garis pemisah === */
         hr {
-            border: 1px solid #E0E7FF;
+            border: 1px solid #E5E7EB;
         }
 
-        /* === Scrollbar lembut === */
+        /* === Scrollbar elegan === */
         ::-webkit-scrollbar {
             width: 8px;
         }
         ::-webkit-scrollbar-thumb {
-            background: #A7C7E7;
+            background: #2563EB;
             border-radius: 10px;
         }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #6B9AC4;
-        }
 
-        /* === Card style (optional untuk section tertentu) === */
+        /* === Card style opsional === */
         .stCard {
             background-color: #FFFFFFAA;
             border-radius: 16px;
@@ -117,6 +123,7 @@ st.markdown("""
         }
     </style>
 """, unsafe_allow_html=True)
+
 
 # === STATE MANAGEMENT ===
 if "step" not in st.session_state:
