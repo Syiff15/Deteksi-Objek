@@ -59,9 +59,9 @@ if st.session_state.step == 1:
     """
     <h1 style='text-align:center; color:#1E1E1E;'>
         Selamat datang di 
-        <span style="color:#2563EB;">Ursidetect</span>
+        <span style="color:#5c63a4;">Ursidetect</span>
     </h1>
-    <p style='text-align:center; font-size:18px; color:#4B5563;'>
+    <p style='text-align:center; font-size:18px; color:#1E1E1E;'>
         Sebelum kita mulai berpetualang, kenalan dulu yuk dengan <b>Ursidetect</b>!<br>
         Ursidetect adalah platform berbasis <b>kecerdasan buatan (AI)</b> yang dirancang untuk 
         <b>mendeteksi</b> dan <b>mengklasifikasikan</b> hewan <b>panda</b> serta <b>beruang</b>.
@@ -77,7 +77,7 @@ if st.session_state.step == 1:
     with col1:
         st.markdown("""
         <div style="
-            background-color:#E6F0FF;
+            background-color:#d1b999;
             padding:25px;
             border-radius:20px;
             box-shadow:0 4px 15px rgba(0,0,0,0.07);
@@ -94,7 +94,7 @@ if st.session_state.step == 1:
     with col2:
         st.markdown("""
         <div style="
-            background-color:#FFF8E6;
+            background-color:#d1b999;
             padding:25px;
             border-radius:20px;
             box-shadow:0 4px 15px rgba(0,0,0,0.07);
