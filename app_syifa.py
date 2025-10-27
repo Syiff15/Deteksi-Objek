@@ -204,9 +204,9 @@ elif st.session_state.step == 3:
 
     # === Upload Gambar ===
     st.markdown("<h4 style='color:#966543;'>🖼️ Masukkan Gambar</h4>", unsafe_allow_html=True)
-    st.caption(f"Untuk mulai petualangannya, {st.session_state.name.lower().split()[0]} harus memasukkan gambar berbentuk jpg, jpeg, atau png yaa.")
+    st.caption(f"Untuk mulai petualangan, Kamu harus memasukkan gambar berbentuk jpg, jpeg, atau png yaa.")
 
-    uploaded_file = st.file_uploader("Pilih gambar (jpg, jpeg, png):", type=["jpg", "jpeg", "png"])
+    uploaded_file = st.file_uploader("", type=["jpg", "jpeg", "png"])
 
     if uploaded_file:
         image = Image.open(uploaded_file)
@@ -215,16 +215,14 @@ elif st.session_state.step == 3:
     st.divider()
 
     # === Tombol Aksi ===
-    start_disabled = not uploaded_file or "mode" not in st.session_state
-
     if st.button("🔎 Mulai Petualangan", disabled=start_disabled, use_container_width=True):
-        if "mode" not in st.session_state:
-            st.warning("Pilih dulu mode petualanganmu, ya!")
-        elif not uploaded_file:
-            st.warning("Unggah dulu gambar petualanganmu!")
-        else:
-            st.session_state.step = 4
-            st.experimental_rerun()
+    if "mode" not in st.session_state:
+        st.warning("Pilih dulu mode petualanganmu, ya!")
+    elif not uploaded_file:
+        st.warning("Unggah dulu gambar petualanganmu!")
+    else:
+        st.session_state.step = 4
+        st.rerun()
 
     if analyze_button:
         st.markdown("### Hasil Petualangan")
