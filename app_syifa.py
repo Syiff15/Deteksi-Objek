@@ -160,8 +160,25 @@ elif st.session_state.step == 3:
     </div>
     """.format(name=st.session_state.name.lower().split()[0]), unsafe_allow_html=True)
 
+    # === CSS untuk meratakan radio button ke tengah ===
+    st.markdown("""
+        <style>
+            /* Mengatur posisi radio button agar rata tengah */
+            div[data-testid="stRadio"] {
+                display: flex;
+                justify-content: center;
+            }
+            div[data-testid="stRadio"] label {
+                margin-right: 25px;
+                color: #5b4636;
+                font-weight: 500;
+                font-size: 16px;
+            }
+        </style>
+    """, unsafe_allow_html=True)
+
     # === Pilihan Mode ===
-    st.markdown("<h4 style='color:#966543;'>Pilih Mode Petualang:</h4>", unsafe_allow_html=True)
+    st.markdown("<h4 style='color:#966543; text-align:center;'>Pilih Mode Petualang:</h4>", unsafe_allow_html=True)
     analysis_type = st.radio(
         "",
         ["🐾 Pemburu Hewan (Deteksi)", "🔬 Peneliti Hewan (Klasifikasi)"],
@@ -195,7 +212,10 @@ elif st.session_state.step == 3:
                 font-size:16px;
                 border-radius:10px;
                 cursor:pointer;
-                box-shadow:0 3px 8px rgba(0,0,0,0.15);'>
+                box-shadow:0 3px 8px rgba(0,0,0,0.15);
+                transition:0.3s;
+            ' onmouseover="this.style.backgroundColor='#7d5238'" 
+              onmouseout="this.style.backgroundColor='#966543'">
                 🔎 Mulai Petualangan
             </button>
         </div>
