@@ -69,8 +69,8 @@ st.markdown(
     </p>
     """,
     unsafe_allow_html=True
-)      
-    st.markdown("<br>", unsafe_allow_html=True)
+)
+st.markdown("<br>", unsafe_allow_html=True)
 
     # === Dua Fitur dalam Kotak ===
     col1, col2 = st.columns(2)
