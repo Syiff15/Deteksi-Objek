@@ -59,7 +59,7 @@ if st.session_state.step == 1:
     """
     <h1 style='text-align:center; color:#1E1E1E;'>
         Selamat datang di 
-        <span style="color:#5c63a4;">Ursidetect</span>
+        <span style="color:#6600ff;">Ursidetect</span>
     </h1>
     <p style='text-align:center; font-size:18px; color:#1E1E1E;'>
         Sebelum kita mulai berpetualang, kenalan dulu yuk dengan <b>Ursidetect</b>!<br>
@@ -77,14 +77,14 @@ if st.session_state.step == 1:
     with col1:
         st.markdown("""
         <div style="
-            background-color:#d1b999;
+            background-color:#F5EBD0;
             padding:25px;
             border-radius:20px;
             box-shadow:0 4px 15px rgba(0,0,0,0.07);
             text-align:center;
             transition: transform 0.2s ease;">
             <h3>🐻‍❄️ Deteksi Gambar</h3>
-            <p style="color:#374151; font-size:16px;">
+            <p style="color:#6600ff; font-size:16px;">
             Ursidetect dapat menemukan dan menandai posisi panda atau beruang di dalam gambar 
             menggunakan kotak pembatas (<i>bounding box</i>).
             </p>
@@ -94,14 +94,14 @@ if st.session_state.step == 1:
     with col2:
         st.markdown("""
         <div style="
-            background-color:#d1b999;
+            background-color:#F5EBD0;
             padding:25px;
             border-radius:20px;
             box-shadow:0 4px 15px rgba(0,0,0,0.07);
             text-align:center;
             transition: transform 0.2s ease;">
             <h3>🐼 Klasifikasi Gambar</h3>
-            <p style="color:#374151; font-size:16px;">
+            <p style="color:#6600ff; font-size:16px;">
             Ursidetect dapat menentukan apakah gambar tersebut termasuk panda 
             atau beruang, lengkap dengan tingkat kepercayaan (<i>confidence score</i>).
             </p>
@@ -112,7 +112,7 @@ if st.session_state.step == 1:
 
     # === Tombol Lanjut ===
     st.markdown(
-        "<p style='text-align:center; color:#4B5563; font-size:17px;'>Yuk lanjut ke langkah berikutnya untuk mulai berpetualang!</p>",
+        "<p style='text-align:center; color:#6600ff; font-size:17px;'>Yuk lanjut ke langkah berikutnya untuk mulai berpetualang!</p>",
         unsafe_allow_html=True
     )
     
