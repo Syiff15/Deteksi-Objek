@@ -189,42 +189,52 @@ elif st.session_state.step == 3:
                 st.markdown("<div style='background-color:#FFF8E7; border-radius:20px; box-shadow:0 4px 12px rgba(0,0,0,0.1); padding:20px; margin-bottom:20px; text-align:center;'>", unsafe_allow_html=True)
                 img = Image.open(file).convert("RGB")
                 st.image(img, caption=f"🖼️ {file.name}", use_container_width=True)
-
-                if mode == "deteksi":
-                    with st.spinner(t(f"🔍 Mendeteksi objek pada {file.name}...", f"🔍 Detecting objects in {file.name}...")):
-                        results = yolo_model.predict(img, conf=0.6, verbose=False)
-                        boxes = results[0].boxes
-                        if boxes is not None and len(boxes) > 0:
-                            st.image(results[0].plot(), caption=t("Hasil Petualangan","Detection Result"), use_container_width=True)
-                            st.success(t("✅ Objek berhasil terdeteksi!", "✅ Object detected successfully!"))
-                        else:
-                            st.warning(t("🚫 Tidak ada objek yang terdeteksi.", "🚫 No objects detected."))
-                            st.info(t("Coba gunakan gambar panda atau beruang yang lebih jelas.", "Try using a clearer image of a panda or bear."))
-
+                                # --- Statistik & Tabel Hasil ---
+                # Ambil data deteksi atau klasifikasi
+                dets = []
+                if mode == "deteksi" and boxes is not None and len(boxes) > 0:
+                    boxes_array = results[0].boxes.xyxy.cpu().numpy()
+                    scores = results[0].boxes.conf.cpu().numpy()
+                    classes = results[0].boxes.cls.cpu().numpy().astype(int)
+                    names = results[0].names if hasattr(results[0], "names") else {}
+                    for b, s, c in zip(boxes_array, scores, classes):
+                        class_name = names.get(int(c), str(c))
+                        dets.append({
+                            "Kelas": class_name,
+                            "Confidence": float(s),
+                            "Bounding Box": f"({int(b[0])},{int(b[1])},{int(b[2])},{int(b[3])})",
+                            "Akurasi": f"{float(s):.1%}"
+                        })
                 elif mode == "klasifikasi":
-                    with st.spinner(t(f"🧠 Mengklasifikasi {file.name}...", f"🧠 Classifying {file.name}...")):
-                        img_resized = img.resize((128, 128))
-                        img_array = image.img_to_array(img_resized)
-                        img_array = np.expand_dims(img_array, axis=0) / 255.0
+                    dets.append({
+                        "Kelas": predicted_label,
+                        "Confidence": float(confidence),
+                        "Bounding Box": "-",
+                        "Akurasi": f"{confidence:.1%}"
+                    })
 
-                        prediction = classifier.predict(img_array)
-                        class_index = np.argmax(prediction)
-                        confidence = np.max(prediction)
-                        labels = ["Panda", "Beruang"]
-                        predicted_label = labels[class_index]
+                st.markdown("<hr>", unsafe_allow_html=True)
 
-                        st.write(f"🎯 {t('Hasil Prediksi','Prediction Result')}: *{predicted_label}* ({confidence:.2f})")
-                        st.progress(float(confidence))
+                # Statistik ringkas
+                panda_count = sum(1 for d in dets if "panda" in d["Kelas"].lower())
+                bear_count = sum(1 for d in dets if "beruang" in d["Kelas"].lower())
+                avg_conf = np.mean([d["Confidence"] for d in dets]) if dets else 0
 
-                        if confidence > 0.85:
-                            st.success(t("Model sangat yakin dengan hasil prediksi ini!", "Model is highly confident with this prediction!"))
-                        elif confidence > 0.6:
-                            st.warning(t("Model agak ragu, tapi masih cukup yakin.", "Model is somewhat unsure, but fairly confident."))
-                        else:
-                            st.error(t("Model tidak yakin, mungkin ini bukan gambar panda atau beruang.", "Model is uncertain — this might not be a panda or bear."))
-                            st.markdown(t("💡 Saran: Gunakan gambar yang lebih jelas.", "💡 Tip: Use a clearer image."))
+                col1, col2, col3, col4 = st.columns(4)
+                col1.metric(t("Akurasi Rata-rata","Avg Confidence"), f"{avg_conf:.1%}")
+                col2.metric(t("Jumlah Panda","Panda Count"), panda_count)
+                col3.metric(t("Jumlah Beruang","Bear Count"), bear_count)
+                col4.metric(t("Waktu Inferensi (s)","Processing Time (s)"), f"{st.session_state.get('process_time',0):.2f}")
 
-                st.markdown("</div>", unsafe_allow_html=True)
+                # Tabel hasil
+                if dets:
+                    df = pd.DataFrame(dets)
+                    st.markdown(f"<h5 style='color:#966543;'>{t('📋 Detail Hasil','📋 Detection/Classification Details')}</h5>", unsafe_allow_html=True)
+                    st.dataframe(df)
+
+                    # Download CSV
+                    csv = df.to_csv(index=False).encode('utf-8')
+                    st.download_button(t("📥 Download CSV","📥 Download CSV"), data=csv, file_name=f"detections_{file.name}.csv", mime="text/csv")
 
     col_kiri, col_kanan = st.columns([4, 1])
     with col_kanan:
