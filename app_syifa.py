@@ -471,6 +471,7 @@ elif st.session_state.step == 4:
     # === Tampilkan daftar cerita untuk semua orang ===
         # === Tampilkan daftar cerita untuk semua orang ===
     if st.session_state.show_history:
+        st.markdown(f"<h4 style='color:#966543;'>{t('📚 History Cerita Para Petualang','📚 Adventure Stories of Fellow Explorers')}</h4>", unsafe_allow_html=True)
         st.markdown("### 📚 History Cerita Para Petualang")
 
         stories_html = ""
