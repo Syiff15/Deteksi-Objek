@@ -290,11 +290,11 @@ elif st.session_state.step == 3:
                 detected_img = results[0].plot()  # hasil deteksi digambar
 
                 with col1:
-                    st.image(image, caption=uploaded_file.name, use_container_width=True)
+                    st.image(image, caption=uploaded_file.name, use_column_width=True)
                     st.markdown("<p style='text-align:center; color:#7B4F27;'>Gambar yang diunggah</p>", unsafe_allow_html=True)
 
                 with col2:
-                    st.image(detected_img, caption="Hasil Deteksi", use_container_width=True)
+                    st.image(detected_img, caption="Hasil Deteksi", use_column_width=True)
                     # Tampilkan label
                     labels = [yolo_model.names[int(c)] for c in results[0].boxes.cls.numpy()] if len(results[0].boxes) > 0 else []
                     if labels:
@@ -314,7 +314,7 @@ elif st.session_state.step == 3:
                 confidence = pred[0][class_idx]
 
                 with col1:
-                    st.image(image, caption=uploaded_file.name, use_container_width=True)
+                    st.image(image, caption=uploaded_file.name, use_column_width=True)
                     st.markdown("<p style='text-align:center; color:#7B4F27;'>Gambar yang diunggah</p>", unsafe_allow_html=True)
 
                 with col2:
