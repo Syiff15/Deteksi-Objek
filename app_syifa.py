@@ -219,85 +219,88 @@ elif st.session_state.step == 2:
 
 # === STEP 3 ===
 elif st.session_state.step == 3:
+    st.markdown(f"<h4 style='color:#966543;'>{t('🖼️ Masukkan Gambar','🖼️ Upload Image')}</h4>", unsafe_allow_html=True)
+    st.caption(t("Kamu bisa mengunggah satu atau beberapa gambar (jpg, jpeg, png).",
+                 "You can upload one or more images (jpg, jpeg, png)."))
+
+    # Upload file
     uploaded_files = st.file_uploader("", type=["jpg", "jpeg", "png"], accept_multiple_files=True)
 
     if uploaded_files:
-        st.markdown(f"<h4 style='color:#966543;'>{t('📸 Hasil Petualangan Kamu','📸 Your Adventure Results')}</h4>", unsafe_allow_html=True)
+        st.markdown(f"<h4 style='color:#966543; margin-top:30px;'>{t('📸 Hasil Petualangan Kamu','📸 Your Adventure Results')}</h4>", unsafe_allow_html=True)
+
+        # Ambil mode yang dipilih sebelumnya
         mode = st.session_state.get("mode", "deteksi")
 
-    multiple = len(uploaded_files) > 1
-    cols = st.columns(2) if multiple else [None]
+        # Buat kolom kalau gambar lebih dari satu
+        multiple = len(uploaded_files) > 1
+        cols = st.columns(2) if multiple else [st]  # kalau 1 gambar, tetap bisa ditampilkan
 
-    for i, file in enumerate(uploaded_files):
-        col = cols[i % len(cols)] if multiple else None
-        img_container = col if col else st  # <- ini penting
+        for i, file in enumerate(uploaded_files):
+            col = cols[i % len(cols)]  # biar seimbang di dua kolom
 
-        # tidak perlu pakai "with context" lagi
-        img_container.markdown(
-            "<div style='background-color:#FFF8E7; border-radius:20px; "
-            "box-shadow:0 4px 12px rgba(0,0,0,0.1); padding:20px; "
-            "margin-bottom:20px; text-align:center;'>",
-            unsafe_allow_html=True
-        )
+            with col:
+                # --- Tampilan kotak hasil ---
+                st.markdown(
+                    "<div style='background-color:#FFF8E7; border-radius:20px; "
+                    "box-shadow:0 4px 12px rgba(0,0,0,0.1); padding:20px; margin-bottom:20px; text-align:center;'>",
+                    unsafe_allow_html=True
+                )
 
-        img = Image.open(file).convert("RGB")
-        img_container.image(img, caption=f"🖼️ {file.name}", use_container_width=True)
+                # --- Tampilkan gambar ---
+                img = Image.open(file).convert("RGB")
+                st.image(img, caption=f"🖼️ {file.name}", use_container_width=True)
 
-        # --- Statistik & Tabel Hasil ---
-        dets = []
-        if mode == "deteksi" and boxes is not None and len(boxes) > 0:
-            boxes_array = results[0].boxes.xyxy.cpu().numpy()
-            scores = results[0].boxes.conf.cpu().numpy()
-            classes = results[0].boxes.cls.cpu().numpy().astype(int)
-            names = results[0].names if hasattr(results[0], "names") else {}
-            for b, s, c in zip(boxes_array, scores, classes):
-                class_name = names.get(int(c), str(c))
-                dets.append({
-                    "Kelas": class_name,
-                    "Confidence": float(s),
-                    "Bounding Box": f"({int(b[0])},{int(b[1])},{int(b[2])},{int(b[3])})",
-                    "Akurasi": f"{float(s):.1%}"
-                })
-        elif mode == "klasifikasi":
-            dets.append({
-                "Kelas": predicted_label,
-                "Confidence": float(confidence),
-                "Bounding Box": "-",
-                "Akurasi": f"{confidence:.1%}"
-            })
+                # --- Placeholder hasil deteksi / klasifikasi ---
+                dets = []
 
-        img_container.markdown("<hr>", unsafe_allow_html=True)
+                # Pastikan variabel hasil model ada
+                if mode == "deteksi" and "results" in locals() and results is not None:
+                    boxes_array = results[0].boxes.xyxy.cpu().numpy()
+                    scores = results[0].boxes.conf.cpu().numpy()
+                    classes = results[0].boxes.cls.cpu().numpy().astype(int)
+                    names = results[0].names if hasattr(results[0], "names") else {}
 
-        # Statistik ringkas
-        panda_count = sum(1 for d in dets if "panda" in d["Kelas"].lower())
-        bear_count = sum(1 for d in dets if "beruang" in d["Kelas"].lower())
-        avg_conf = np.mean([d["Confidence"] for d in dets]) if dets else 0
+                    for b, s, c in zip(boxes_array, scores, classes):
+                        class_name = names.get(int(c), str(c))
+                        dets.append({
+                            "Kelas": class_name,
+                            "Confidence": float(s),
+                            "Bounding Box": f"({int(b[0])},{int(b[1])},{int(b[2])},{int(b[3])})",
+                            "Akurasi": f"{float(s):.1%}"
+                        })
 
-        c1, c2, c3, c4 = img_container.columns(4)
-        c1.metric(t("Akurasi Rata-rata","Avg Confidence"), f"{avg_conf:.1%}")
-        c2.metric(t("Jumlah Panda","Panda Count"), panda_count)
-        c3.metric(t("Jumlah Beruang","Bear Count"), bear_count)
-        c4.metric(t("Waktu Inferensi (s)","Processing Time (s)"), f"{st.session_state.get('process_time',0):.2f}")
+                elif mode == "klasifikasi" and "predicted_label" in locals() and "confidence" in locals():
+                    dets.append({
+                        "Kelas": predicted_label,
+                        "Confidence": float(confidence),
+                        "Bounding Box": "-",
+                        "Akurasi": f"{confidence:.1%}"
+                    })
 
-        # Tabel hasil
-        if dets:
-            df = pd.DataFrame(dets)
-            img_container.markdown(f"<h5 style='color:#966543;'>{t('📋 Detail Hasil','📋 Detection/Classification Details')}</h5>", unsafe_allow_html=True)
-            img_container.dataframe(df)
+                # --- Kalau ada hasil, tampilkan tabel ---
+                if dets:
+                    st.markdown("<hr>", unsafe_allow_html=True)
+                    df = pd.DataFrame(dets)
+                    st.dataframe(df, use_container_width=True)
 
-            csv = df.to_csv(index=False).encode('utf-8')
-            img_container.download_button(
-                t("📥 Download CSV","📥 Download CSV"),
-                data=csv,
-                file_name=f"detections_{file.name}.csv",
-                mime="text/csv"
-            )
+                    # Tombol download CSV
+                    csv = df.to_csv(index=False).encode('utf-8')
+                    st.download_button(
+                        t("📥 Unduh Hasil (CSV)", "📥 Download Results (CSV)"),
+                        data=csv,
+                        file_name=f"detection_{file.name}.csv",
+                        mime="text/csv"
+                    )
 
-    col_kiri, col_kanan = st.columns([4, 1])
-    with col_kanan:
-        if st.button(t("Lanjutkan 🐾", "Continue 🐾")):
-            st.session_state.step = 4
-            st.rerun()
+                st.markdown("</div>", unsafe_allow_html=True)
+
+        # Tombol lanjut
+        col_spacer, col_button = st.columns([4, 1])
+        with col_button:
+            if st.button(t("Lanjutkan 🐾", "Continue 🐾")):
+                st.session_state.step = 4
+                st.rerun()
 
 # === STEP 4 ===
 elif st.session_state.step == 4:
