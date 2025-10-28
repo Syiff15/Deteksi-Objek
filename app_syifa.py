@@ -218,7 +218,6 @@ elif st.session_state.step == 2:
                 st.info(t("Ups, sepertinya kamu lupa menulis namamu dulu nih 😊", "Oops, you forgot to enter your name 😊"))
 
 # === STEP 3 ===
-# === STEP 3 ===
 elif st.session_state.step == 3:
     import numpy as np
     from PIL import Image
@@ -262,7 +261,7 @@ elif st.session_state.step == 3:
 
     # Tombol Mulai Petualangan
     if mode_selected and st.session_state.get("uploaded_files"):
-        if st.button("🐾" + t("Mulai Petualangan!", "Start the Adventure!" + "🐾"), key="start_btn"):
+        if st.button("🐾" + t("Mulai Petualangan!", "Start the Adventure!" + "🐾"), key="start_btn", use_container_width=True):
             st.session_state.start_adventure = True
             st.experimental_rerun()
 
@@ -306,7 +305,7 @@ elif st.session_state.step == 3:
         with col2:
             if st.button("🐾 " + t("Lanjut", "Next"), key="next_btn"):
                 st.session_state.step = 4
-                st.experimental_rerun()
+                st.rerun()
 
 # === STEP 4 ===
 elif st.session_state.step == 4:
