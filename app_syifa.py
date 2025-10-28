@@ -383,6 +383,11 @@ elif st.session_state.step == 3:
                 st.rerun()
 
 # === STEP 4 ===
+import pandas as pd
+import streamlit as st
+import os
+import csv
+
 elif st.session_state.step == 4:
     st.subheader(t("💬 Cerita Petualanganmu", "💬 Your Adventure Story"))
     st.info(t(
@@ -424,74 +429,39 @@ elif st.session_state.step == 4:
         st.session_state.start_adventure = False
         st.experimental_rerun()
 
-    # ===== STATE untuk popup =====
-    if "show_stories" not in st.session_state:
-        st.session_state.show_stories = False
-
-    # ===== CSS tombol floating dan popup =====
-    st.markdown("""
+    # === Tombol History di pojok kanan bawah ===
+    st.markdown(
+        """
         <style>
-        .floating-container {
+        .history-btn {
             position: fixed;
-            bottom: 25px;
-            right: 25px;
-            z-index: 9999;
-            text-align: right;
-        }
-        div[data-testid="stButton"] > button.floating-btn {
-            background-color: #6B4226;
+            bottom: 20px;
+            right: 20px;
+            background-color: #FFB300;
             color: white;
             border: none;
-            padding: 10px 18px;
-            border-radius: 30px;
-            font-size: 16px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            border-radius: 50px;
+            padding: 12px 20px;
+            font-weight: bold;
             cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        div[data-testid="stButton"] > button.floating-btn:hover {
-            background-color: #8B5E3C;
-            transform: scale(1.05);
-        }
-        .story-popup {
-            position: fixed;
-            bottom: 80px;  /* muncul di atas tombol */
-            right: 25px;
-            background-color: #f2e6d6;
-            padding: 15px;
-            border-radius: 15px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-            width: 320px;
-            max-height: 300px;
-            overflow-y: auto;
-            z-index: 10000;
+            box-shadow: 0px 4px 10px rgba(0,0,0,0.3);
+            z-index: 9999;
         }
         </style>
-    """, unsafe_allow_html=True)
+        <button class="history-btn" onclick="window.location.href='?show_history=true'">📜 History</button>
+        """,
+        unsafe_allow_html=True
+    )
 
-    # ===== Tombol melayang =====
-    with st.container():
-        st.markdown("<div class='floating-container'>", unsafe_allow_html=True)
-        if st.button("📖 History", key="floating_story_btn", help="Lihat semua cerita", type="primary"):
-            st.session_state.show_stories = not st.session_state.show_stories
-            st.experimental_rerun()
-        st.markdown("</div>", unsafe_allow_html=True)
-
-    # ===== Popup muncul jika tombol ditekan =====
-    if st.session_state.show_stories:
-        if os.path.isfile(feedback_file):
-            with open(feedback_file, "r", encoding="utf-8") as f:
-                reader = csv.reader(f)
-                stories = list(reader)
-
-            if len(stories) > 1:
-                stories_html = "<div class='story-popup'><h4 style='text-align:center; color:#6B4226;'>📖 Cerita Petualang</h4>"
-                for row in stories[1:]:
-                    stories_html += f"<p><b>{row[0]}</b>: {row[1]}</p>"
-                stories_html += "</div>"
-                st.markdown(stories_html, unsafe_allow_html=True)
-            else:
-                st.toast(t("Belum ada cerita yang dikirim.", "No stories have been submitted yet."))
+    # === Tampilkan History jika tombol diklik ===
+    query_params = st.experimental_get_query_params()
+    if "show_history" in query_params:
+        st.sidebar.header("📜 History Cerita Petualang")
+        if os.path.exists(feedback_file):
+            df = pd.read_csv(feedback_file)
+            for _, row in df.iterrows():
+                st.sidebar.markdown(f"**🧭 {row['Name']}**: {row['Story']}")
+                st.sidebar.markdown("---")
         else:
-            st.toast(t("Belum ada cerita yang dikirim.", "No stories have been submitted yet."))
+            st.sidebar.info("Belum ada cerita yang dikirimkan.")
 
