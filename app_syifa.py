@@ -39,6 +39,9 @@ def t(id_text, en_text):
     return id_text if st.session_state.language == "id" else en_text
 
 # === STEP 0: PILIH BAHASA ===
+import streamlit as st
+
+# === STEP 0: PILIH BAHASA ===
 if "step" not in st.session_state:
     st.session_state.step = 0
 
@@ -47,47 +50,58 @@ if st.session_state.step == 0:
     st.markdown("<h3 style='text-align:center; color:#966543;'>🌐 Pilih Bahasa / Choose Language</h3>", unsafe_allow_html=True)
     st.markdown("<br>", unsafe_allow_html=True)
 
-    col1, col2 = st.columns(2, gap="large")
+    # CSS styling
+    st.markdown("""
+    <style>
+    .lang-option {
+        background-color: #f2e6d6;
+        height: 130px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 18px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+        font-weight: 700;
+        color: #2f2f2f;
+        text-align: center;
+        font-size: 20px;
+        cursor: pointer;
+        border: 2px solid transparent;
+    }
+    .lang-option:hover {
+        transform: scale(1.05);
+        background-color: #e9dcc6;
+        border: 2px solid #d2b48c;
+    }
+    .lang-container {
+        display: flex;
+        justify-content: center;
+        gap: 80px;
+        margin-top: 30px;
+    }
+    </style>
+    """, unsafe_allow_html=True)
 
-    with col1:
-        st.markdown("""
-        <div style='
-            background-color:#f2e6d6;
-            padding:20px;
-            border-radius:15px;
-            text-align:center;
-            box-shadow:0 4px 12px rgba(0,0,0,0.1);
-            transition: transform 0.2s ease;
-        '>
-            <h4 style='margin-bottom:10px; font-weight:600;'>ID BAHASA INDONESIA</h4>
-            <p style='font-size:14px; color:#5b4636;'>Gunakan bahasa Indonesia untuk pengalaman penuh.</p>
-        </div>
-        """, unsafe_allow_html=True)
+    # HTML structure
+    st.markdown("""
+    <div class="lang-container">
+        <div class="lang-option" onclick="window.location.href='?lang=id'">🇮🇩 ID BAHASA INDONESIA</div>
+        <div class="lang-option" onclick="window.location.href='?lang=en'">🇬🇧 EN ENGLISH</div>
+    </div>
+    """, unsafe_allow_html=True)
 
-        if st.button("Pilih ID Bahasa Indonesia", use_container_width=True):
+    # Logic to detect chosen language
+    query_params = st.query_params
+    if "lang" in query_params:
+        lang = query_params["lang"][0]
+        if lang == "id":
             st.session_state.language = "id"
-            st.session_state.step = 1
-            st.rerun()
-
-    with col2:
-        st.markdown("""
-        <div style='
-            background-color:#f2e6d6;
-            padding:20px;
-            border-radius:15px;
-            text-align:center;
-            box-shadow:0 4px 12px rgba(0,0,0,0.1);
-            transition: transform 0.2s ease;
-        '>
-            <h4 style='margin-bottom:10px; font-weight:600;'>EN ENGLISH</h4>
-            <p style='font-size:14px; color:#5b4636;'>Use English for a full experience.</p>
-        </div>
-        """, unsafe_allow_html=True)
-
-        if st.button("Pilih EN English", use_container_width=True):
+        elif lang == "en":
             st.session_state.language = "en"
-            st.session_state.step = 1
-            st.rerun()
+        st.session_state.step = 1
+        st.rerun()
+
 
 # === STEP 1 ===
 elif st.session_state.step == 1:
