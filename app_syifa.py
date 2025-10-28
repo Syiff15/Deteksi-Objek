@@ -201,12 +201,7 @@ elif st.session_state.step == 1:
             
 # === STEP 2 ===
 elif st.session_state.step == 2:
-    # === Inisialisasi default bahasa (jika belum ada) ===
-    if "lang" not in st.session_state:
-        st.session_state.lang = "id"  # default: Bahasa Indonesia
-
-    # === Pilih gambar sesuai bahasa ===
-    if st.session_state.lang == "id":
+    if st.session_state.get("language") == "id":
         image_file = "slide 3-1.png"  # versi Bahasa Indonesia
     else:
         image_file = "slide 3-2.png"  # versi Bahasa Inggris
