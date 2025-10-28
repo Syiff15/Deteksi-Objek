@@ -248,10 +248,11 @@ elif st.session_state.step == 3:
 
     # === Tombol Mode Deteksi ===
     with col1:
-        if st.button("🐾 Pemburu Hewan", key="btn_deteksi", use_container_width=True):
+        if st.button(t('🐾 Pemburu Hewan', '🐾 Animal Hunter'), key="btn_deteksi", use_container_width=True):
             st.session_state.mode = "deteksi"
             st.session_state.start_adventure = False
             st.rerun()
+
 
         deteksi_active = current_mode == "deteksi"
         st.markdown(f"""
@@ -271,7 +272,7 @@ elif st.session_state.step == 3:
 
     # === Tombol Mode Klasifikasi ===
     with col2:
-        if st.button("🔬 Peneliti Hewan", key="btn_klasifikasi", use_container_width=True):
+        if st.button(('🔬 Peneliti Hewan','🔬 Animal Researcher'), key="btn_klasifikasi", use_container_width=True):
             st.session_state.mode = "klasifikasi"
             st.session_state.start_adventure = False
             st.rerun()
