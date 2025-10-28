@@ -314,11 +314,11 @@ elif st.session_state.step == 2:
     mode_selected = st.session_state.get("mode", None)
 
     if not mode_selected and uploaded_files:
-        st.warning("🧭 Pilih Mode Petualangmu terlebih dahulu sebelum melanjutkan!")
+        st.warning("ℹ️ Pilih Mode Petualangmu dulu sebelum melanjutkan!")
     elif mode_selected and not uploaded_files:
-        st.info("🖼️ Unggah Gambar Petualangmu untuk memulai petualangan!")
+        st.info("ℹ️ Unggah Gambar Petualangmu untuk memulai petualangan!")
     elif not mode_selected and not uploaded_files:
-        st.caption("✨ Pilih mode dan unggah gambar untuk mulai petualanganmu!")
+        st.caption("ℹ️ Pilih mode dan unggah gambar untuk mulai petualanganmu!")
     else:
         # --- Load Model SEKALI ---
         yolo_model, classifier = load_models()  # @st.cache_resource
@@ -347,18 +347,27 @@ elif st.session_state.step == 2:
                         st.warning("⚠️ Tidak ada objek panda atau beruang yang terdeteksi.")
 
             # =========================
-            # MODE KLASIFIKASI
+            # MODE KLASIFIKASI (versi perbaikan error)
             # =========================
             elif mode_selected == "klasifikasi":
                 try:
-                    target_size = (224, 224)
+                    # --- Ambil ukuran input model ---
+                    target_size = classifier.input_shape[1:3] if classifier.input_shape[1] else (224, 224)
+                    st.write("📏 Ukuran input model:", target_size)
+
+                    # --- Resize dan normalisasi gambar ---
                     img_array = np.array(image.resize(target_size)).astype('float32') / 255.0
+
+                    # --- Pastikan channel 3 ---
                     if img_array.ndim == 2:
                         img_array = np.stack([img_array]*3, axis=-1)
                     elif img_array.shape[2] != 3:
                         img_array = img_array[..., :3]
+
+                    # --- Tambahkan dimensi batch ---
                     img_array = np.expand_dims(img_array, axis=0)
 
+                    # --- Prediksi ---
                     pred = classifier.predict(img_array)
                     class_idx = np.argmax(pred, axis=1)[0]
                     class_names = ["Panda", "Beruang"]
@@ -388,13 +397,8 @@ elif st.session_state.step == 2:
 
                 except Exception as e:
                     st.error(f"Terjadi error saat klasifikasi: {e}")
+                    st.stop()
 
-    # Tombol lanjut
-    col1, col2, col3 = st.columns([4, 1, 1])
-    with col3:
-        if st.button(t("Lanjut 🐾", "Next 🐾")):
-            st.session_state.step = 2
-            st.rerun()
 
 # === STEP 3 ===
 elif st.session_state.step == 3:
