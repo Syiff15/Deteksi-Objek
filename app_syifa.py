@@ -4,7 +4,7 @@
 #pip install streamlit
 #pip install ultralytics
 
-# === Import Library ===
+# Import Library
 import streamlit as st
 import time
 from PIL import Image
@@ -16,7 +16,7 @@ import cv2
 import csv
 import os
 
-# === LOAD MODELS ===
+# Load Model
 @st.cache_resource
 def load_models():
     yolo_model = YOLO("Model/best.pt")  # Model deteksi Gambar
@@ -25,10 +25,10 @@ def load_models():
 
 yolo_model, classifier = load_models()
 
-# === KONFIGURASI DASAR HALAMAN WEB ===
+# Halaman Web
 st.set_page_config(page_title="Ursidetect", page_icon="🐻🐼", layout="centered")
 
-# === STATE MANAGEMENT ===
+# Pembuatan Kondisi Awal
 if "step" not in st.session_state:
     st.session_state.step = 0
 if "language" not in st.session_state:
@@ -36,24 +36,19 @@ if "language" not in st.session_state:
 if "name" not in st.session_state:
     st.session_state.name = ""
 
-# === Fungsi Bantu Terjemahan ===
+# Fungsi Penerjemah
 def t(id_text, en_text):
     return id_text if st.session_state.get("language") == "id" else en_text
 
-# === STEP 0: PILIH BAHASA ===
+# Hal 1-Pemilihan Bahasa
 if st.session_state.step == 0:
     st.image("slide 1.jpg", use_container_width=True)
-
-    # 🪄 Tambah jarak dari logo ke teks
     st.markdown("<div style='margin-top:30px;'></div>", unsafe_allow_html=True)
-
-    # === Judul Pilihan Bahasa ===
     st.markdown(
         "<h3 style='text-align:center; color:#966543;'>🌐 Pilih Bahasa / Choose Language</h3>",
         unsafe_allow_html=True,
     )
-
-    # === CSS Styling ===
+    
     st.markdown("""
     <style>
     .lang-container {
@@ -86,7 +81,7 @@ if st.session_state.step == 0:
     </style>
     """, unsafe_allow_html=True)
 
-    # === Dua Tombol Bahasa ===
+    # Pembuatan Tombol Bahasa
     col1, col2 = st.columns(2)
     with col1:
         if st.button("🇮🇩  ID BAHASA INDONESIA", use_container_width=True):
@@ -100,11 +95,9 @@ if st.session_state.step == 0:
             st.session_state.step = 1
             st.rerun()
             
-# === STEP 1 ===
+# Hal 2-Deskripsi Dashboard/Website
 elif st.session_state.step == 1:
     st.image("slide 1.jpg", use_container_width=True)
-
-    # Judul & deskripsi
     st.markdown(f"""
     <h1 style='text-align:center; color:#1E1E1E;'>
         {t('Selamat datang di', 'Welcome to')} 
@@ -118,7 +111,6 @@ elif st.session_state.step == 1:
     </p>
     """, unsafe_allow_html=True)
 
-    # Styling dua kotak fitur
     st.markdown("""
     <style>
     .feature-container {
@@ -127,7 +119,7 @@ elif st.session_state.step == 1:
         gap: 80px;
         margin-top: 40px;
     }
-
+    
     .feature-box {
         background-color: #f2e6d6;
         width: 400px;
@@ -164,7 +156,6 @@ elif st.session_state.step == 1:
     </style>
     """, unsafe_allow_html=True)
 
-    # Isi dua kotak fitur
     st.markdown(f"""
     <div class="feature-container">
         <div class="feature-box">
@@ -184,7 +175,6 @@ elif st.session_state.step == 1:
     </div>
     """, unsafe_allow_html=True)
 
-    # Garis dan teks lanjut
     st.markdown("<br><hr>", unsafe_allow_html=True)
     st.markdown(f"""
     <p style='text-align:center; color:#282328; font-size:18px;'>
@@ -192,6 +182,7 @@ elif st.session_state.step == 1:
     </p>
     """, unsafe_allow_html=True)
 
+    # Pembuatan Tombol Kembali dan Lanjut
     col1, col2, col3 = st.columns([4, 1, 1])
     with col1:
         if st.button(t("⬅️ Kembali", "⬅️ Back")):
@@ -202,24 +193,22 @@ elif st.session_state.step == 1:
             st.session_state.step = 2
             st.rerun()
             
-# === STEP 2 ===
+# Hal 3-Input Nama Pengguna
 elif st.session_state.step == 2:
     if st.session_state.get("language") == "id":
         image_file = "slide 3-1.png"  # versi Bahasa Indonesia
     else:
         image_file = "slide 3-2.png"  # versi Bahasa Inggris
 
-    # === Tampilkan gambar ===
+    # Menampilkan Gambar dan Teks Sesuai Bahasa yang Dipilih Pengguna
     st.image(image_file, use_container_width=True)
-
-    # === Tampilkan teks sesuai bahasa ===
     st.write(t(
         "Sekarang giliran kamu! Masukkan namamu supaya Ursidetect tahu siapa partner barunya.",
         "Your turn now! Enter your name so Ursidetect knows its new adventure partner."
     ))
-
     name_input = st.text_input("", placeholder=t("Contoh: Ursi", "Example: Ursi")) 
 
+    # Pembuatan Tombol Kembali dan Lanjut
     col_kiri, col_kanan = st.columns([4, 1])
     with col_kiri:
         if st.button(t("⬅️ Kembali", "⬅️ Back")):
@@ -234,12 +223,10 @@ elif st.session_state.step == 2:
             else:
                 st.info(t("Ups, sepertinya kamu lupa menulis namamu dulu nih 😊", "Oops, you forgot to enter your name 😊"))
 
-# === STEP 3 ===
+# Hal 4-Deteksi dan Klasifikasi Gambar
 elif st.session_state.step == 3:
-    # --- Ambil nama untuk ditampilkan ---
     display_name = st.session_state.name.split()[0].capitalize() if st.session_state.name else t('Petualang', 'Explorer')
 
-    # --- Sambutan ---
     st.markdown(f"""
     <div style='background-color:#f2e6d6; padding:25px; border-radius:15px;
     box-shadow:0 4px 15px rgba(0,0,0,0.1); text-align:center; margin-bottom:25px;'>
@@ -255,12 +242,12 @@ elif st.session_state.step == 3:
     </div>
     """, unsafe_allow_html=True)
 
-    # --- Pilihan Mode ---
+    # Pemilihan Mode (Deteksi/Klasifikasi)
     st.markdown(f"<h4 style='color:#966543; text-align:center;'>{t('Pilih Mode Petualang:', 'Choose Your Adventure Mode:')}</h4>", unsafe_allow_html=True)
     col1, col2 = st.columns(2, gap="large")
     current_mode = st.session_state.get("mode", None)
 
-    # Tombol Deteksi
+    # Pembuatan Tombol Deteksi
     with col1:
         if st.button(t('🐾 Pemburu Hewan', '🐾 Animal Hunter'), key="btn_deteksi", use_container_width=True):
             st.session_state.mode = "deteksi"
@@ -282,7 +269,7 @@ elif st.session_state.step == 3:
         </div>
         """, unsafe_allow_html=True)
 
-    # Tombol Klasifikasi
+    # Pembuatan Tombol Klasifikasi
     with col2:
         if st.button(t('🔬 Peneliti Hewan', '🔬 Animal Researcher'), key="btn_klasifikasi", use_container_width=True):
             st.session_state.mode = "klasifikasi"
@@ -306,7 +293,7 @@ elif st.session_state.step == 3:
 
     st.divider()
 
-    # --- Upload Gambar (hanya aktif jika mode sudah dipilih) ---
+    # Pembuatan Bagian Upload Gambar
     mode_selected = st.session_state.get("mode", None)
     st.markdown(f"<h4 style='color:#966543;'>{t('🖼️ Masukkan Gambar','🖼️ Upload Image')}</h4>", unsafe_allow_html=True)
 
@@ -322,13 +309,13 @@ elif st.session_state.step == 3:
             key="uploader_step3"
         )
 
-    # --- Tombol Mulai Petualangan (hanya muncul jika ada gambar dan mode) ---
+    # Pembuatan Bagian "Mulai Petualangan"
     if mode_selected and uploaded_files:
         if st.button("🐾" + t("Mulai Petualangan!", "Start the Adventure!" + "🐾"), key="start_btn", use_container_width=True):
             st.session_state.start_adventure = True
             st.rerun()
 
-    # --- Proses hasil deteksi/klasifikasi ---
+    # Proses Hasil Deteksi/Klasifikasi
     if st.session_state.get("start_adventure", False):
         yolo_model, classifier = load_models()
 
@@ -352,7 +339,7 @@ elif st.session_state.step == 3:
                     else:
                         st.warning("⚠️ " + t("Tidak ada objek panda atau beruang yang terdeteksi.", "No panda or bear detected."))
 
-            else:  # klasifikasi
+            else:                  # ini klasifikasi
                 try:
                     target_size = tuple(classifier.input_shape[1:3])
                     if None in target_size:
@@ -392,7 +379,7 @@ elif st.session_state.step == 3:
                     st.error(f"Terjadi error saat klasifikasi: {e}")
 
         st.divider()
-
+        # Pembuatan Tombol Kembali dan Lanjut
         col1, col2 = st.columns([4, 1])
         with col1:
             if st.button(t("⬅️ Kembali", "⬅️ Back"), key="back_btn3"):
@@ -403,7 +390,7 @@ elif st.session_state.step == 3:
                 st.session_state.step = 4
                 st.rerun()
 
-# === STEP 4 ===
+# Hal 5-Feedback/Saran
 elif st.session_state.step == 4:
     st.subheader(t("💬 Cerita Petualanganmu", "💬 Your Adventure Story"))
     st.info(t(
@@ -418,10 +405,9 @@ elif st.session_state.step == 4:
 
     name = st.session_state.get("name", "Petualang").strip()
     first_name = name.split()[0] if name else "Petualang"
-
     feedback_file = "adventure_stories.csv"
 
-    # === Simpan cerita ke CSV ===
+    # Menyimpan Feedback Orang Lain Pada CSV
     if st.button(t("Kirim Cerita Petualanganku", "Send My Story")):
         if feedback_text.strip() == "":
             st.warning(t("Ceritamu sangat berarti bagi kami 😊", "Your story means a lot to us 😊"))
@@ -436,14 +422,14 @@ elif st.session_state.step == 4:
 
     st.markdown("---")
 
-    # Tombol Kembali
+    # Pembuatan Tombol Kembali
     col1, col2 = st.columns([1, 4])
     with col1:
         if st.button(t("⬅️ Kembali", "⬅️ Back"), key="back_btn4"):
             st.session_state.step = 3
             st.rerun()
             
-    # === Tombol restart ===
+    # Pembuatan Tombol Restart
     if st.button(t("🔁 Mau memulai lagi?", "🔁 Start again?")):
         st.session_state.step = 0
         st.session_state.name = ""
@@ -455,7 +441,7 @@ elif st.session_state.step == 4:
     if "show_history" not in st.session_state:
         st.session_state.show_history = False
 
-    # === Tombol History di pojok kanan bawah ===
+    # Pembuatan Tombol History
     st.markdown(
         """
         <style>
@@ -481,7 +467,7 @@ elif st.session_state.step == 4:
         unsafe_allow_html=True
     )
 
-    # Kolom kanan bawah untuk tombol toggle
+    # Pembuatan Tombol Toggle di Kolom Kanan Bawah
     col1, col2, col3 = st.columns([5, 1, 1])
     with col3:
         if st.button("📜 History"):
@@ -491,7 +477,6 @@ elif st.session_state.step == 4:
         # === Tampilkan daftar cerita untuk semua orang ===
     if st.session_state.show_history:
         st.markdown(f"<h4 style='color:#966543;'>{t('📚 History Cerita Para Petualang','📚 Adventure Stories of Fellow Explorers')}</h4>", unsafe_allow_html=True)
-
         stories_html = ""
 
         if os.path.isfile(feedback_file):
@@ -506,7 +491,7 @@ elif st.session_state.step == 4:
                     # tampilkan di Streamlit
                     with st.expander(f"🧭 {name}"):
                         st.write(story)
-
+                        
                     # simpan juga versi HTML (buat modal opsional)
                     stories_html += f"""
                     <div style='margin-bottom:10px;'>
