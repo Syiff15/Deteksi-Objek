@@ -219,6 +219,9 @@ elif st.session_state.step == 2:
 
 # === STEP 3 ===
 elif st.session_state.step == 3:
+    import numpy as np
+    from PIL import Image
+
     # --- Ambil nama untuk ditampilkan ---
     display_name = st.session_state.name.split()[0].capitalize() if st.session_state.name else t('Petualang', 'Explorer')
 
@@ -247,7 +250,6 @@ elif st.session_state.step == 3:
     with col1:
         if st.button(t('🐾 Pemburu Hewan', '🐾 Animal Hunter'), key="btn_deteksi", use_container_width=True):
             st.session_state.mode = "deteksi"
-            st.session_state.start_adventure = False
             st.rerun()
         deteksi_active = current_mode == "deteksi"
         st.markdown(f"""
@@ -269,7 +271,6 @@ elif st.session_state.step == 3:
     with col2:
         if st.button(t('🔬 Peneliti Hewan', '🔬 Animal Researcher'), key="btn_klasifikasi", use_container_width=True):
             st.session_state.mode = "klasifikasi"
-            st.session_state.start_adventure = False
             st.rerun()
         klasifikasi_active = current_mode == "klasifikasi"
         st.markdown(f"""
@@ -289,7 +290,7 @@ elif st.session_state.step == 3:
 
     st.divider()
 
-    # --- Upload Gambar (hanya aktif jika mode sudah dipilih) ---
+    # --- Upload Gambar (aktif hanya jika mode sudah dipilih) ---
     mode_selected = st.session_state.get("mode", None)
     st.markdown(f"<h4 style='color:#966543;'>{t('🖼️ Masukkan Gambar','🖼️ Upload Image')}</h4>", unsafe_allow_html=True)
 
@@ -305,20 +306,22 @@ elif st.session_state.step == 3:
             key="uploader_step3"
         )
 
-    # --- Tombol Mulai Petualangan (hanya muncul jika ada gambar dan mode) ---
+    # --- Tombol Mulai Petualangan ---
     if mode_selected and uploaded_files:
-        if st.button("🚀 " + t("Mulai Petualangan!", "Start the Adventure!"), key="start_btn", use_container_width=False):
+        if st.button("🚀 " + t("Mulai Petualangan!", "Start the Adventure!"), key="start_btn", use_container_width=True):
             st.session_state.start_adventure = True
-            st.rerun()
+            st.session_state.results_list = []  # simpan hasil nanti
+            st.experimental_rerun()
 
     # --- Proses hasil deteksi/klasifikasi ---
     if st.session_state.get("start_adventure", False):
-        st.session_state.start_adventure = False  # reset flag
         yolo_model, classifier = load_models()
+        results_list = []
+
+        st.session_state.start_adventure = False  # reset setelah mulai
 
         st.markdown("### 🐾 " + t("Hasil Deteksi", "Detection Results") if mode_selected=="deteksi" else "### 🔬 " + t("Hasil Klasifikasi", "Classification Results"))
 
-        results_list = []
         for idx, uploaded_file in enumerate(uploaded_files):
             image = Image.open(uploaded_file).convert("RGB")
             col1, col2 = st.columns(2)
@@ -327,9 +330,9 @@ elif st.session_state.step == 3:
                 results = yolo_model(image)
                 detected_img = results[0].plot()
                 with col1:
-                    st.image(image, caption=uploaded_file.name, use_container_width=True)
+                    st.image(image, caption=uploaded_file.name, use_column_width=True)
                 with col2:
-                    st.image(detected_img, caption=t("Hasil Deteksi", "Detection Output"), use_container_width=True)
+                    st.image(detected_img, caption=t("Hasil Deteksi", "Detection Output"), use_column_width=True)
                     labels = [yolo_model.names[int(c)] for c in results[0].boxes.cls.numpy()] if len(results[0].boxes) > 0 else []
                     if labels:
                         st.success("🎯 " + t("Objek terdeteksi:", "Detected objects:") + f" {', '.join(labels)}")
@@ -337,54 +340,49 @@ elif st.session_state.step == 3:
                         st.warning("⚠️ " + t("Tidak ada objek panda atau beruang yang terdeteksi.", "No panda or bear detected."))
 
             else:  # klasifikasi
-                try:
-                    target_size = tuple(classifier.input_shape[1:3])
-                    if None in target_size:
-                        target_size = (224, 224)
-                    img_array = np.array(image.resize(target_size)).astype('float32') / 255.0
-                    if img_array.ndim == 2:
-                        img_array = np.stack([img_array]*3, axis=-1)
-                    elif img_array.shape[2] != 3:
-                        img_array = img_array[..., :3]
-                    img_array = np.expand_dims(img_array, axis=0)
+                target_size = tuple(classifier.input_shape[1:3])
+                if None in target_size:
+                    target_size = (224, 224)
+                img_array = np.array(image.resize(target_size)).astype('float32') / 255.0
+                if img_array.ndim == 2:
+                    img_array = np.stack([img_array]*3, axis=-1)
+                elif img_array.shape[2] != 3:
+                    img_array = img_array[..., :3]
+                img_array = np.expand_dims(img_array, axis=0)
 
-                    pred = classifier.predict(img_array)
-                    class_idx = np.argmax(pred, axis=1)[0]
-                    class_names = ["Panda", "Beruang"]
-                    confidence = pred[0][class_idx]
+                pred = classifier.predict(img_array)
+                class_idx = np.argmax(pred, axis=1)[0]
+                class_names = ["Panda", "Beruang"]
+                confidence = pred[0][class_idx]
 
-                    results_list.append({
-                        "filename": uploaded_file.name,
-                        "label": class_names[class_idx],
-                        "confidence": float(confidence)
-                    })
+                results_list.append({
+                    "filename": uploaded_file.name,
+                    "label": class_names[class_idx],
+                    "confidence": float(confidence)
+                })
 
-                    with col1:
-                        st.image(image, caption=uploaded_file.name, use_container_width=True)
-                    with col2:
-                        st.markdown(f"""
-                        <div style='background-color:#f2e6d6; padding:20px; border-radius:15px;
-                        box-shadow:0 4px 15px rgba(0,0,0,0.1); text-align:center;'>
-                            <h4 style='color:#6B4226; margin-bottom:10px;'>🔬 {t('Hasil Klasifikasi', 'Classification Result')}</h4>
-                            <p style='color:#7B4F27; font-size:16px;'>
-                                {class_names[class_idx]} ({confidence*100:.2f}%)
-                            </p>
-                        </div>
-                        """, unsafe_allow_html=True)
+                with col1:
+                    st.image(image, caption=uploaded_file.name, use_column_width=True)
+                with col2:
+                    st.markdown(f"""
+                    <div style='background-color:#f2e6d6; padding:20px; border-radius:15px;
+                    box-shadow:0 4px 15px rgba(0,0,0,0.1); text-align:center;'>
+                        <h4 style='color:#6B4226; margin-bottom:10px;'>🔬 {t('Hasil Klasifikasi', 'Classification Result')}</h4>
+                        <p style='color:#7B4F27; font-size:16px;'>
+                            {class_names[class_idx]} ({confidence*100:.2f}%)
+                        </p>
+                    </div>
+                    """, unsafe_allow_html=True)
 
-                except Exception as e:
-                    st.error(f"Terjadi error saat klasifikasi: {e}")
+        st.session_state.results_list = results_list  # simpan hasil untuk step 4
 
-        # Tombol lanjut ke step berikutnya
+        # Tombol Lanjut ke Step 4
         st.divider()
-        col1, col2 = st.columns([4, 1])
+        col1, col2 = st.columns([4,1])
         with col2:
             if st.button("🐾 " + t("Lanjut", "Next"), key="next_btn"):
                 st.session_state.step = 4
-                if mode_selected == "klasifikasi":
-                    st.session_state.last_classified = results_list
                 st.experimental_rerun()
-
 
 # === STEP 4 ===
 elif st.session_state.step == 4:
