@@ -219,6 +219,9 @@ elif st.session_state.step == 2:
 
 # === STEP 3 ===
 elif st.session_state.step == 3:
+    # --- Ambil nama untuk ditampilkan ---
+    display_name = st.session_state.name.split()[0].capitalize() if st.session_state.name else t('Petualang', 'Explorer')
+
     # --- Sambutan ---
     st.markdown(f"""
     <div style='background-color:#f2e6d6; padding:25px; border-radius:15px;
