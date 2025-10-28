@@ -36,7 +36,7 @@ if "name" not in st.session_state:
 
 # === Fungsi Bantu Terjemahan ===
 def t(id_text, en_text):
-    return id_text if st.session_state.language == "id" else en_text
+    return id_text if st.session_state.get("language") == "id" else en_text
 
 # === STEP 0: PILIH BAHASA ===
 if "step" not in st.session_state:
@@ -60,12 +60,12 @@ if st.session_state.step == 0:
     .lang-container {
         display: flex;
         justify-content: center;
-        gap: 100px;
-        margin-top: 10px; /* jarak tombol dari teks */
+        gap: 80px;
+        margin-top: 10px;
     }
     .lang-option {
         background-color: #f2e6d6;
-        width: 300px;
+        width: 350px;
         height: 130px;
         display: flex;
         align-items: center;
@@ -77,7 +77,6 @@ if st.session_state.step == 0:
         color: #2f2f2f;
         text-align: center;
         font-size: 20px;
-        cursor: pointer;
         border: 2px solid transparent;
     }
     .lang-option:hover {
@@ -88,25 +87,19 @@ if st.session_state.step == 0:
     </style>
     """, unsafe_allow_html=True)
 
-    # === HTML Layout ===
-    st.markdown("""
-    <div class="lang-container">
-        <div class="lang-option" onclick="window.location.href='?lang=id'">🇮🇩 ID BAHASA INDONESIA</div>
-        <div class="lang-option" onclick="window.location.href='?lang=en'">🇬🇧 EN ENGLISH</div>
-    </div>
-    """, unsafe_allow_html=True)
-
-    # === Logic Pilihan Bahasa ===
-    query_params = st.query_params
-    if "lang" in query_params:
-        lang = query_params["lang"][0]
-        if lang == "id":
+    # === Dua Tombol Bahasa ===
+    col1, col2 = st.columns(2)
+    with col1:
+        if st.button("🇮🇩  ID BAHASA INDONESIA", use_container_width=True):
             st.session_state.language = "id"
-        elif lang == "en":
-            st.session_state.language = "en"
-        st.session_state.step = 1
-        st.rerun()
+            st.session_state.step = 1
+            st.rerun()
 
+    with col2:
+        if st.button("🇬🇧  EN ENGLISH", use_container_width=True):
+            st.session_state.language = "en"
+            st.session_state.step = 1
+            st.rerun()
 
 # === STEP 1 ===
 elif st.session_state.step == 1:
