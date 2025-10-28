@@ -383,7 +383,8 @@ elif st.session_state.step == 3:
                 st.session_state.step = 4
                 if mode_selected == "klasifikasi":
                     st.session_state.last_classified = results_list
-                st.rerun()
+                st.experimental_rerun()
+
 
 # === STEP 4 ===
 elif st.session_state.step == 4:
