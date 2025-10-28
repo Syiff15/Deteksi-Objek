@@ -230,7 +230,10 @@ elif st.session_state.step == 2:
     """, unsafe_allow_html=True)
 
     # --- Pilih mode petualang ---
-    st.markdown(f"<h4 style='color:#966543; text-align:center;'>{t('Pilih Mode Petualang:','Choose Your Adventure Mode:')}</h4>", unsafe_allow_html=True)
+    st.markdown(
+        f"<h4 style='color:#966543; text-align:center;'>{t('Pilih Mode Petualang:','Choose Your Adventure Mode:')}</h4>",
+        unsafe_allow_html=True
+    )
     col1, col2 = st.columns(2, gap="large")
 
     # --- Kolom kiri: Deteksi ---
@@ -346,9 +349,13 @@ elif st.session_state.step == 2:
                     class_names = ["Panda", "Beruang"]
                     confidence = pred[0][class_idx]
 
+                    # --- Tampilkan gambar dan hasil ---
                     with col1:
-                        st.image(image, caption=uploaded_file.name, use_container_width=True)
-                        st.markdown("<p style='text-align:center; color:#7B4F27;'>Gambar yang diunggah</p>", unsafe_allow_html=True)
+                        st.image(image, caption=uploaded_file.name, width='stretch')
+                        st.markdown(
+                            "<p style='text-align:center; color:#7B4F27;'>Gambar yang diunggah</p>",
+                            unsafe_allow_html=True
+                        )
 
                     with col2:
                         st.markdown(f"""
@@ -364,22 +371,12 @@ elif st.session_state.step == 2:
                 except Exception as e:
                     st.error(f"Terjadi error saat klasifikasi: {e}")
 
-        # --- Tombol lanjut ---
-        col_kiri, col_kanan = st.columns([4,1])
-        with col_kanan:
-            if st.button(t("Lanjutkan 🐾","Continue 🐾"), key="lanjutkan_step4"):
-                st.session_state.step = 4
-                st.rerun()
-
-    else:
-        st.info("⬆️ Silakan unggah gambar terlebih dahulu untuk memproses objek.")
-
-    # --- Tombol lanjut kecil di bawah ---
-    col1, col2, col3 = st.columns([4, 1, 1])
-    with col3:
-        if st.button(t("Lanjut 🐾", "Next 🐾")):
-            st.session_state.step = 2
-            st.rerun()
+                # --- Tombol lanjut kecil di bawah ---
+                col1, col2, col3 = st.columns([4, 1, 1])
+                with col3:
+                    if st.button(t("Lanjut 🐾", "Next 🐾")):
+                        st.session_state.step = 2
+                        st.rerun()
 
 # === STEP 3 ===
 elif st.session_state.step == 3:
