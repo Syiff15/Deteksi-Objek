@@ -201,14 +201,24 @@ elif st.session_state.step == 1:
             
 # === STEP 2 ===
 elif st.session_state.step == 2:
-    st.image("slide 3-1.png", use_container_width=True)
-    st.write(t("Sekarang giliran kamu! Masukkan namamu supaya Ursidetect tahu siapa partner barunya.",
-               "Now it’s your turn! Enter your name so Ursidetect knows its new partner."))
+    if st.session_state.lang == "id":
+        image_file = "slide 3-1.png"  # versi Bahasa Indonesia
+    else:
+        image_file = "slide 3-2.png"  # versi Bahasa Inggris
+
+    # === Tampilkan gambar ===
+    st.image(image_file, use_container_width=True)
+
+    # === Teks pendamping ===
+    st.write(t(
+        "Sekarang giliran kamu! Masukkan namamu supaya Ursidetect tahu siapa partner barunya.",
+        "Now it’s your turn! Enter your name so Ursidetect knows its new partner."
+    ))
 
     name_input = st.text_input("", placeholder=t("Contoh: Ursi", "Example: Ursi"))
     col_kiri, col_kanan = st.columns([4, 1])
     with col_kanan:
-        if st.button(t("Lanjutkan 🐾", "Continue 🐾")):
+        if st.button(t("Lanjut 🐾", "Next 🐾")):
             if name_input.strip() != "":
                 st.session_state.name = name_input.strip()
                 st.session_state.step = 3
