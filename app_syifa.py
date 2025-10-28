@@ -295,7 +295,7 @@ elif st.session_state.step == 2:
     st.markdown(f"<h4 style='color:#966543;'>{t('🖼️ Masukkan Gambar','🖼️ Upload Image')}</h4>", unsafe_allow_html=True)
     st.caption(t("Kamu bisa mengunggah satu atau beberapa gambar (jpg, jpeg, png).",
                  "You can upload one or more images (jpg, jpeg, png)."))
-    uploaded_files = st.file_uploader("", type=["jpg","jpeg","png"], accept_multiple_files=True)
+    uploaded_files = st.file_uploader("Unggah gambar", type=["jpg","jpeg","png"], accept_multiple_files=True)
 
     if uploaded_files:
 
