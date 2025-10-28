@@ -297,8 +297,18 @@ elif st.session_state.step == 2:
                  "You can upload one or more images (jpg, jpeg, png)."))
     uploaded_files = st.file_uploader("Unggah gambar", type=["jpg","jpeg","png"], accept_multiple_files=True)
 
-    if uploaded_files:
+    # =========================
+    # CEK KONDISI MODE & GAMBAR
+    # =========================
+    mode_selected = st.session_state.get("mode", None)
 
+    if not mode_selected and uploaded_files:
+        st.warning("🧭 Pilih Mode Petualangmu terlebih dahulu sebelum melanjutkan!")
+    elif mode_selected and not uploaded_files:
+        st.info("🖼️ Unggah Gambar Petualangmu untuk memulai petualangan!")
+    elif not mode_selected and not uploaded_files:
+        st.caption("Pilih mode dan unggah gambar untuk mulai petualanganmu ✨")
+    else:
         # --- Load Model SEKALI ---
         yolo_model, classifier = load_models()  # @st.cache_resource
 
@@ -309,16 +319,16 @@ elif st.session_state.step == 2:
             # =========================
             # MODE DETEKSI
             # =========================
-            if st.session_state.mode == "deteksi":
+            if mode_selected == "deteksi":
                 results = yolo_model(image)
                 detected_img = results[0].plot()
 
                 with col1:
-                    st.image(image, caption=uploaded_file.name, width='stretch')
+                    st.image(image, caption=uploaded_file.name, use_container_width=True)
                     st.markdown("<p style='text-align:center; color:#7B4F27;'>Gambar yang diunggah</p>", unsafe_allow_html=True)
 
                 with col2:
-                    st.image(detected_img, caption="Hasil Deteksi", width='stretch')
+                    st.image(detected_img, caption="Hasil Deteksi", use_container_width=True)
                     labels = [yolo_model.names[int(c)] for c in results[0].boxes.cls.numpy()] if len(results[0].boxes) > 0 else []
                     if labels:
                         st.success(f"🎯 Objek terdeteksi: {', '.join(labels)}")
@@ -328,34 +338,24 @@ elif st.session_state.step == 2:
             # =========================
             # MODE KLASIFIKASI
             # =========================
-            elif st.session_state.mode == "klasifikasi":
+            elif mode_selected == "klasifikasi":
                 try:
-                    # --- Resize sesuai training model ---
                     target_size = (224, 224)
                     img_array = np.array(image.resize(target_size)).astype('float32') / 255.0
-
-                    # --- Pastikan channel 3 ---
                     if img_array.ndim == 2:
                         img_array = np.stack([img_array]*3, axis=-1)
                     elif img_array.shape[2] != 3:
                         img_array = img_array[..., :3]
+                    img_array = np.expand_dims(img_array, axis=0)
 
-                    # --- Batch dimension ---
-                    img_array = np.expand_dims(img_array, axis=0)  # (1, H, W, 3)
-
-                    # --- Prediksi ---
                     pred = classifier.predict(img_array)
                     class_idx = np.argmax(pred, axis=1)[0]
                     class_names = ["Panda", "Beruang"]
                     confidence = pred[0][class_idx]
 
-                    # --- Tampilkan gambar dan hasil ---
                     with col1:
-                        st.image(image, caption=uploaded_file.name, width='stretch')
-                        st.markdown(
-                            "<p style='text-align:center; color:#7B4F27;'>Gambar yang diunggah</p>",
-                            unsafe_allow_html=True
-                        )
+                        st.image(image, caption=uploaded_file.name, use_container_width=True)
+                        st.markdown("<p style='text-align:center; color:#7B4F27;'>Gambar yang diunggah</p>", unsafe_allow_html=True)
 
                     with col2:
                         st.markdown(f"""
@@ -370,6 +370,7 @@ elif st.session_state.step == 2:
 
                 except Exception as e:
                     st.error(f"Terjadi error saat klasifikasi: {e}")
+
 
                 # --- Tombol lanjut kecil di bawah ---
                 col1, col2, col3 = st.columns([4, 1, 1])
