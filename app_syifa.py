@@ -201,13 +201,9 @@ elif st.session_state.step == 1:
             st.rerun()
 
 # === STEP 2 ===
-elif st.session_state.step == 2:
+elif st.session_state.step == 3:
 
-    # --- Ambil dan olah nama user ---
-    name = st.session_state.name.strip()
-    display_name = name.lower().split()[0] if name else t('Petualang', 'Explorer')
-
-    # --- Judul Selamat Datang ---
+    # --- Header / Judul ---
     st.markdown(f"""
     <div style='
         background-color:#f2e6d6;
@@ -217,131 +213,63 @@ elif st.session_state.step == 2:
         text-align:center;
         margin-bottom:25px;
     '>
-        <h1 style='color:#966543; margin-bottom:10px;'>
-            {t('Hai', 'Hi')}, <span style='text-transform:capitalize;'>{display_name}</span>! 👋
-        </h1>
+        <h1 style='color:#966543; margin-bottom:10px;'>🕵️‍♀️ {t('Deteksi Panda & Beruang', 'Panda & Bear Detection')}</h1>
         <p style='font-size:18px; color:#5b4636;'>
-            {t('Selamat datang di markas petualangan <b>Ursidetect</b>!',
-               'Welcome to the adventure base of <b>Ursidetect</b>!')}<br>
-            {t('Pilih mode favoritmu — mau jadi <b>pemburu hewan</b> (deteksi) atau <b>peneliti hewan</b> (klasifikasi)?',
-               'Choose your mode — be a <b>Wildlife Hunter</b> (detection) or <b>Animal Researcher</b> (classification)?')}
+            {t('Unggah foto untuk mendeteksi apakah terdapat <b>panda</b> atau <b>beruang</b> di dalamnya!',
+               'Upload an image to detect if it contains <b>pandas</b> or <b>bears</b>!')}
         </p>
     </div>
     """, unsafe_allow_html=True)
 
-    st.markdown(f"<h4 style='color:#966543; text-align:center;'>{t('Pilih Mode Petualang:','Choose Your Adventure Mode:')}</h4>", unsafe_allow_html=True)
-    col1, col2 = st.columns(2, gap="large")
+    # --- Upload gambar ---
+    uploaded_file = st.file_uploader(t("Unggah gambar", "Upload Image"), type=["jpg", "jpeg", "png"])
 
-    # --- Kolom kiri: Deteksi ---
-    with col1:
-        deteksi_clicked = st.button("🐾 Pemburu Hewan", key="deteksi_mode", use_container_width=True)
-        css_class = "mode-card selected" if st.session_state.get("mode") == "deteksi" else "mode-card"
-        st.markdown(f"""
-        <div class="{css_class}">
-            <h4 style='color:#966543;'>🐾 {t('Pemburu Hewan','Wildlife Hunter')}</h4>
-            <p style='color:#5b4636; font-size:14px;'>
-                {t('Mode <b>Deteksi</b> untuk menemukan lokasi panda dan beruang di gambar.',
-                   '<b>Detection</b> mode to find pandas and bears in an image.')}
-            </p>
-        </div>
-        """, unsafe_allow_html=True)
-        if deteksi_clicked:
-            st.session_state.mode = "deteksi"
+    if uploaded_file is not None:
+        # Tampilkan dua kolom sejajar
+        col1, col2 = st.columns([1, 1])
+
+        with col1:
+            # Tampilkan gambar asli
+            st.markdown("<h4 style='text-align:center; color:#5b4636;'>Gambar Asli</h4>", unsafe_allow_html=True)
+            st.image(uploaded_file, use_column_width=True)
+
+        with col2:
+            try:
+                # Load model YOLOv5 (pastikan file .pt sesuai)
+                model = torch.hub.load('ultralytics/yolov5', 'custom', path='model_panda_beruang.pt', force_reload=False)
+
+                # Deteksi objek
+                results = model(uploaded_file)
+
+                # Simpan hasil deteksi ke file sementara
+                results.save(save_dir='runs/detect')
+
+                # Ambil path hasil deteksi terbaru
+                import os
+                detect_dir = sorted(os.listdir('runs/detect'))[-1]
+                output_path = f"runs/detect/{detect_dir}/{uploaded_file.name}"
+
+                # Tampilkan hasil deteksi
+                st.markdown("<h4 style='text-align:center; color:#5b4636;'>Hasil Deteksi</h4>", unsafe_allow_html=True)
+                st.image(output_path, use_column_width=True)
+
+                # Info hasil deteksi
+                labels = results.pandas().xyxy[0]['name'].unique()
+                if len(labels) > 0:
+                    st.success(t(f"Objek terdeteksi: {', '.join(labels)}", f"Detected objects: {', '.join(labels)}"))
+                else:
+                    st.warning(t("Tidak ada panda atau beruang terdeteksi.", "No pandas or bears detected."))
+
+            except Exception as e:
+                st.error(f"Terjadi kesalahan saat deteksi: {e}")
+                
+    # Tombol lanjut
+    col1, col2, col3 = st.columns([4, 1, 1])
+    with col3:
+        if st.button(t("Lanjut 🐾", "Next 🐾")):
+            st.session_state.step = 2
             st.rerun()
-
-    # --- Kolom kanan: Klasifikasi ---
-    with col2:
-        klasifikasi_clicked = st.button("🔬 Peneliti Hewan", key="klasifikasi_mode", use_container_width=True)
-        css_class = "mode-card selected" if st.session_state.get("mode") == "klasifikasi" else "mode-card"
-        st.markdown(f"""
-        <div class="{css_class}">
-            <h4 style='color:#966543;'>🔬 {t('Peneliti Hewan','Animal Researcher')}</h4>
-            <p style='color:#5b4636; font-size:14px;'>
-                {t('Mode <b>Klasifikasi</b> untuk mengenali apakah itu panda atau beruang.',
-                   '<b>Classification</b> mode to recognize whether it’s a panda or a bear.')}
-            </p>
-        </div>
-        """, unsafe_allow_html=True)
-        if klasifikasi_clicked:
-            st.session_state.mode = "klasifikasi"
-            st.rerun()
-
-    st.divider()
-
-    # =========================
-    # UPLOAD GAMBAR
-    # =========================
-    st.markdown(f"<h4 style='color:#966543;'>{t('🖼️ Masukkan Gambar','🖼️ Upload Image')}</h4>", unsafe_allow_html=True)
-    st.caption(t("Kamu bisa mengunggah satu atau beberapa gambar (jpg, jpeg, png).",
-                 "You can upload one or more images (jpg, jpeg, png)."))
-    uploaded_files = st.file_uploader("", type=["jpg","jpeg","png"], accept_multiple_files=True)
-
-    if uploaded_files:
-
-        # --- Load Model SEKALI ---
-        yolo_model, classifier = load_models()  # sudah didefinisikan di awal dengan @st.cache_resource
-
-        for uploaded_file in uploaded_files:
-            image = Image.open(uploaded_file).convert("RGB")
-
-            col1, col2 = st.columns(2)
-
-            # =========================
-            # MODE DETEKSI
-            # =========================
-            if st.session_state.mode == "deteksi":
-                results = yolo_model(image)
-                detected_img = results[0].plot()  # hasil deteksi digambar
-
-                with col1:
-                    st.image(image, caption=uploaded_file.name, use_container_width=True)
-                    st.markdown("<p style='text-align:center; color:#7B4F27;'>Gambar yang diunggah</p>", unsafe_allow_html=True)
-
-                with col2:
-                    st.image(detected_img, caption="Hasil Deteksi", use_container_width=True)
-                    # Tampilkan label
-                    labels = [yolo_model.names[int(c)] for c in results[0].boxes.cls.numpy()] if len(results[0].boxes) > 0 else []
-                    if labels:
-                        st.success(f"🎯 Objek terdeteksi: {', '.join(labels)}")
-                    else:
-                        st.warning("⚠️ Tidak ada objek panda atau beruang yang terdeteksi.")
-
-            # =========================
-            # MODE KLASIFIKASI
-            # =========================
-            elif st.session_state.mode == "klasifikasi":
-                img_array = np.array(image.resize((224,224)))/255.0
-                img_array = np.expand_dims(img_array, axis=0)
-                pred = classifier.predict(img_array)
-                class_idx = np.argmax(pred, axis=1)[0]
-                class_names = ["Panda", "Beruang"]  # sesuaikan dengan modelmu
-                confidence = pred[0][class_idx]
-
-                with col1:
-                    st.image(image, caption=uploaded_file.name, use_container_width=True)
-                    st.markdown("<p style='text-align:center; color:#7B4F27;'>Gambar yang diunggah</p>", unsafe_allow_html=True)
-
-                with col2:
-                    st.markdown(f"""
-                    <div style='background-color:#f2e6d6; padding:20px; border-radius:15px;
-                    box-shadow:0 4px 15px rgba(0,0,0,0.1); text-align:center;'>
-                        <h4 style='color:#6B4226; margin-bottom:10px;'>🔬 Hasil Klasifikasi</h4>
-                        <p style='color:#7B4F27; font-size:16px;'>
-                            {class_names[class_idx]} ({confidence*100:.2f}%)
-                        </p>
-                    </div>
-                    """, unsafe_allow_html=True)
-
-        # Tombol lanjut
-        col_kiri, col_kanan = st.columns([4,1])
-        with col_kanan:
-            if st.button(t("Lanjutkan 🐾","Continue 🐾"), key="lanjutkan_step4"):
-                st.session_state.step = 4
-                st.rerun()
-
-    else:
-        st.info("⬆️ Silakan unggah gambar terlebih dahulu untuk memproses objek.")
-
+            
 # === STEP 3 ===
 elif st.session_state.step == 3:
     st.subheader(t("💬 Cerita Petualanganmu", "💬 Your Adventure Story"))
