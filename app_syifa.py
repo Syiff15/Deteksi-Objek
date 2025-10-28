@@ -299,7 +299,6 @@ elif st.session_state.step == 3:
         if klasifikasi_clicked:
             st.session_state.mode = "klasifikasi"
             st.rerun()
-
     st.divider()
 
     # ====================================================
@@ -318,7 +317,7 @@ elif st.session_state.step == 3:
             image = Image.open(uploaded_file).convert("RGB")
 
             # Load model YOLO (gunakan modelmu sendiri)
-            model = torch.hub.load('ultralytics/yolov5', 'custom', path='model_panda_beruang.pt', force_reload=False)
+            model = torch.hub.load('Model/Syifa Salsabila_Laporan 2.h5', 'custom', path='Model/best.pt', force_reload=False)
 
             # Deteksi objek
             results = model(image)
