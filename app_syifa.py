@@ -493,3 +493,4 @@ elif st.session_state.step == 4:
                 stories_html += f"<p>{t('Belum ada cerita yang dikirim.', 'No stories have been submitted yet.')}</p>"
         else:
             st.info(t("Belum ada cerita yang dikirimkan.", 'No stories have been submitted yet.')}</p>"
+
