@@ -383,88 +383,74 @@ elif st.session_state.step == 3:
 
 # === STEP 4 ===
 elif st.session_state.step == 4:
-    # === CSS supaya box berada di kanan bawah ===
-    st.markdown("""
-        <style>
-        .bottom-right-box {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 350px;
-            background-color: #f2e6d6;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-            z-index: 9999;
-        }
-        .bottom-right-box h4 {
-            color: #6B4226;
-            margin-bottom: 10px;
-            text-align: center;
-        }
-        .bottom-right-box textarea {
-            font-size: 14px !important;
-        }
-        </style>
-    """, unsafe_allow_html=True)
+    # === Layout utama: dua kolom ===
+    col_left, col_right = st.columns([2, 1])  # kiri lebih besar untuk form, kanan untuk daftar cerita
 
-    # === Konten utama di tengah ===
-    st.subheader(t("🎉 Petualanganmu Telah Berakhir", "🎉 Your Adventure Has Ended"))
-    st.info(t(
-        "Kamu sudah menyelesaikan petualangan bersama Ursidetect 🐾 Terima kasih atas partisipasimu!",
-        "You've completed your adventure with Ursidetect 🐾 Thank you for joining!"
-    ))
+    with col_left:
+        st.subheader(t("💬 Cerita Petualanganmu", "💬 Your Adventure Story"))
+        st.info(t(
+            "Petualanganmu bersama Ursidetect sudah selesai 🐾  Ceritakan pengalamanmu, ya!",
+            "Your adventure with Ursidetect has ended 🐾  Tell us about your experience!"
+        ))
 
-    # === Kotak feedback di kanan bawah ===
-    st.markdown("""
-        <div class="bottom-right-box">
-            <h4>💬 Cerita Petualanganmu</h4>
-        </div>
-    """, unsafe_allow_html=True)
+        feedback_text = st.text_area(
+            t("Bagaimana Petualanganmu?", "How was your adventure?"),
+            placeholder=t("Kirimkan ceritamu di sini...", "Share your story here...")
+        )
 
-    # === Area input feedback (diposisikan dalam kotak) ===
-    feedback_text = st.text_area(
-        t("Bagaimana Petualanganmu?", "How was your adventure?"),
-        placeholder=t("Ceritakan pengalamanmu di sini...", "Share your story here..."),
-        key="feedback_text"
-    )
+        name = st.session_state.get("name", "Petualang").strip()
+        first_name = name.split()[0] if name else "Petualang"
 
-    name = st.session_state.get("name", "Petualang").strip()
-    first_name = name.split()[0] if name else "Petualang"
+        # Nama file CSV untuk menyimpan cerita
+        feedback_file = "adventure_stories.csv"
 
-    feedback_file = "adventure_stories.csv"
+        # Tombol kirim cerita
+        if st.button(t("Kirim Cerita Petualanganku", "Send My Story")):
+            if feedback_text.strip() == "":
+                st.warning(t("Ceritamu sangat berarti bagi kami 😊", "Your story means a lot to us 😊"))
+            else:
+                # Simpan ke CSV
+                file_exists = os.path.isfile(feedback_file)
+                with open(feedback_file, mode="a", newline="", encoding="utf-8") as f:
+                    writer = csv.writer(f)
+                    if not file_exists:
+                        writer.writerow(["Name", "Story"])  # header CSV jika belum ada
+                    writer.writerow([first_name, feedback_text.strip()])
 
-    # === Tombol kirim cerita ===
-    if st.button(t("Kirim Cerita Petualanganku", "Send My Story")):
-        if feedback_text.strip() == "":
-            st.warning(t("Ceritamu sangat berarti bagi kami 😊", "Your story means a lot to us 😊"))
-        else:
-            file_exists = os.path.isfile(feedback_file)
-            with open(feedback_file, mode="a", newline="", encoding="utf-8") as f:
-                writer = csv.writer(f)
-                if not file_exists:
-                    writer.writerow(["Name", "Story"])
-                writer.writerow([first_name, feedback_text.strip()])
-            st.success(f"✅ {t('Terima kasih atas ceritanya','Thank you for sharing your story')}, {first_name}!")
+                st.success(f"✅ {t('Terima kasih atas ceritanya','Thank you for sharing your story')}, {first_name}!")
 
-    st.markdown("---")
+        st.markdown("---")
 
-    # === Tombol lihat semua cerita ===
-    if st.button(t("📖 Lihat Semua Cerita", "📖 View All Stories")):
-        if os.path.isfile(feedback_file):
-            with open(feedback_file, "r", encoding="utf-8") as f:
-                reader = csv.reader(f)
-                stories = list(reader)
-            st.markdown("### " + t("Daftar Cerita", "Stories List"))
-            for i, row in enumerate(stories[1:], start=1):
-                st.write(f"**{row[0]}**: {row[1]}")
-        else:
-            st.info(t("Belum ada cerita yang dikirim.", "No stories have been submitted yet."))
+        # Tombol restart
+        if st.button(t("🔁 Mau memulai lagi?", "🔁 Start again?")):
+            st.session_state.step = 0
+            st.session_state.name = ""
+            st.session_state.mode = None
+            st.session_state.start_adventure = False
+            st.rerun()
 
-    # === Tombol restart di bawah ===
-    if st.button(t("🔁 Mau memulai lagi?", "🔁 Start again?")):
-        st.session_state.step = 0
-        st.session_state.name = ""
-        st.session_state.mode = None
-        st.session_state.start_adventure = False
-        st.experimental_rerun()
+    # === Kolom kanan: lihat semua cerita ===
+    with col_right:
+        st.markdown("### 📖 " + t("Cerita Petualang", "Adventure Stories"))
+        if st.button(t("Lihat Semua Cerita", "View All Stories"), key="view_stories_btn"):
+            if os.path.isfile(feedback_file):
+                with open(feedback_file, "r", encoding="utf-8") as f:
+                    reader = csv.reader(f)
+                    stories = list(reader)
+
+                if len(stories) > 1:
+                    st.markdown(
+                        f"<div style='background-color:#f2e6d6; padding:10px; border-radius:10px; "
+                        f"box-shadow:0 4px 10px rgba(0,0,0,0.1); max-height:300px; overflow-y:auto;'>",
+                        unsafe_allow_html=True
+                    )
+
+                    for i, row in enumerate(stories[1:], start=1):  # skip header
+                        st.markdown(f"**{row[0]}**: {row[1]}")
+
+                    st.markdown("</div>", unsafe_allow_html=True)
+                else:
+                    st.info(t("Belum ada cerita yang dikirim.", "No stories have been submitted yet."))
+            else:
+                st.info(t("Belum ada cerita yang dikirim.", "No stories have been submitted yet."))
+
