@@ -322,9 +322,8 @@ elif st.session_state.step == 3:
         cols = st.columns(2) if len(uploaded_files) > 1 else [st]
 
         for i, file in enumerate(uploaded_files):
-            col = cols[i % len(cols)]
-            with col:
-                # --- Wrapper hasil ---
+            col = st.container()
+            with col:            
                 st.markdown("""
                     <div style='
                         background-color:#FFF8E7;
