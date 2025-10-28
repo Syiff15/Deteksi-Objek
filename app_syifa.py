@@ -383,74 +383,111 @@ elif st.session_state.step == 3:
 
 # === STEP 4 ===
 elif st.session_state.step == 4:
-    # === Layout utama: dua kolom ===
-    col_left, col_right = st.columns([2, 1])  # kiri lebih besar untuk form, kanan untuk daftar cerita
+    st.subheader(t("💬 Cerita Petualanganmu", "💬 Your Adventure Story"))
+    st.info(t(
+        "Petualanganmu bersama Ursidetect sudah selesai 🐾  Ceritakan pengalamanmu, ya!",
+        "Your adventure with Ursidetect has ended 🐾  Tell us about your experience!"
+    ))
 
-    with col_left:
-        st.subheader(t("💬 Cerita Petualanganmu", "💬 Your Adventure Story"))
-        st.info(t(
-            "Petualanganmu bersama Ursidetect sudah selesai 🐾  Ceritakan pengalamanmu, ya!",
-            "Your adventure with Ursidetect has ended 🐾  Tell us about your experience!"
-        ))
+    feedback_text = st.text_area(
+        t("Bagaimana Petualanganmu?", "How was your adventure?"),
+        placeholder=t("Kirimkan ceritamu di sini...", "Share your story here...")
+    )
 
-        feedback_text = st.text_area(
-            t("Bagaimana Petualanganmu?", "How was your adventure?"),
-            placeholder=t("Kirimkan ceritamu di sini...", "Share your story here...")
-        )
+    name = st.session_state.get("name", "Petualang").strip()
+    first_name = name.split()[0] if name else "Petualang"
+    feedback_file = "adventure_stories.csv"
 
-        name = st.session_state.get("name", "Petualang").strip()
-        first_name = name.split()[0] if name else "Petualang"
+    # Tombol kirim cerita
+    if st.button(t("Kirim Cerita Petualanganku", "Send My Story")):
+        if feedback_text.strip() == "":
+            st.warning(t("Ceritamu sangat berarti bagi kami 😊", "Your story means a lot to us 😊"))
+        else:
+            file_exists = os.path.isfile(feedback_file)
+            with open(feedback_file, mode="a", newline="", encoding="utf-8") as f:
+                writer = csv.writer(f)
+                if not file_exists:
+                    writer.writerow(["Name", "Story"])
+                writer.writerow([first_name, feedback_text.strip()])
+            st.success(f"✅ {t('Terima kasih atas ceritanya','Thank you for sharing your story')}, {first_name}!")
 
-        # Nama file CSV untuk menyimpan cerita
-        feedback_file = "adventure_stories.csv"
+    st.markdown("---")
 
-        # Tombol kirim cerita
-        if st.button(t("Kirim Cerita Petualanganku", "Send My Story")):
-            if feedback_text.strip() == "":
-                st.warning(t("Ceritamu sangat berarti bagi kami 😊", "Your story means a lot to us 😊"))
+    # Tombol restart
+    if st.button(t("🔁 Mau memulai lagi?", "🔁 Start again?")):
+        st.session_state.step = 0
+        st.session_state.name = ""
+        st.session_state.mode = None
+        st.session_state.start_adventure = False
+        st.experimental_rerun()
+
+    # --- CSS tombol melayang kanan bawah ---
+    st.markdown("""
+        <style>
+        .floating-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 25px;
+            background-color: #6B4226;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            z-index: 9999;
+        }
+        .floating-btn:hover {
+            background-color: #8B5E3B;
+            transform: scale(1.05);
+        }
+        </style>
+        <button class="floating-btn" id="storyBtn">📖 Lihat Semua Cerita</button>
+        <script>
+        const btn = document.getElementById("storyBtn");
+        btn.onclick = () => window.parent.postMessage({ type: "view_stories" }, "*");
+        </script>
+    """, unsafe_allow_html=True)
+
+    # --- Tangani klik tombol (pakai session_state toggle) ---
+    if "show_stories" not in st.session_state:
+        st.session_state.show_stories = False
+
+    # Streamlit menangkap pesan (event) dari tombol
+    import streamlit.components.v1 as components
+    components.html("""
+        <script>
+        window.addEventListener("message", (event) => {
+            if (event.data.type === "view_stories") {
+                window.parent.postMessage({ type: "streamlit:setComponentValue", key: "show_stories", value: "toggle" }, "*");
+            }
+        });
+        </script>
+    """, height=0)
+
+    # Kalau show_stories aktif → tampilkan panel daftar cerita
+    if st.session_state.show_stories:
+        if os.path.isfile(feedback_file):
+            with open(feedback_file, "r", encoding="utf-8") as f:
+                reader = csv.reader(f)
+                stories = list(reader)
+
+            if len(stories) > 1:
+                st.markdown("""
+                    <div style='position:fixed; bottom:70px; right:25px;
+                    background-color:#f2e6d6; padding:15px; border-radius:15px;
+                    box-shadow:0 4px 20px rgba(0,0,0,0.3); width:300px;
+                    max-height:300px; overflow-y:auto; z-index:9999;'>
+                        <h4 style='text-align:center; color:#6B4226;'>📖 Cerita Petualang</h4>
+                """, unsafe_allow_html=True)
+
+                for i, row in enumerate(stories[1:], start=1):
+                    st.markdown(f"**{row[0]}**: {row[1]}")
+
+                st.markdown("</div>", unsafe_allow_html=True)
             else:
-                # Simpan ke CSV
-                file_exists = os.path.isfile(feedback_file)
-                with open(feedback_file, mode="a", newline="", encoding="utf-8") as f:
-                    writer = csv.writer(f)
-                    if not file_exists:
-                        writer.writerow(["Name", "Story"])  # header CSV jika belum ada
-                    writer.writerow([first_name, feedback_text.strip()])
-
-                st.success(f"✅ {t('Terima kasih atas ceritanya','Thank you for sharing your story')}, {first_name}!")
-
-        st.markdown("---")
-
-        # Tombol restart
-        if st.button(t("🔁 Mau memulai lagi?", "🔁 Start again?")):
-            st.session_state.step = 0
-            st.session_state.name = ""
-            st.session_state.mode = None
-            st.session_state.start_adventure = False
-            st.rerun()
-
-    # === Kolom kanan: lihat semua cerita ===
-    with col_right:
-        st.markdown("### 📖 " + t("Cerita Petualang", "Adventure Stories"))
-        if st.button(t("Lihat Semua Cerita", "View All Stories"), key="view_stories_btn"):
-            if os.path.isfile(feedback_file):
-                with open(feedback_file, "r", encoding="utf-8") as f:
-                    reader = csv.reader(f)
-                    stories = list(reader)
-
-                if len(stories) > 1:
-                    st.markdown(
-                        f"<div style='background-color:#f2e6d6; padding:10px; border-radius:10px; "
-                        f"box-shadow:0 4px 10px rgba(0,0,0,0.1); max-height:300px; overflow-y:auto;'>",
-                        unsafe_allow_html=True
-                    )
-
-                    for i, row in enumerate(stories[1:], start=1):  # skip header
-                        st.markdown(f"**{row[0]}**: {row[1]}")
-
-                    st.markdown("</div>", unsafe_allow_html=True)
-                else:
-                    st.info(t("Belum ada cerita yang dikirim.", "No stories have been submitted yet."))
-            else:
-                st.info(t("Belum ada cerita yang dikirim.", "No stories have been submitted yet."))
-
+                st.toast(t("Belum ada cerita yang dikirim.", "No stories have been submitted yet."))
+        else:
+            st.toast(t("Belum ada cerita yang dikirim.", "No stories have been submitted yet."))
