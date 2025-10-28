@@ -47,35 +47,34 @@ if st.session_state.step == 0:
     col1, col2 = st.columns(2, gap="large")
 
     with col1:
-    st.markdown("""
-    <div style='
-        background-color:#f2e6d6;
-        padding:20px;
-        border-radius:15px;
-        text-align:center;
-        box-shadow:0 4px 12px rgba(0,0,0,0.1);
-        transition: transform 0.2s ease;
-    '>
-        <h4 style='margin-bottom:10px; font-size:20px; font-weight:600;'>ID Bahasa Indonesia</h4>
-        <p style='font-size:14px; color:#5b4636;'>Gunakan bahasa Indonesia untuk pengalaman penuh.</p>
-    </div>
-    """, unsafe_allow_html=True)
+        st.markdown("""
+        <div style='
+            background-color:#f2e6d6;
+            padding:20px;
+            border-radius:15px;
+            text-align:center;
+            box-shadow:0 4px 12px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease;
+        '>
+            <h4 style='margin-bottom:10px; font-size:20px; font-weight:600;'>ID Bahasa Indonesia</h4>
+            <p style='font-size:14px; color:#5b4636;'>Gunakan bahasa Indonesia untuk pengalaman penuh.</p>
+        </div>
+        """, unsafe_allow_html=True)
 
-with col2:
-    st.markdown("""
-    <div style='
-        background-color:#f2e6d6;
-        padding:20px;
-        border-radius:15px;
-        text-align:center;
-        box-shadow:0 4px 12px rgba(0,0,0,0.1);
-        transition: transform 0.2s ease;
-    '>
-        <h4 style='margin-bottom:10px; font-size:20px; font-weight:600;'>EN English</h4>
-        <p style='font-size:14px; color:#5b4636;'>Use English for a full experience.</p>
-    </div>
-    """, unsafe_allow_html=True)
-
+    with col2:
+        st.markdown("""
+        <div style='
+            background-color:#f2e6d6;
+            padding:20px;
+            border-radius:15px;
+            text-align:center;
+            box-shadow:0 4px 12px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease;
+        '>
+            <h4 style='margin-bottom:10px; font-size:20px; font-weight:600;'>EN English</h4>
+            <p style='font-size:14px; color:#5b4636;'>Use English for a full experience.</p>
+        </div>
+        """, unsafe_allow_html=True)
 
 # === STEP 1 ===
 elif st.session_state.step == 1:
