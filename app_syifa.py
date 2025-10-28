@@ -218,8 +218,7 @@ elif st.session_state.step == 2:
                 st.info(t("Ups, sepertinya kamu lupa menulis namamu dulu nih 😊", "Oops, you forgot to enter your name 😊"))
 
 # === STEP 3 ===
-if st.session_state.step == 3:
-    # --- Judul Selamat Datang ---
+elif st.session_state.step == 3:
     st.markdown(f"""
     <div style='
         background-color:#f2e6d6;
@@ -243,6 +242,29 @@ if st.session_state.step == 3:
 
     st.markdown(f"<h4 style='color:#966543; text-align:center;'>{t('Pilih Mode Petualang:','Choose Your Adventure Mode:')}</h4>", unsafe_allow_html=True)
     col1, col2 = st.columns(2, gap="large")
+
+    # --- CSS interaktif untuk kotak mode ---
+    st.markdown("""
+    <style>
+    .mode-card {
+        background-color: #f2e6d6;
+        padding: 25px;
+        border-radius: 15px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        text-align: center;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        cursor: pointer;
+    }
+    .mode-card:hover {
+        transform: scale(1.03);
+        box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+    }
+    .selected {
+        background-color: #e1c9aa !important;
+        border: 3px solid #966543;
+    }
+    </style>
+    """, unsafe_allow_html=True)
 
     # --- Kolom kiri: Deteksi ---
     with col1:
@@ -280,55 +302,61 @@ if st.session_state.step == 3:
 
     st.divider()
 
-    # =========================
-    # UPLOAD GAMBAR
-    # =========================
+    # ====================================================
+    # 🟤 UPLOAD GAMBAR
+    # ====================================================
     st.markdown(f"<h4 style='color:#966543;'>{t('🖼️ Masukkan Gambar','🖼️ Upload Image')}</h4>", unsafe_allow_html=True)
     st.caption(t("Kamu bisa mengunggah satu atau beberapa gambar (jpg, jpeg, png).",
                  "You can upload one or more images (jpg, jpeg, png)."))
-    uploaded_files = st.file_uploader("", type=["jpg","jpeg","png"], accept_multiple_files=True)
+    uploaded_files = st.file_uploader("", type=["jpg", "jpeg", "png"], accept_multiple_files=True)
 
-    # =========================
-    # LOAD MODEL SEKALI
-    # =========================
-    if uploaded_files and st.session_state.mode == "deteksi":
-        model = YOLO("model_panda_beruang.pt")  # pastikan model sudah ada
-
+    # ====================================================
+    # 🟠 HASIL DETEKSI / KLASIFIKASI
+    # ====================================================
+    if uploaded_files:
         for uploaded_file in uploaded_files:
             image = Image.open(uploaded_file).convert("RGB")
+
+            # Load model YOLO (gunakan modelmu sendiri)
+            model = torch.hub.load('ultralytics/yolov5', 'custom', path='model_panda_beruang.pt', force_reload=False)
+
+            # Deteksi objek
             results = model(image)
-            detected_img = Image.fromarray(results[0].plot())  # versi ultralytics terbaru
+            detected_img = results.render()[0]
+            detected_img = Image.fromarray(detected_img)
 
             # Layout dua kolom
-            col1, col2 = st.columns(2)
+            col1, col2 = st.columns([1, 1])
             with col1:
                 st.image(image, caption=uploaded_file.name, use_column_width=True)
                 st.markdown("<p style='text-align:center; color:#7B4F27;'>Gambar yang diunggah</p>", unsafe_allow_html=True)
+
             with col2:
-                st.markdown(f"""
-                <div style='background-color:#f2e6d6; padding:20px; border-radius:15px;
+                st.markdown("""
+                <div style='background-color:#f2e6d6; padding:25px; border-radius:15px; 
                 box-shadow:0 4px 15px rgba(0,0,0,0.1); text-align:center;'>
-                    <h4 style='color:#6B4226; margin-bottom:10px;'>🔍 Hasil Deteksi Objek</h4>
+                    <h2 style='color:#6B4226; margin-bottom:15px;'>🔍 Hasil Deteksi Objek</h2>
+                    <p style='color:#7B4F27; font-size:16px;'>
+                        Sistem AI Vision berhasil mendeteksi objek pada gambar berikut menggunakan model YOLO.
+                    </p>
                 </div>
                 """, unsafe_allow_html=True)
+
                 st.image(detected_img, caption="Hasil Deteksi", use_column_width=True)
 
-                # Tampilkan hasil deteksi teks
-                labels = results[0].boxes.cls.numpy()  # ambil class index
-                names = [model.names[int(c)] for c in labels] if len(labels)>0 else []
-                if names:
-                    st.success(f"🎯 Objek terdeteksi: {', '.join(names)}")
+                # Tampilkan hasil deteksi dalam teks
+                labels = results.pandas().xyxy[0]['name'].unique()
+                if len(labels) > 0:
+                    st.success(f"🎯 Objek terdeteksi: {', '.join(labels)}")
                 else:
                     st.warning("⚠️ Tidak ada objek panda atau beruang yang terdeteksi.")
 
-        # Tombol lanjut
-        col_kiri, col_kanan = st.columns([4,1])
+        # Tombol lanjut di bawah hasil
+        col_kiri, col_kanan = st.columns([4, 1])
         with col_kanan:
-            if st.button(t("Lanjutkan 🐾","Continue 🐾"), key="lanjutkan_step4"):
+            if st.button(t("Lanjutkan 🐾", "Continue 🐾")):
                 st.session_state.step = 4
                 st.rerun()
-    elif uploaded_files:
-        st.info("⚠️ Mode saat ini bukan Deteksi, pilih mode Deteksi untuk memproses gambar.")
     else:
         st.info("⬆️ Silakan unggah gambar terlebih dahulu untuk mendeteksi objek.")
 
