@@ -208,45 +208,36 @@ elif st.session_state.step == 2:
     display_name = name.lower().split()[0] if name else t('Petualang', 'Explorer')
 
     # --- Judul Selamat Datang ---
-    st.markdown(f"""
-    <div style='
-        background-color:#f2e6d6;
-        padding:25px;
-        border-radius:15px;
-        box-shadow:0 4px 15px rgba(0,0,0,0.1);
-        text-align:center;
-        margin-bottom:25px;
-    '>
-        <h1 style='color:#966543; margin-bottom:10px;'>
-            {t('Hai', 'Hi')}, <span style='text-transform:capitalize;'>{display_name}</span>! 👋
-        </h1>
-        <p style='font-size:18px; color:#5b4636;'>
-            {t('Selamat datang di markas petualangan <b>Ursidetect</b>!',
-               'Welcome to the adventure base of <b>Ursidetect</b>!')}<br>
-            {t('Pilih mode favoritmu — mau jadi <b>pemburu hewan</b> (deteksi) atau <b>peneliti hewan</b> (klasifikasi)?',
-               'Choose your mode — be a <b>Wildlife Hunter</b> (detection) or <b>Animal Researcher</b> (classification)?')}
-        </p>
-    </div>
-    """, unsafe_allow_html=True)
-
-    # --- Pilih mode petualang ---
+        # --- Pilih mode petualang ---
     st.markdown(
         f"<h4 style='color:#966543; text-align:center;'>{t('Pilih Mode Petualang:','Choose Your Adventure Mode:')}</h4>",
         unsafe_allow_html=True
     )
     col1, col2 = st.columns(2, gap="large")
 
+    current_mode = st.session_state.get("mode", None)
+
     # --- Kolom kiri: Deteksi ---
     with col1:
         deteksi_clicked = st.button("🐾 Pemburu Hewan", key="deteksi_mode", use_container_width=True)
-        css_class = "mode-card selected" if st.session_state.get("mode") == "deteksi" else "mode-card"
+        if deteksi_clicked:
+            st.session_state.mode = "deteksi"
+            st.rerun()
+
+        deteksi_active = current_mode == "deteksi"
+        deteksi_bg = "#e8d4b0" if deteksi_active else "#f2e6d6"
+        deteksi_shadow = "0 4px 15px rgba(0,0,0,0.15)" if deteksi_active else "0 3px 10px rgba(0,0,0,0.08)"
+        deteksi_scale = "scale(1.05)" if deteksi_active else "scale(1.0)"
+
         st.markdown(f"""
-        <div class="{css_class}" style="
-            background-color:#f2e6d6;
+        <div style="
+            background-color:{deteksi_bg};
             padding:15px;
             border-radius:12px;
-            box-shadow:0 3px 10px rgba(0,0,0,0.08);
+            box-shadow:{deteksi_shadow};
             text-align:center;
+            transform:{deteksi_scale};
+            transition: all 0.25s ease-in-out;
         ">
             <h4 style='color:#966543;'>🐾 {t('Pemburu Hewan','Wildlife Hunter')}</h4>
             <p style='color:#5b4636; font-size:14px;'>
@@ -255,37 +246,36 @@ elif st.session_state.step == 2:
             </p>
         </div>
         """, unsafe_allow_html=True)
-        if deteksi_clicked:
-            st.session_state.mode = "deteksi"
-            st.rerun()
 
     # --- Kolom kanan: Klasifikasi ---
     with col2:
-        klasifikasi_clicked = st.button(
-            "🔬 Peneliti Hewan", 
-            key="klasifikasi_mode", 
-            width='stretch'
-        )
-        css_class = "mode-card selected" if st.session_state.get("mode") == "klasifikasi" else "mode-card"
+        klasifikasi_clicked = st.button("🔬 Peneliti Hewan", key="klasifikasi_mode", use_container_width=True)
+        if klasifikasi_clicked:
+            st.session_state.mode = "klasifikasi"
+            st.rerun()
+
+        klasifikasi_active = current_mode == "klasifikasi"
+        klasifikasi_bg = "#e8d4b0" if klasifikasi_active else "#f2e6d6"
+        klasifikasi_shadow = "0 4px 15px rgba(0,0,0,0.15)" if klasifikasi_active else "0 3px 10px rgba(0,0,0,0.08)"
+        klasifikasi_scale = "scale(1.05)" if klasifikasi_active else "scale(1.0)"
+
         st.markdown(f"""
-        <div class="{css_class}" style="
-            background-color:#f2e6d6; 
-            padding:15px; 
-            border-radius:12px; 
-            box-shadow:0 3px 10px rgba(0,0,0,0.08);
+        <div style="
+            background-color:{klasifikasi_bg};
+            padding:15px;
+            border-radius:12px;
+            box-shadow:{klasifikasi_shadow};
             text-align:center;
-            transition: all 0.2s ease-in-out;
+            transform:{klasifikasi_scale};
+            transition: all 0.25s ease-in-out;
         ">
-            <h4 style='color:#966543; margin-bottom:8px;'>🔬 {t('Peneliti Hewan','Animal Researcher')}</h4>
-            <p style='color:#5b4636; font-size:14px; margin:0;'>
+            <h4 style='color:#966543;'>🔬 {t('Peneliti Hewan','Animal Researcher')}</h4>
+            <p style='color:#5b4636; font-size:14px;'>
                 {t('Mode <b>Klasifikasi</b> untuk mengenali apakah itu panda atau beruang.',
                    '<b>Classification</b> mode to recognize whether it’s a panda or a bear.')}
             </p>
         </div>
         """, unsafe_allow_html=True)
-        if klasifikasi_clicked:
-            st.session_state.mode = "klasifikasi"
-            st.rerun()
 
     st.divider()
 
