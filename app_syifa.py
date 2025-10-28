@@ -50,14 +50,15 @@ if st.session_state.step == 0:
         st.markdown("""
         <div style='
             background-color:#f2e6d6;
-            padding:20px;
+            padding:40px 20px;
             border-radius:15px;
             text-align:center;
             box-shadow:0 4px 12px rgba(0,0,0,0.1);
             transition: transform 0.2s ease;
+            font-size:24px;
+            font-weight:bold;
         '>
-            <h4 style='margin-bottom:10px; font-size:20px; font-weight:600;'>ID Bahasa Indonesia</h4>
-            <p style='font-size:14px; color:#5b4636;'>Gunakan bahasa Indonesia untuk pengalaman penuh.</p>
+            🇮🇩 BAHASA INDONESIA
         </div>
         """, unsafe_allow_html=True)
 
@@ -65,14 +66,15 @@ if st.session_state.step == 0:
         st.markdown("""
         <div style='
             background-color:#f2e6d6;
-            padding:20px;
+            padding:40px 20px;
             border-radius:15px;
             text-align:center;
             box-shadow:0 4px 12px rgba(0,0,0,0.1);
             transition: transform 0.2s ease;
+            font-size:24px;
+            font-weight:bold;
         '>
-            <h4 style='margin-bottom:10px; font-size:20px; font-weight:600;'>EN English</h4>
-            <p style='font-size:14px; color:#5b4636;'>Use English for a full experience.</p>
+            🇬🇧 EN ENGLISH
         </div>
         """, unsafe_allow_html=True)
 
