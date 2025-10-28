@@ -377,11 +377,13 @@ elif st.session_state.step == 3:
 
         # Tombol lanjut ke step berikutnya
         st.divider()
-        if st.button("🐾 " + t("Lanjut", "Next"), key="next_btn", use_container_width=True):
-            st.session_state.step = 4
-            if mode_selected == "klasifikasi":
-                st.session_state.last_classified = results_list
-            st.rerun()
+        col1, col2 = st.columns([4, 1])
+        with col2:
+            if st.button("🐾 " + t("Lanjut", "Next"), key="next_btn"):
+                st.session_state.step = 4
+                if mode_selected == "klasifikasi":
+                    st.session_state.last_classified = results_list
+                st.rerun()
 
 # === STEP 4 ===
 elif st.session_state.step == 4:
