@@ -464,6 +464,7 @@ elif st.session_state.step == 4:
             st.session_state.show_history = not st.session_state.show_history
 
     # === Tampilkan daftar cerita untuk semua orang ===
+        # === Tampilkan daftar cerita untuk semua orang ===
     if st.session_state.show_history:
         st.markdown("### 📚 History Cerita Para Petualang")
 
@@ -492,5 +493,7 @@ elif st.session_state.step == 4:
                 st.info(t("Belum ada cerita yang dikirimkan.", "No stories have been submitted yet."))
                 stories_html += f"<p>{t('Belum ada cerita yang dikirim.', 'No stories have been submitted yet.')}</p>"
         else:
-            st.info(t("Belum ada cerita yang dikirimkan.", 'No stories have been submitted yet.')}</p>"
+            st.info(t("Belum ada cerita yang dikirimkan.", "No stories have been submitted yet."))
+            stories_html += f"<p>{t('Belum ada cerita yang dikirim.', 'No stories have been submitted yet.')}</p>"
+
 
