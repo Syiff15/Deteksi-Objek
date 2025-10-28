@@ -220,9 +220,12 @@ elif st.session_state.step == 2:
 # === STEP 3 ===
 elif st.session_state.step == 3:
     st.markdown(f"""
-    <div style='background-color:#f2e6d6; padding:25px; border-radius:15px; box-shadow:0 4px 15px rgba(0,0,0,0.1); text-align:center; margin-bottom:25px;'>
+    <div style='background-color:#f2e6d6; padding:25px; border-radius:15px; 
+                box-shadow:0 4px 15px rgba(0,0,0,0.1); text-align:center; 
+                margin-bottom:25px;'>
         <h1 style='color:#966543; margin-bottom:10px;'>
-            {t('Hai', 'Hi')}, <span style='text-transform:capitalize;'>{st.session_state.name.lower().split()[0]}</span>! 👋
+            {t('Hai', 'Hi')}, 
+            <span style='text-transform:capitalize;'>{st.session_state.name.lower().split()[0]}</span>! 👋
         </h1>
         <p style='font-size:18px; color:#5b4636;'>
             {t('Selamat datang di markas petualangan <b>Ursidetect</b>!',
@@ -233,27 +236,35 @@ elif st.session_state.step == 3:
     </div>
     """, unsafe_allow_html=True)
 
-    st.markdown(f"<h4 style='color:#966543; text-align:center;'>{t('Pilih Mode Petualang:','Choose Your Adventure Mode:')}</h4>", unsafe_allow_html=True)
+    st.markdown(
+        f"<h4 style='color:#966543; text-align:center;'>{t('Pilih Mode Petualang:', 'Choose Your Adventure Mode:')}</h4>", 
+        unsafe_allow_html=True
+    )
+
     col1, col2 = st.columns(2, gap="large")
 
-    # --- CSS interaktif untuk kotak klik ---
+    # --- CSS untuk membuat tombol terlihat seperti card ---
     st.markdown("""
     <style>
-    .mode-card {
+    div[data-testid="stButton"] > button {
         background-color: #f2e6d6;
-        padding: 25px;
+        border: none;
+        color: #5b4636;
+        font-size: 16px;
         border-radius: 15px;
         box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        text-align: center;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-        cursor: pointer;
+        padding: 25px;
+        transition: all 0.2s ease;
+        height: 180px;
+        width: 100%;
     }
-    .mode-card:hover {
+    div[data-testid="stButton"] > button:hover {
         transform: scale(1.03);
+        background-color: #e1c9aa;
         box-shadow: 0 6px 15px rgba(0,0,0,0.15);
     }
-    .selected {
-        background-color: #e1c9aa !important;
+    div[data-testid="stButton"] > button:focus {
+        outline: none;
         border: 3px solid #966543;
     }
     </style>
@@ -261,89 +272,29 @@ elif st.session_state.step == 3:
 
     # --- Kolom kiri: Deteksi ---
     with col1:
-        css_class = "mode-card selected" if st.session_state.get("mode") == "deteksi" else "mode-card"
-        if st.markdown(
-            f"""
-            <div class="{css_class}" onclick="window.location.href='?mode=deteksi'">
-                <h4 style='color:#966543;'>🐾 {t('Pemburu Hewan','Wildlife Hunter')}</h4>
-                <p style='color:#5b4636; font-size:14px;'>{t('Mode <b>Deteksi</b> untuk menemukan lokasi panda dan beruang di gambar.','<b>Detection</b> mode to find pandas and bears in an image.')}</p>
-            </div>
-            """, unsafe_allow_html=True
-        ):
-            pass
-        # deteksi klik simulasi (karena Streamlit gak bisa baca onclick langsung)
-        if st.session_state.get("mode") == "deteksi":
+        deteksi_clicked = st.button(
+            f"🐾 {t('Pemburu Hewan', 'Wildlife Hunter')}\n\n"
+            + t("Mode **Deteksi** untuk menemukan lokasi panda dan beruang di gambar.",
+                "**Detection** mode to find pandas and bears in an image."),
+            key="deteksi_mode"
+        )
+        if deteksi_clicked:
             st.session_state.mode = "deteksi"
+            st.rerun()
 
     # --- Kolom kanan: Klasifikasi ---
     with col2:
-        css_class = "mode-card selected" if st.session_state.get("mode") == "klasifikasi" else "mode-card"
-        if st.markdown(
-            f"""
-            <div class="{css_class}" onclick="window.location.href='?mode=klasifikasi'">
-                <h4 style='color:#966543;'>🔬 {t('Peneliti Hewan','Animal Researcher')}</h4>
-                <p style='color:#5b4636; font-size:14px;'>{t('Mode <b>Klasifikasi</b> untuk mengenali apakah itu panda atau beruang.','<b>Classification</b> mode to recognize whether it’s a panda or a bear.')}</p>
-            </div>
-            """, unsafe_allow_html=True
-        ):
-            pass
-        if st.session_state.get("mode") == "klasifikasi":
+        klasifikasi_clicked = st.button(
+            f"🔬 {t('Peneliti Hewan', 'Animal Researcher')}\n\n"
+            + t("Mode **Klasifikasi** untuk mengenali apakah itu panda atau beruang.",
+                "**Classification** mode to recognize whether it’s a panda or a bear."),
+            key="klasifikasi_mode"
+        )
+        if klasifikasi_clicked:
             st.session_state.mode = "klasifikasi"
+            st.rerun()
 
     st.divider()
-
-    # --- Upload gambar ---
-    st.markdown(f"<h4 style='color:#966543;'>{t('🖼️ Masukkan Gambar','🖼️ Upload Image')}</h4>", unsafe_allow_html=True)
-    st.caption(t("Kamu bisa mengunggah satu atau beberapa gambar (jpg, jpeg, png).", 
-                 "You can upload one or more images (jpg, jpeg, png)."))
-    uploaded_files = st.file_uploader("", type=["jpg", "jpeg", "png"], accept_multiple_files=True)
-
-    # --- Proses hasil ---
-    if uploaded_files:
-        st.markdown(f"<h4 style='color:#966543;'>{t('📸 Hasil Petualangan Kamu','📸 Your Adventure Results')}</h4>", unsafe_allow_html=True)
-        mode = st.session_state.get("mode", "deteksi")
-        cols = st.columns(2) if len(uploaded_files) > 1 else [st]
-
-        for i, file in enumerate(uploaded_files):
-            col = cols[i % len(cols)]
-            with col:
-                st.markdown("<div style='background-color:#FFF8E7; border-radius:20px; box-shadow:0 4px 12px rgba(0,0,0,0.1); padding:20px; margin-bottom:20px; text-align:center;'>", unsafe_allow_html=True)
-                img = Image.open(file).convert("RGB")
-                st.image(img, caption=f"🖼️ {file.name}", use_container_width=True)
-
-                if mode == "deteksi":
-                    with st.spinner(t(f"🔍 Mendeteksi objek pada {file.name}...", f"🔍 Detecting objects in {file.name}...")):
-                        results = yolo_model.predict(img, conf=0.6, verbose=False)
-                        boxes = results[0].boxes
-                        if boxes is not None and len(boxes) > 0:
-                            st.image(results[0].plot(), caption=t("Hasil Petualangan","Detection Result"), use_container_width=True)
-                            st.success(t("✅ Objek berhasil terdeteksi!", "✅ Object detected successfully!"))
-                        else:
-                            st.warning(t("🚫 Tidak ada objek yang terdeteksi.", "🚫 No objects detected."))
-
-                elif mode == "klasifikasi":
-                    with st.spinner(t(f"🧠 Mengklasifikasi {file.name}...", f"🧠 Classifying {file.name}...")):
-                        img_resized = img.resize((128, 128))
-                        img_array = image.img_to_array(img_resized)
-                        img_array = np.expand_dims(img_array, axis=0) / 255.0
-
-                        prediction = classifier.predict(img_array)
-                        class_index = np.argmax(prediction)
-                        confidence = np.max(prediction)
-                        labels = ["Panda", "Beruang"]
-                        predicted_label = labels[class_index]
-
-                        st.write(f"🎯 {t('Hasil Prediksi','Prediction Result')}: *{predicted_label}* ({confidence:.2f})")
-                        st.progress(float(confidence))
-
-                st.markdown("</div>", unsafe_allow_html=True)
-
-    # Tombol lanjut
-    col_kiri, col_kanan = st.columns([4, 1])
-    with col_kanan:
-        if st.button(t("Lanjutkan 🐾", "Continue 🐾")):
-            st.session_state.step = 4
-            st.rerun()
 
 # === STEP 4 ===
 elif st.session_state.step == 4:
