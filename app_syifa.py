@@ -56,14 +56,14 @@ if st.session_state.step == 0:
             box-shadow:0 4px 12px rgba(0,0,0,0.1);
             transition: transform 0.2s ease;
         '>
-            <h4 style='margin-bottom:10px;'ID Bahasa Indonesia</h4>
+            <h4 style='margin-bottom:10px;'>ID Bahasa Indonesia</h4>
         </div>
         """, unsafe_allow_html=True)
+    if st.button("Pilih Bahasa Indonesia", use_container_width=True):
+        st.session_state.language = "id"
+        st.session_state.step = 1
+        st.rerun()
 
-        if st.button("Pilih Bahasa Indonesia", use_container_width=True):
-            st.session_state.language = "id"
-            st.session_state.step = 1
-            st.rerun()
 
     with col2:
         st.markdown("""
