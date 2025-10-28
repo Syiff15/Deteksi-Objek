@@ -382,6 +382,9 @@ elif st.session_state.step == 3:
                 st.rerun()
 
 # === STEP 4 ===
+import streamlit as st
+import csv, os
+
 elif st.session_state.step == 4:
     st.subheader(t("💬 Cerita Petualanganmu", "💬 Your Adventure Story"))
     st.info(t(
@@ -396,6 +399,7 @@ elif st.session_state.step == 4:
 
     name = st.session_state.get("name", "Petualang").strip()
     first_name = name.split()[0] if name else "Petualang"
+
     feedback_file = "adventure_stories.csv"
 
     # Tombol kirim cerita
@@ -409,6 +413,7 @@ elif st.session_state.step == 4:
                 if not file_exists:
                     writer.writerow(["Name", "Story"])
                 writer.writerow([first_name, feedback_text.strip()])
+
             st.success(f"✅ {t('Terima kasih atas ceritanya','Thank you for sharing your story')}, {first_name}!")
 
     st.markdown("---")
@@ -421,53 +426,29 @@ elif st.session_state.step == 4:
         st.session_state.start_adventure = False
         st.experimental_rerun()
 
-    # --- CSS tombol melayang kanan bawah ---
-    st.markdown("""
-        <style>
-        .floating-btn {
-            position: fixed;
-            bottom: 20px;
-            right: 25px;
-            background-color: #6B4226;
-            color: white;
-            border: none;
-            border-radius: 50px;
-            padding: 12px 20px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            z-index: 9999;
-        }
-        .floating-btn:hover {
-            background-color: #8B5E3B;
-            transform: scale(1.05);
-        }
-        </style>
-        <button class="floating-btn" id="storyBtn">📖 Lihat Semua Cerita</button>
-        <script>
-        const btn = document.getElementById("storyBtn");
-        btn.onclick = () => window.parent.postMessage({ type: "view_stories" }, "*");
-        </script>
-    """, unsafe_allow_html=True)
-
-    # --- Tangani klik tombol (pakai session_state toggle) ---
+    # === STATE untuk popup cerita ===
     if "show_stories" not in st.session_state:
         st.session_state.show_stories = False
 
-    # Streamlit menangkap pesan (event) dari tombol
-    import streamlit.components.v1 as components
-    components.html("""
-        <script>
-        window.addEventListener("message", (event) => {
-            if (event.data.type === "view_stories") {
-                window.parent.postMessage({ type: "streamlit:setComponentValue", key: "show_stories", value: "toggle" }, "*");
-            }
-        });
-        </script>
-    """, height=0)
+    # === CSS tombol melayang kanan bawah ===
+    st.markdown("""
+        <style>
+        div[data-testid="stFloatingButton"] {
+            position: fixed;
+            bottom: 20px;
+            right: 25px;
+            z-index: 9999;
+        }
+        </style>
+    """, unsafe_allow_html=True)
 
-    # Kalau show_stories aktif → tampilkan panel daftar cerita
+    # === Tombol melayang ===
+    float_col = st.container()
+    with float_col:
+        if st.button("📖 " + t("Lihat Semua Cerita", "View All Stories"), key="floating_story_btn"):
+            st.session_state.show_stories = not st.session_state.show_stories
+
+    # === Popup daftar cerita ===
     if st.session_state.show_stories:
         if os.path.isfile(feedback_file):
             with open(feedback_file, "r", encoding="utf-8") as f:
@@ -478,16 +459,17 @@ elif st.session_state.step == 4:
                 st.markdown("""
                     <div style='position:fixed; bottom:70px; right:25px;
                     background-color:#f2e6d6; padding:15px; border-radius:15px;
-                    box-shadow:0 4px 20px rgba(0,0,0,0.3); width:300px;
+                    box-shadow:0 4px 20px rgba(0,0,0,0.3); width:320px;
                     max-height:300px; overflow-y:auto; z-index:9999;'>
                         <h4 style='text-align:center; color:#6B4226;'>📖 Cerita Petualang</h4>
                 """, unsafe_allow_html=True)
 
                 for i, row in enumerate(stories[1:], start=1):
-                    st.markdown(f"**{row[0]}**: {row[1]}")
+                    st.markdown(f"<p><b>{row[0]}</b>: {row[1]}</p>", unsafe_allow_html=True)
 
                 st.markdown("</div>", unsafe_allow_html=True)
             else:
                 st.toast(t("Belum ada cerita yang dikirim.", "No stories have been submitted yet."))
         else:
             st.toast(t("Belum ada cerita yang dikirim.", "No stories have been submitted yet."))
+
