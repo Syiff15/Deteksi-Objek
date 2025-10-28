@@ -53,7 +53,7 @@ if st.session_state.step == 0:
             padding:40px 20px;
             border-radius:15px;
             text-align:center;
-            box-shadow:0 4px 12px rgba(0,0,0,0.1);
+            box-shadow:0 4px 10px rgba(0,0,0,0.1);
             transition: transform 0.2s ease;
             font-size:24px;
             font-weight:bold;
@@ -69,12 +69,12 @@ if st.session_state.step == 0:
             padding:40px 20px;
             border-radius:15px;
             text-align:center;
-            box-shadow:0 4px 12px rgba(0,0,0,0.1);
+            box-shadow:0 4px 10px rgba(0,0,0,0.1);
             transition: transform 0.2s ease;
             font-size:24px;
             font-weight:bold;
         '>
-            🇬🇧 EN ENGLISH
+            EN ENGLISH
         </div>
         """, unsafe_allow_html=True)
 
