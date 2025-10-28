@@ -44,21 +44,28 @@ if "step" not in st.session_state:
 
 if st.session_state.step == 0:
     st.image("slide 1.jpg", use_container_width=True)
-    st.markdown("<h3 style='text-align:center; color:#966543; margin-top:-20px;'>🌐 Pilih Bahasa / Choose Language</h3>", unsafe_allow_html=True)
-    st.markdown("<br>", unsafe_allow_html=True)
 
-    # ===== CSS Styling =====
+    # 🪄 Tambah jarak dari logo ke teks
+    st.markdown("<div style='margin-top:30px;'></div>", unsafe_allow_html=True)
+
+    # === Judul Pilihan Bahasa ===
+    st.markdown(
+        "<h3 style='text-align:center; color:#966543;'>🌐 Pilih Bahasa / Choose Language</h3>",
+        unsafe_allow_html=True,
+    )
+
+    # === CSS Styling ===
     st.markdown("""
     <style>
     .lang-container {
         display: flex;
         justify-content: center;
         gap: 100px;
-        margin-top: -10px; /* lebih dekat ke atas */
+        margin-top: 10px; /* jarak tombol dari teks */
     }
     .lang-option {
         background-color: #f2e6d6;
-        width: 300px;         /* lebar sejajar logo */
+        width: 300px;
         height: 130px;
         display: flex;
         align-items: center;
@@ -81,7 +88,7 @@ if st.session_state.step == 0:
     </style>
     """, unsafe_allow_html=True)
 
-    # ===== HTML Layout =====
+    # === HTML Layout ===
     st.markdown("""
     <div class="lang-container">
         <div class="lang-option" onclick="window.location.href='?lang=id'">🇮🇩 ID BAHASA INDONESIA</div>
@@ -89,7 +96,7 @@ if st.session_state.step == 0:
     </div>
     """, unsafe_allow_html=True)
 
-    # ===== Logic untuk Pilihan Bahasa =====
+    # === Logic Pilihan Bahasa ===
     query_params = st.query_params
     if "lang" in query_params:
         lang = query_params["lang"][0]
@@ -99,6 +106,7 @@ if st.session_state.step == 0:
             st.session_state.language = "en"
         st.session_state.step = 1
         st.rerun()
+
 
 # === STEP 1 ===
 elif st.session_state.step == 1:
