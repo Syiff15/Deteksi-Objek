@@ -391,7 +391,7 @@ elif st.session_state.step == 4:
 
     feedback_text = st.text_area(
         t("Bagaimana Petualanganmu?", "How was your adventure?"),
-        placeholder=t("Kirimkan ceritmu di sini...", "Share your story here...")
+        placeholder=t("Kirimkan ceritamu di sini...", "Share your story here...")
     )
 
     name = st.session_state.get("name", "Petualang").strip()
@@ -404,7 +404,6 @@ elif st.session_state.step == 4:
         if feedback_text.strip() == "":
             st.warning(t("Ceritamu sangat berarti bagi kami 😊", "Your story means a lot to us 😊"))
         else:
-            # Simpan ke CSV
             file_exists = os.path.isfile(feedback_file)
             with open(feedback_file, mode="a", newline="", encoding="utf-8") as f:
                 writer = csv.writer(f)
@@ -428,7 +427,7 @@ elif st.session_state.step == 4:
     if "show_stories" not in st.session_state:
         st.session_state.show_stories = False
 
-    # ===== CSS untuk tombol floating dan popup =====
+    # ===== CSS tombol floating dan popup =====
     st.markdown("""
         <style>
         .floating-container {
@@ -438,7 +437,7 @@ elif st.session_state.step == 4:
             z-index: 9999;
             text-align: right;
         }
-        .floating-button {
+        div[data-testid="stButton"] > button.floating-btn {
             background-color: #6B4226;
             color: white;
             border: none;
@@ -449,7 +448,7 @@ elif st.session_state.step == 4:
             cursor: pointer;
             transition: all 0.3s ease;
         }
-        .floating-button:hover {
+        div[data-testid="stButton"] > button.floating-btn:hover {
             background-color: #8B5E3C;
             transform: scale(1.05);
         }
@@ -466,54 +465,32 @@ elif st.session_state.step == 4:
             overflow-y: auto;
             z-index: 10000;
         }
-        .close-btn {
-            text-align: right;
-            margin-top: -5px;
-        }
-        .close-btn button {
-            background: none;
-            border: none;
-            color: #6B4226;
-            font-size: 18px;
-            cursor: pointer;
-        }
         </style>
     """, unsafe_allow_html=True)
 
-    # ===== Popup cerita floating =====
-    if st.session_state.show_stories:
-        stories_html = "<div class='story-popup'>"
-        stories_html += "<div class='close-btn'><button onClick='window.location.reload()'>✖</button></div>"
-        stories_html += "<h4 style='text-align:center; color:#6B4226;'>📖 Cerita Petualang</h4>"
+    # ===== Tombol melayang =====
+    with st.container():
+        st.markdown("<div class='floating-container'>", unsafe_allow_html=True)
+        if st.button("📖 History", key="floating_story_btn", help="Lihat semua cerita", type="primary"):
+            st.session_state.show_stories = not st.session_state.show_stories
+            st.experimental_rerun()
+        st.markdown("</div>", unsafe_allow_html=True)
 
+    # ===== Popup muncul jika tombol ditekan =====
+    if st.session_state.show_stories:
         if os.path.isfile(feedback_file):
             with open(feedback_file, "r", encoding="utf-8") as f:
                 reader = csv.reader(f)
                 stories = list(reader)
 
             if len(stories) > 1:
+                stories_html = "<div class='story-popup'><h4 style='text-align:center; color:#6B4226;'>📖 Cerita Petualang</h4>"
                 for row in stories[1:]:
                     stories_html += f"<p><b>{row[0]}</b>: {row[1]}</p>"
+                stories_html += "</div>"
+                st.markdown(stories_html, unsafe_allow_html=True)
             else:
-                stories_html += f"<p>{t('Belum ada cerita yang dikirim.', 'No stories have been submitted yet.')}</p>"
+                st.toast(t("Belum ada cerita yang dikirim.", "No stories have been submitted yet."))
         else:
-            stories_html += f"<p>{t('Belum ada cerita yang dikirim.', 'No stories have been submitted yet.')}</p>"
-
-        stories_html += "</div>"
-        st.markdown(stories_html, unsafe_allow_html=True)
-
-    # ===== Tombol floating untuk toggle popup =====
-    st.markdown("""
-        <div class='floating-container'>
-            <form action='#' method='get'>
-                <button class='floating-button' type='submit'>📖 Lihat Semua Cerita</button>
-            </form>
-        </div>
-    """, unsafe_allow_html=True)
-
-    # Tombol toggle (Python side)
-    # Tombol Python untuk toggle popup
-    if st.button("Toggle Stories", key="toggle_story_popup"):
-        st.session_state.show_stories = not st.session_state.show_stories
-        st.experimental_rerun()
+            st.toast(t("Belum ada cerita yang dikirim.", "No stories have been submitted yet."))
 
