@@ -202,120 +202,20 @@ elif st.session_state.step == 1:
             
 # === STEP 2 ===
 elif st.session_state.step == 2:
-    st.image("slide 1.jpg", use_container_width=True)
+    st.image("slide 3-1.png", use_container_width=True)
+    st.write(t("Sekarang giliran kamu! Masukkan namamu supaya Ursidetect tahu siapa partner barunya.",
+               "Now it’s your turn! Enter your name so Ursidetect knows its new partner."))
 
-    # --- Input Nama User ---
-    if "name" not in st.session_state or st.session_state.name == "":
-        st.session_state.name = st.text_input(
-            t("Masukkan namamu:", "Enter your name:"),
-            placeholder=t("Misal: Syifa", "E.g., Syifa")
-        )
-
-    name = st.session_state.name.strip()
-    display_name = name.split()[0] if name else t("Petualang", "Explorer")
-
-    # --- Cek nama ---
-    if not name:
-        st.info(t(
-            "Tolong masukkan namamu untuk melanjutkan petualangan!",
-            "Please enter your name to continue the adventure!"
-        ))
-        st.stop()  # menghentikan eksekusi sampai nama diisi
-        
-    # Judul & deskripsi
-    st.markdown(f"""
-    <h1 style='text-align:center; color:#1E1E1E;'>
-        {t('Selamat datang di', 'Welcome to')} 
-        <span style="color:#966543;">Ursidetect</span>
-    </h1>
-    <p style='text-align:center; font-size:18px; color:#1E1E1E;'>
-        {t('Sebelum kita mulai berpetualang, kenalan dulu yuk dengan', 'Before we start our adventure, let’s get to know')}
-        <b>Ursidetect</b>!<br>
-        {t('Ursidetect adalah platform berbasis <b>kecerdasan buatan (AI)</b> yang dirancang untuk <b>mendeteksi</b> dan <b>mengklasifikasikan</b> hewan <b>panda</b> serta <b>beruang</b>.',
-           'Ursidetect is an <b>AI-based</b> platform designed to <b>detect</b> and <b>classify</b> <b>pandas</b> and <b>bears</b>.')}
-    </p>
-    """, unsafe_allow_html=True)
-
-    # Styling dua kotak fitur
-    st.markdown("""
-    <style>
-    .feature-container {
-        display: flex;
-        justify-content: center;
-        gap: 80px;
-        margin-top: 40px;
-    }
-
-    .feature-box {
-        background-color: #f2e6d6;
-        width: 400px;
-        height: 220px;
-        border-radius: 25px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        padding: 25px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-        transition: all 0.3s ease;
-    }
-
-    .feature-box:hover {
-        transform: scale(1.03);
-        background-color: #e9dcc6;
-        border: 2px solid #d2b48c;
-    }
-
-    .feature-title {
-        font-size: 22px;
-        font-weight: 700;
-        color: #2f2f2f;
-        margin-bottom: 10px;
-    }
-
-    .feature-text {
-        font-size: 16px;
-        color: #3b3b3b;
-        line-height: 1.4;
-    }
-    </style>
-    """, unsafe_allow_html=True)
-
-    # Isi dua kotak fitur
-    st.markdown(f"""
-    <div class="feature-container">
-        <div class="feature-box">
-            <div class="feature-title">🐻‍❄️ {t('Deteksi Gambar','Image Detection')}</div>
-            <div class="feature-text">
-                {t('Ursidetect dapat menemukan dan menandai posisi panda atau beruang di dalam gambar menggunakan kotak pembatas (<i>bounding box</i>).',
-                   'Ursidetect can locate and highlight the position of pandas or bears in an image using <i>bounding boxes</i>.')}
-            </div>
-        </div>
-        <div class="feature-box">
-            <div class="feature-title">🐼 {t('Klasifikasi Gambar','Image Classification')}</div>
-            <div class="feature-text">
-                {t('Ursidetect dapat menentukan apakah gambar tersebut termasuk panda atau beruang, lengkap dengan tingkat kepercayaan (<i>confidence score</i>).',
-                   'Ursidetect can determine whether an image shows a panda or a bear, along with its <i>confidence score</i>.')}
-            </div>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-
-    # Garis dan teks lanjut
-    st.markdown("<br><hr>", unsafe_allow_html=True)
-    st.markdown(f"""
-    <p style='text-align:center; color:#282328; font-size:18px;'>
-        {t('Yuk lanjut ke langkah berikutnya untuk mulai berpetualang!','Let’s continue to the next step to start the adventure!')}
-    </p>
-    """, unsafe_allow_html=True)
-
-    # Tombol lanjut
-    col1, col2, col3 = st.columns([4, 1, 1])
-    with col3:
-        if st.button(t("Lanjut 🐾", "Next 🐾")):
-            st.session_state.step = 3
-            st.rerun()
+    name_input = st.text_input("", placeholder=t("Contoh: Ursi", "Example: Ursi"))
+    col_kiri, col_kanan = st.columns([4, 1])
+    with col_kanan:
+        if st.button(t("Lanjutkan 🐾", "Continue 🐾")):
+            if name_input.strip() != "":
+                st.session_state.name = name_input.strip()
+                st.session_state.step = 3
+                st.rerun()
+            else:
+                st.info(t("Ups, sepertinya kamu lupa menulis namamu dulu nih 😊", "Oops, you forgot to enter your name 😊"))
 
 # === STEP 3 ===
 elif st.session_state.step == 3:
