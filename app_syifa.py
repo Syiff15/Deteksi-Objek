@@ -51,16 +51,15 @@ if st.session_state.step == 0:
     
     col1, col2 = st.columns(2)
     with col1:
-        if st.button("ID Bahasa Indonesia", use_container_width=True):
-            st.session_state.language = "ID"
-            st.session_state.step = 1
-            st.rerun()
+    if st.button("ID Bahasa Indonesia", use_container_width=True):
+        st.session_state.language = "ID"
+        st.session_state.step = 1
+        st.rerun()
     with col2:
-        if st.button(EN English", use_container_width=True):
-            st.session_state.language = "EN"
-            st.session_state.step = 1
-            st.rerun()
-
+    if st.button("EN English", use_container_width=True):
+        st.session_state.language = "EN"
+        st.session_state.step = 1
+        st.rerun()
 
 # === STEP 1 ===
 elif st.session_state.step == 1:
