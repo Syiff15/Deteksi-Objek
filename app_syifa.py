@@ -201,7 +201,7 @@ elif st.session_state.step == 1:
             st.rerun()
 
 # === STEP 2 ===
-elif st.session_state.step == 2:
+elif st.session_state.step == 3:
 
     # --- Judul Selamat Datang ---
     st.markdown(f"""
@@ -338,8 +338,8 @@ elif st.session_state.step == 2:
     else:
         st.info("⬆️ Silakan unggah gambar terlebih dahulu untuk memproses objek.")
 
-# === STEP 3 ===
-elif st.session_state.step == 3:
+# === STEP 4 ===
+elif st.session_state.step == 4:
     st.subheader(t("💬 Cerita Petualanganmu", "💬 Your Adventure Story"))
     st.info(t(
         "Petualanganmu bersama Ursidetect sudah selesai 🐾  Ceritakan pengalamanmu, ya!",
