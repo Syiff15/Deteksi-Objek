@@ -307,7 +307,7 @@ elif st.session_state.step == 3:
 
     # --- Tombol Mulai Petualangan (hanya muncul jika ada gambar dan mode) ---
     if mode_selected and uploaded_files:
-        if st.button("🐾 " + t("Mulai Petualangan!", "Start the Adventure!"), key="start_btn", use_container_width=False):
+        if st.button("🐾" + t("Mulai Petualangan!", "Start the Adventure!" + "🐾"), key="start_btn", use_container_width=False):
             st.session_state.start_adventure = True
             st.rerun()
 
@@ -383,7 +383,7 @@ elif st.session_state.step == 3:
                 st.session_state.step = 4
                 if mode_selected == "klasifikasi":
                     st.session_state.last_classified = results_list
-                st.rerun()
+                st.experimental_rerun()
 
 # === STEP 4 ===
 elif st.session_state.step == 4:
