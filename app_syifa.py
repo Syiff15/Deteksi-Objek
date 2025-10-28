@@ -43,52 +43,48 @@ if st.session_state.step == 0:
     st.image("slide 1.jpg", use_container_width=True)
     st.markdown("<h3 style='text-align:center; color:#966543;'>🌐 Pilih Bahasa / Choose Language</h3>", unsafe_allow_html=True)
     st.markdown("<br>", unsafe_allow_html=True)
-    
+
     col1, col2 = st.columns(2, gap="large")
 
     with col1:
-        if st.button("🇮🇩 BAHASA INDONESIA", key="id_box", help="Klik untuk memilih Bahasa Indonesia"):
+        st.markdown("""
+        <div style='
+            background-color:#f2e6d6;
+            padding:20px;
+            border-radius:15px;
+            text-align:center;
+            box-shadow:0 4px 12px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease;
+        '>
+            <h4 style='margin-bottom:10px; font-weight:600;'>ID BAHASA INDONESIA</h4>
+            <p style='font-size:14px; color:#5b4636;'>Gunakan bahasa Indonesia untuk pengalaman penuh.</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+        if st.button("Pilih ID Bahasa Indonesia", use_container_width=True):
             st.session_state.language = "id"
             st.session_state.step = 1
             st.rerun()
-        else:
-            st.markdown("""
-            <div style='
-                background-color:#f2e6d6;
-                padding:60px 20px;
-                border-radius:15px;
-                text-align:center;
-                box-shadow:0 4px 12px rgba(0,0,0,0.1);
-                font-size:28px;
-                font-weight:bold;
-                cursor:pointer;
-                transition: transform 0.2s ease;
-            '>
-                🇮🇩 BAHASA INDONESIA
-            </div>
-            """, unsafe_allow_html=True)
 
     with col2:
-        if st.button("EN ENGLISH", key="en_box", help="Click to choose English"):
+        st.markdown("""
+        <div style='
+            background-color:#f2e6d6;
+            padding:20px;
+            border-radius:15px;
+            text-align:center;
+            box-shadow:0 4px 12px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease;
+        '>
+            <h4 style='margin-bottom:10px; font-weight:600;'>EN ENGLISH</h4>
+            <p style='font-size:14px; color:#5b4636;'>Use English for a full experience.</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+        if st.button("Pilih EN English", use_container_width=True):
             st.session_state.language = "en"
             st.session_state.step = 1
             st.rerun()
-        else:
-            st.markdown("""
-            <div style='
-                background-color:#f2e6d6;
-                padding:60px 20px;
-                border-radius:15px;
-                text-align:center;
-                box-shadow:0 4px 12px rgba(0,0,0,0.1);
-                font-size:28px;
-                font-weight:bold;
-                cursor:pointer;
-                transition: transform 0.2s ease;
-            '>
-                EN ENGLISH
-            </div>
-            """, unsafe_allow_html=True)
 
 # === STEP 1 ===
 elif st.session_state.step == 1:
