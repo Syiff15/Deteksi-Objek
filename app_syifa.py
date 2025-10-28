@@ -310,8 +310,7 @@ elif st.session_state.step == 3:
     if mode_selected and uploaded_files:
         if st.button("🚀 " + t("Mulai Petualangan!", "Start the Adventure!"), key="start_btn", use_container_width=True):
             st.session_state.start_adventure = True
-            st.session_state.results_list = []  # simpan hasil nanti
-            st.experimental_rerun()
+            st.session_state.results_list = [] 
 
     # --- Proses hasil deteksi/klasifikasi ---
     if st.session_state.get("start_adventure", False):
