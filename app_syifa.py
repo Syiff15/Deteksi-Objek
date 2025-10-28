@@ -298,7 +298,7 @@ elif st.session_state.step == 3:
         uploaded_files = []
     else:
         uploaded_files = st.file_uploader(
-            t("Unggah gambar", "Upload images"),
+            t("Untuk mulai berpetualang, unggah gambarmu di sini yaa⬇️", "To start your adventure, upload your image here⬇️"),
             type=["jpg", "jpeg", "png"],
             accept_multiple_files=True,
             key="uploader_step3"
