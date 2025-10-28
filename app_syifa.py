@@ -457,44 +457,44 @@ elif st.session_state.step == 4:
         unsafe_allow_html=True
     )
 
-    # Kolom untuk toggle button (agar Streamlit tahu state-nya)
+    # Kolom kanan bawah untuk tombol toggle
     col1, col2, col3 = st.columns([5, 1, 1])
     with col3:
-        show = st.button("📜 History")
-        if show:
+        if st.button("📜 History"):
             st.session_state.show_history = not st.session_state.show_history
 
-    # === Tampilkan daftar cerita jika aktif ===
+    # === Tampilkan daftar cerita untuk semua orang ===
     if st.session_state.show_history:
         st.markdown("### 📚 History Cerita Para Petualang")
 
         stories_html = ""
 
         if os.path.isfile(feedback_file):
-            df = pd.read_csv(feedback_file)
+            with open(feedback_file, "r", encoding="utf-8") as f:
+                reader = csv.reader(f)
+                stories = list(reader)
 
-            if df.empty:
-                stories_html += f"<p>{t('Belum ada cerita yang dikirim.', 'No stories have been submitted yet.')}</p>"
-            else:
-                # === Versi Streamlit Expander ===
-                for _, row in df.iterrows():
-                    with st.expander(f"🧭 {row['Name']}"):
-                        st.write(row['Story'])
+            if len(stories) > 1:
+                # Lewati header
+                for row in stories[1:]:
+                    name, story = row
+                    # tampilkan di Streamlit
+                    with st.expander(f"🧭 {name}"):
+                        st.write(story)
 
-                # === Versi HTML Card-Style ===
-                stories_html += "<hr><h4>✨ Semua Cerita:</h4>"
-                for _, row in df.iterrows():
+                    # simpan juga versi HTML (buat modal opsional)
                     stories_html += f"""
-                        <div style='background:#fff3cd;padding:10px;margin:8px 0;border-radius:10px;
-                                    box-shadow:0px 2px 6px rgba(0,0,0,0.1);'>
-                            <b>{row['Name']}</b>: {row['Story']}
-                        </div>
+                    <div style='margin-bottom:10px;'>
+                        <p><b>🧭 {name}</b>: {story}</p>
+                    </div>
                     """
+            else:
+                st.info(t("Belum ada cerita yang dikirimkan.", "No stories have been submitted yet."))
+                stories_html += f"<p>{t('Belum ada cerita yang dikirim.', 'No stories have been submitted yet.')}</p>"
         else:
-            stories_html += f"<p>{t('Belum ada cerita yang dikirim.', 'No stories have been submitted yet.')}</p>"
+            st.info(t("Belum ada cerita yang dikirimkan.", "No stories have been
 
-        # Tampilkan versi HTML-nya
-        st.markdown(stories_html, unsafe_allow_html=True)
+
 
 
 
