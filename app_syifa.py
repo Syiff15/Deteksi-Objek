@@ -218,9 +218,12 @@ elif st.session_state.step == 2:
                 st.info(t("Ups, sepertinya kamu lupa menulis namamu dulu nih 😊", "Oops, you forgot to enter your name 😊"))
 
 # === STEP 3 ===
-if uploaded_files:
-    st.markdown(f"<h4 style='color:#966543;'>{t('📸 Hasil Petualangan Kamu','📸 Your Adventure Results')}</h4>", unsafe_allow_html=True)
-    mode = st.session_state.get("mode", "deteksi")
+elif st.session_state.step == 3:
+    uploaded_files = st.file_uploader("", type=["jpg", "jpeg", "png"], accept_multiple_files=True)
+
+    if uploaded_files:
+        st.markdown(f"<h4 style='color:#966543;'>{t('📸 Hasil Petualangan Kamu','📸 Your Adventure Results')}</h4>", unsafe_allow_html=True)
+        mode = st.session_state.get("mode", "deteksi")
 
     multiple = len(uploaded_files) > 1
     cols = st.columns(2) if multiple else [None]
