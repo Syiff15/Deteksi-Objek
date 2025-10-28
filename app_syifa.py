@@ -218,15 +218,13 @@ elif st.session_state.step == 2:
         "Your turn now! Enter your name so Ursidetect knows its new adventure partner."
     ))
 
-    name_input = st.text_input("", placeholder=t("Contoh: Ursi", "Example: Ursi"))
-    # Tombol Kembali
-    col_kiri, col_kanan = st.columns([1, 4])
+    name_input = st.text_input("", placeholder=t("Contoh: Ursi", "Example: Ursi")) 
+
+    col_kiri, col_kanan = st.columns([4, 1])
     with col_kiri:
         if st.button(t("⬅️ Kembali", "⬅️ Back")):
             st.session_state.step = 1
             st.rerun()
-
-    col_kiri, col_kanan = st.columns([4, 1])
     with col_kanan:
         if st.button(t("Lanjut 🐾", "Next 🐾")):
             if name_input.strip() != "":
@@ -393,16 +391,13 @@ elif st.session_state.step == 3:
                 except Exception as e:
                     st.error(f"Terjadi error saat klasifikasi: {e}")
 
-        # Tombol lanjut ke step berikutnya
         st.divider()
-        # Tombol Kembali
-        col1, col2 = st.columns([1, 4])
+
+        col1, col2 = st.columns([4, 1])
         with col1:
             if st.button(t("⬅️ Kembali", "⬅️ Back"), key="back_btn3"):
                 st.session_state.step = 2
                 st.rerun()
-
-        col1, col2 = st.columns([4, 1])
         with col2:
             if st.button("🐾 " + t("Lanjut", "Next"), key="next_btn"):
                 st.session_state.step = 4
