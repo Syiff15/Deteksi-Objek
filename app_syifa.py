@@ -208,7 +208,28 @@ elif st.session_state.step == 2:
     display_name = name.lower().split()[0] if name else t('Petualang', 'Explorer')
 
     # --- Judul Selamat Datang ---
-        # --- Pilih mode petualang ---
+    st.markdown(f"""
+    <div style='
+        background-color:#f2e6d6;
+        padding:25px;
+        border-radius:15px;
+        box-shadow:0 4px 15px rgba(0,0,0,0.1);
+        text-align:center;
+        margin-bottom:25px;
+    '>
+        <h1 style='color:#966543; margin-bottom:10px;'>
+            {t('Hai', 'Hi')}, <span style='text-transform:capitalize;'>{display_name}</span>! 👋
+        </h1>
+        <p style='font-size:18px; color:#5b4636;'>
+            {t('Selamat datang di markas petualangan <b>Ursidetect</b>!',
+               'Welcome to the adventure base of <b>Ursidetect</b>!')}<br>
+            {t('Pilih mode favoritmu — mau jadi <b>pemburu hewan</b> (deteksi) atau <b>peneliti hewan</b> (klasifikasi)?',
+               'Choose your mode — be a <b>Wildlife Hunter</b> (detection) or <b>Animal Researcher</b> (classification)?')}
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # --- Pilih mode petualang ---
     st.markdown(
         f"<h4 style='color:#966543; text-align:center;'>{t('Pilih Mode Petualang:','Choose Your Adventure Mode:')}</h4>",
         unsafe_allow_html=True
@@ -297,7 +318,7 @@ elif st.session_state.step == 2:
     elif mode_selected and not uploaded_files:
         st.info("🖼️ Unggah Gambar Petualangmu untuk memulai petualangan!")
     elif not mode_selected and not uploaded_files:
-        st.caption("Pilih mode dan unggah gambar untuk mulai petualanganmu ✨")
+        st.caption("✨ Pilih mode dan unggah gambar untuk mulai petualanganmu!")
     else:
         # --- Load Model SEKALI ---
         yolo_model, classifier = load_models()  # @st.cache_resource
@@ -360,7 +381,6 @@ elif st.session_state.step == 2:
 
                 except Exception as e:
                     st.error(f"Terjadi error saat klasifikasi: {e}")
-
 
                 # --- Tombol lanjut kecil di bawah ---
                 col1, col2, col3 = st.columns([4, 1, 1])
