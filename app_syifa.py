@@ -291,7 +291,7 @@ elif st.session_state.step == 3:
     # --- Upload Gambar (hanya aktif jika mode sudah dipilih) ---
     mode_selected = st.session_state.get("mode", None)
     st.markdown(f"<h4 style='color:#966543;'>{t('🖼️ Masukkan Gambar','🖼️ Upload Image')}</h4>", unsafe_allow_html=True)
-    st.info(f"<h4 style='color:#966543;'>{t('Untuk mulai berpetualang, unggah gambarmu di sini yaa⬇️','"To start your adventure, upload your image here⬇️')}</h4>", unsafe_allow_html=True)
+    st.info(f"<h4 style='color:#966543;'>{t('Untuk mulai berpetualang, unggah gambarmu di sini yaa⬇️','To start your adventure, upload your image here⬇️')}</h4>", unsafe_allow_html=True)
 
     if not mode_selected:
         st.info(t("ℹ️ Pilih Mode Petualangmu dulu sebelum mengunggah gambar!", 
