@@ -201,6 +201,11 @@ elif st.session_state.step == 1:
             
 # === STEP 2 ===
 elif st.session_state.step == 2:
+    # === Inisialisasi default bahasa (jika belum ada) ===
+    if "lang" not in st.session_state:
+        st.session_state.lang = "id"  # default: Bahasa Indonesia
+
+    # === Pilih gambar sesuai bahasa ===
     if st.session_state.lang == "id":
         image_file = "slide 3-1.png"  # versi Bahasa Indonesia
     else:
@@ -209,7 +214,7 @@ elif st.session_state.step == 2:
     # === Tampilkan gambar ===
     st.image(image_file, use_container_width=True)
 
-    # === Teks pendamping ===
+    # === Tampilkan teks sesuai bahasa ===
     st.write(t(
         "Sekarang giliran kamu! Masukkan namamu supaya Ursidetect tahu siapa partner barunya.",
         "Now it’s your turn! Enter your name so Ursidetect knows its new partner."
