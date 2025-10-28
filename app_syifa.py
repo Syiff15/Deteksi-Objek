@@ -517,13 +517,3 @@ elif st.session_state.step == 4:
         st.session_state.show_stories = not st.session_state.show_stories
         st.experimental_rerun()
 
-    # Sembunyikan tombol dengan CSS agar tidak terlihat
-    st.markdown("""    
-    <style>
-    button[kind="secondary"] {
-        display: none;
-    }
-    </style>
-    """, unsafe_allow_html=True)
-
-
