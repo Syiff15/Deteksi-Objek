@@ -238,7 +238,13 @@ elif st.session_state.step == 2:
         deteksi_clicked = st.button("🐾 Pemburu Hewan", key="deteksi_mode", use_container_width=True)
         css_class = "mode-card selected" if st.session_state.get("mode") == "deteksi" else "mode-card"
         st.markdown(f"""
-        <div class="{css_class}">
+        <div class="{css_class}" style="
+            background-color:#f2e6d6;
+            padding:15px;
+            border-radius:12px;
+            box-shadow:0 3px 10px rgba(0,0,0,0.08);
+            text-align:center;
+        ">
             <h4 style='color:#966543;'>🐾 {t('Pemburu Hewan','Wildlife Hunter')}</h4>
             <p style='color:#5b4636; font-size:14px;'>
                 {t('Mode <b>Deteksi</b> untuk menemukan lokasi panda dan beruang di gambar.',
@@ -252,12 +258,23 @@ elif st.session_state.step == 2:
 
     # --- Kolom kanan: Klasifikasi ---
     with col2:
-        klasifikasi_clicked = st.button("🔬 Peneliti Hewan", key="klasifikasi_mode", use_container_width=True)
+        klasifikasi_clicked = st.button(
+            "🔬 Peneliti Hewan", 
+            key="klasifikasi_mode", 
+            use_container_width=True
+        )
         css_class = "mode-card selected" if st.session_state.get("mode") == "klasifikasi" else "mode-card"
         st.markdown(f"""
-        <div class="{css_class}">
-            <h4 style='color:#966543;'>🔬 {t('Peneliti Hewan','Animal Researcher')}</h4>
-            <p style='color:#5b4636; font-size:14px;'>
+        <div class="{css_class}" style="
+            background-color:#f2e6d6; 
+            padding:15px; 
+            border-radius:12px; 
+            box-shadow:0 3px 10px rgba(0,0,0,0.08);
+            text-align:center;
+            transition: all 0.2s ease-in-out;
+        ">
+            <h4 style='color:#966543; margin-bottom:8px;'>🔬 {t('Peneliti Hewan','Animal Researcher')}</h4>
+            <p style='color:#5b4636; font-size:14px; margin:0;'>
                 {t('Mode <b>Klasifikasi</b> untuk mengenali apakah itu panda atau beruang.',
                    '<b>Classification</b> mode to recognize whether it’s a panda or a bear.')}
             </p>
@@ -268,6 +285,101 @@ elif st.session_state.step == 2:
             st.rerun()
 
     st.divider()
+
+    # =========================
+    # UPLOAD GAMBAR
+    # =========================
+    st.markdown(f"<h4 style='color:#966543;'>{t('🖼️ Masukkan Gambar','🖼️ Upload Image')}</h4>", unsafe_allow_html=True)
+    st.caption(t("Kamu bisa mengunggah satu atau beberapa gambar (jpg, jpeg, png).",
+                 "You can upload one or more images (jpg, jpeg, png)."))
+    uploaded_files = st.file_uploader("", type=["jpg","jpeg","png"], accept_multiple_files=True)
+
+    if uploaded_files:
+
+        # --- Load Model SEKALI ---
+        yolo_model, classifier = load_models()  # @st.cache_resource
+
+        for uploaded_file in uploaded_files:
+            image = Image.open(uploaded_file).convert("RGB")
+            col1, col2 = st.columns(2)
+
+            # =========================
+            # MODE DETEKSI
+            # =========================
+            if st.session_state.mode == "deteksi":
+                results = yolo_model(image)
+                detected_img = results[0].plot()
+
+                with col1:
+                    st.image(image, caption=uploaded_file.name, use_container_width=True)
+                    st.markdown("<p style='text-align:center; color:#7B4F27;'>Gambar yang diunggah</p>", unsafe_allow_html=True)
+
+                with col2:
+                    st.image(detected_img, caption="Hasil Deteksi", use_container_width=True)
+                    labels = [yolo_model.names[int(c)] for c in results[0].boxes.cls.numpy()] if len(results[0].boxes) > 0 else []
+                    if labels:
+                        st.success(f"🎯 Objek terdeteksi: {', '.join(labels)}")
+                    else:
+                        st.warning("⚠️ Tidak ada objek panda atau beruang yang terdeteksi.")
+
+            # =========================
+            # MODE KLASIFIKASI
+            # =========================
+            elif st.session_state.mode == "klasifikasi":
+                try:
+                    # --- Resize sesuai training model ---
+                    target_size = (224, 224)
+                    img_array = np.array(image.resize(target_size)).astype('float32') / 255.0
+
+                    # --- Pastikan channel 3 ---
+                    if img_array.ndim == 2:
+                        img_array = np.stack([img_array]*3, axis=-1)
+                    elif img_array.shape[2] != 3:
+                        img_array = img_array[..., :3]
+
+                    # --- Batch dimension ---
+                    img_array = np.expand_dims(img_array, axis=0)  # (1, H, W, 3)
+
+                    # --- Prediksi ---
+                    pred = classifier.predict(img_array)
+                    class_idx = np.argmax(pred, axis=1)[0]
+                    class_names = ["Panda", "Beruang"]
+                    confidence = pred[0][class_idx]
+
+                    with col1:
+                        st.image(image, caption=uploaded_file.name, use_container_width=True)
+                        st.markdown("<p style='text-align:center; color:#7B4F27;'>Gambar yang diunggah</p>", unsafe_allow_html=True)
+
+                    with col2:
+                        st.markdown(f"""
+                        <div style='background-color:#f2e6d6; padding:20px; border-radius:15px;
+                        box-shadow:0 4px 15px rgba(0,0,0,0.1); text-align:center;'>
+                            <h4 style='color:#6B4226; margin-bottom:10px;'>🔬 Hasil Klasifikasi</h4>
+                            <p style='color:#7B4F27; font-size:16px;'>
+                                {class_names[class_idx]} ({confidence*100:.2f}%)
+                            </p>
+                        </div>
+                        """, unsafe_allow_html=True)
+
+                except Exception as e:
+                    st.error(f"Terjadi error saat klasifikasi: {e}")
+
+        # --- Tombol lanjut ---
+        col_kiri, col_kanan = st.columns([4,1])
+        with col_kanan:
+            if st.button(t("Lanjutkan 🐾","Continue 🐾"), key="lanjutkan_step4"):
+                st.session_state.step = 4
+                st.rerun()
+
+    else:
+        st.info("⬆️ Silakan unggah gambar terlebih dahulu untuk memproses objek.")
+
+    # --- Tombol lanjut kecil di bawah ---
+    col1, col2, col3 = st.columns([4, 1, 1])
+    with col3:
+        if st.button(t("Lanjut 🐾", "Next 🐾")):
+            st.session_state.step = 2
+            st.rerun()
 
     # =========================
     # UPLOAD GAMBAR
