@@ -100,6 +100,7 @@ if st.session_state.step == 0:
             st.session_state.language = "en"
             st.session_state.step = 1
             st.rerun()
+            
 # === STEP 1 ===
 elif st.session_state.step == 1:
     st.image("slide 1.jpg", use_container_width=True)
@@ -203,6 +204,24 @@ elif st.session_state.step == 1:
 elif st.session_state.step == 2:
     st.image("slide 1.jpg", use_container_width=True)
 
+    # --- Input Nama User ---
+    if "name" not in st.session_state or st.session_state.name == "":
+        st.session_state.name = st.text_input(
+            t("Masukkan namamu:", "Enter your name:"),
+            placeholder=t("Misal: Syifa", "E.g., Syifa")
+        )
+
+    name = st.session_state.name.strip()
+    display_name = name.split()[0] if name else t("Petualang", "Explorer")
+
+    # --- Cek nama ---
+    if not name:
+        st.info(t(
+            "Tolong masukkan namamu untuk melanjutkan petualangan!",
+            "Please enter your name to continue the adventure!"
+        ))
+        st.stop()  # menghentikan eksekusi sampai nama diisi
+        
     # Judul & deskripsi
     st.markdown(f"""
     <h1 style='text-align:center; color:#1E1E1E;'>
