@@ -435,7 +435,7 @@ elif st.session_state.step == 4:
         st.session_state.name = ""
         st.session_state.mode = None
         st.session_state.start_adventure = False
-        st.experimental_rerun()
+        st.rerun()
 
     # === Inisialisasi session_state untuk toggle history ===
     if "show_history" not in st.session_state:
