@@ -266,19 +266,28 @@ elif st.session_state.step == 3:
 
     uploaded_files = st.file_uploader("", type=["jpg", "jpeg", "png"], accept_multiple_files=True)
 
+    # ✅ Blok hasil dipindah ke dalam step 3
     if uploaded_files:
         st.markdown(f"<h4 style='color:#966543;'>{t('📸 Hasil Petualangan Kamu','📸 Your Adventure Results')}</h4>", unsafe_allow_html=True)
         mode = st.session_state.get("mode", "deteksi")
-        cols = st.columns(2) if len(uploaded_files) > 1 else [st]
+
+        multiple = len(uploaded_files) > 1
+        cols = st.columns(2) if multiple else [None]
 
         for i, file in enumerate(uploaded_files):
-            col = cols[i % len(cols)]
-            with col:
-                st.markdown("<div style='background-color:#FFF8E7; border-radius:20px; box-shadow:0 4px 12px rgba(0,0,0,0.1); padding:20px; margin-bottom:20px; text-align:center;'>", unsafe_allow_html=True)
+            col = cols[i % len(cols)] if multiple else None
+            context = col if col else st
+
+            with context:
+                st.markdown(
+                    "<div style='background-color:#FFF8E7; border-radius:20px; box-shadow:0 4px 12px rgba(0,0,0,0.1); padding:20px; margin-bottom:20px; text-align:center;'>",
+                    unsafe_allow_html=True
+                )
+
                 img = Image.open(file).convert("RGB")
                 st.image(img, caption=f"🖼️ {file.name}", use_container_width=True)
-                                # --- Statistik & Tabel Hasil ---
-                # Ambil data deteksi atau klasifikasi
+
+                # --- Statistik & Tabel Hasil ---
                 dets = []
                 if mode == "deteksi" and boxes is not None and len(boxes) > 0:
                     boxes_array = results[0].boxes.xyxy.cpu().numpy()
@@ -320,15 +329,20 @@ elif st.session_state.step == 3:
                     st.markdown(f"<h5 style='color:#966543;'>{t('📋 Detail Hasil','📋 Detection/Classification Details')}</h5>", unsafe_allow_html=True)
                     st.dataframe(df)
 
-                    # Download CSV
                     csv = df.to_csv(index=False).encode('utf-8')
-                    st.download_button(t("📥 Download CSV","📥 Download CSV"), data=csv, file_name=f"detections_{file.name}.csv", mime="text/csv")
+                    st.download_button(
+                        t("📥 Download CSV","📥 Download CSV"),
+                        data=csv,
+                        file_name=f"detections_{file.name}.csv",
+                        mime="text/csv"
+                    )
 
-    col_kiri, col_kanan = st.columns([4, 1])
-    with col_kanan:
-        if st.button(t("Lanjutkan 🐾", "Continue 🐾")):
-            st.session_state.step = 4
-            st.rerun()
+        # Tombol lanjut
+        col_kiri, col_kanan = st.columns([4, 1])
+        with col_kanan:
+            if st.button(t("Lanjutkan 🐾", "Continue 🐾")):
+                st.session_state.step = 4
+                st.rerun()
 
 # === STEP 4 ===
 elif st.session_state.step == 4:
