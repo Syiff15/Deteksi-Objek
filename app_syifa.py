@@ -327,9 +327,9 @@ elif st.session_state.step == 3:
                 results = yolo_model(image)
                 detected_img = results[0].plot()
                 with col1:
-                    st.image(image, caption=uploaded_file.name, use_column_width=True)
+                    st.image(image, caption=uploaded_file.name, use_container_width=True)
                 with col2:
-                    st.image(detected_img, caption=t("Hasil Deteksi", "Detection Output"), use_column_width=True)
+                    st.image(detected_img, caption=t("Hasil Deteksi", "Detection Output"), use_container_width=True)
                     labels = [yolo_model.names[int(c)] for c in results[0].boxes.cls.numpy()] if len(results[0].boxes) > 0 else []
                     if labels:
                         st.success("🎯 " + t("Objek terdeteksi:", "Detected objects:") + f" {', '.join(labels)}")
@@ -360,7 +360,7 @@ elif st.session_state.step == 3:
                     })
 
                     with col1:
-                        st.image(image, caption=uploaded_file.name, use_column_width=True)
+                        st.image(image, caption=uploaded_file.name, use_container_width=True)
                     with col2:
                         st.markdown(f"""
                         <div style='background-color:#f2e6d6; padding:20px; border-radius:15px;
