@@ -263,7 +263,7 @@ elif st.session_state.step == 3:
     if mode_selected and st.session_state.get("uploaded_files"):
         if st.button("🐾" + t("Mulai Petualangan!", "Start the Adventure!" + "🐾"), key="start_btn", use_container_width=True):
             st.session_state.start_adventure = True
-            st.experimental_rerun()
+            st.rerun()
 
     # Proses hasil
     if st.session_state.get("start_adventure", False):
