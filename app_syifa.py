@@ -39,9 +39,6 @@ def t(id_text, en_text):
     return id_text if st.session_state.get("language") == "id" else en_text
 
 # === STEP 0: PILIH BAHASA ===
-if "step" not in st.session_state:
-    st.session_state.step = 0
-
 if st.session_state.step == 0:
     st.image("slide 1.jpg", use_container_width=True)
 
@@ -313,7 +310,6 @@ elif st.session_state.step == 3:
 
     # --- Proses hasil deteksi/klasifikasi ---
     if st.session_state.get("start_adventure", False):
-        st.session_state.start_adventure = False  # reset flag
         yolo_model, classifier = load_models()
 
         st.markdown("### 🐾 " + t("Hasil Deteksi", "Detection Results") if mode_selected=="deteksi" else "### 🔬 " + t("Hasil Klasifikasi", "Classification Results"))
@@ -406,4 +402,7 @@ elif st.session_state.step == 4:
     if st.button(t("🔁 Mau memulai lagi?", "🔁 Start again?")):
         st.session_state.step = 0
         st.session_state.name = ""
+        st.session_state.mode = None
+        st.session_state.start_adventure = False
         st.rerun()
+
