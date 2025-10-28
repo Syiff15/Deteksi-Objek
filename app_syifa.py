@@ -221,10 +221,23 @@ elif st.session_state.step == 2:
 elif st.session_state.step == 3:
 
     # --- Ambil nama user ---
-    name = st.session_state.name.strip()
-    display_name = name.lower().split()[0] if name else t('Petualang', 'Explorer')
+    if "name" not in st.session_state or st.session_state.name.strip() == "":
+        st.session_state.name = st.text_input(
+            t("Masukkan namamu:", "Enter your name:"),
+            placeholder=t("Misal: Syifa", "E.g., Syifa")
+        )
 
-    # --- Header sambutan ---
+    name = st.session_state.name.strip()
+    if not name:
+        st.info(t(
+            "Tolong masukkan namamu untuk melanjutkan petualangan!",
+            "Please enter your name to continue the adventure!"
+        ))
+        st.stop()
+
+    display_name = name.split()[0]
+
+    # --- Sambutan ---
     st.markdown(f"""
     <div style='background-color:#f2e6d6; padding:25px; border-radius:15px;
     box-shadow:0 4px 15px rgba(0,0,0,0.1); text-align:center; margin-bottom:25px;'>
@@ -235,24 +248,22 @@ elif st.session_state.step == 3:
             {t('Selamat datang di markas petualangan <b>Ursidetect</b>!',
                'Welcome to the adventure base of <b>Ursidetect</b>!')}<br>
             {t('Pilih mode favoritmu — mau jadi <b>pemburu hewan</b> (deteksi) atau <b>peneliti hewan</b> (klasifikasi)?',
-               'Choose your favorite mode — be a <b>Wildlife Hunter</b> (detection) or an <b>Animal Researcher</b> (classification)!')}
+               'Choose your favorite mode — be a <b>Animal Hunter</b> (detection) or an <b>Animal Researcher</b> (classification)!')}
         </p>
     </div>
     """, unsafe_allow_html=True)
 
-    # --- Pilihan mode ---
+    # --- Pilihan Mode ---
     st.markdown(f"<h4 style='color:#966543; text-align:center;'>{t('Pilih Mode Petualang:', 'Choose Your Adventure Mode:')}</h4>", unsafe_allow_html=True)
     col1, col2 = st.columns(2, gap="large")
-
     current_mode = st.session_state.get("mode", None)
 
-    # === Tombol Mode Deteksi ===
+    # Tombol Deteksi
     with col1:
         if st.button(t('🐾 Pemburu Hewan', '🐾 Animal Hunter'), key="btn_deteksi", use_container_width=True):
             st.session_state.mode = "deteksi"
             st.session_state.start_adventure = False
             st.rerun()
-
 
         deteksi_active = current_mode == "deteksi"
         st.markdown(f"""
@@ -262,7 +273,7 @@ elif st.session_state.step == 3:
             box-shadow:{'0 4px 15px rgba(0,0,0,0.15)' if deteksi_active else '0 3px 10px rgba(0,0,0,0.08)'};
             transform:{'scale(1.05)' if deteksi_active else 'scale(1.0)'};
             text-align:center; transition:all 0.25s ease-in-out;">
-            <h4 style='color:#966543;'>🐾 {t('Pemburu Hewan','Wildlife Hunter')}</h4>
+            <h4 style='color:#966543;'>🐾 {t('Pemburu Hewan','Animal Hunter')}</h4>
             <p style='color:#5b4636; font-size:14px;'>
                 {t('Mode <b>Deteksi</b> untuk menemukan lokasi panda dan beruang di gambar.',
                    '<b>Detection</b> mode to find pandas and bears in an image.')}
@@ -270,9 +281,9 @@ elif st.session_state.step == 3:
         </div>
         """, unsafe_allow_html=True)
 
-    # === Tombol Mode Klasifikasi ===
+    # Tombol Klasifikasi
     with col2:
-        if st.button(('🔬 Peneliti Hewan','🔬 Animal Researcher'), key="btn_klasifikasi", use_container_width=True):
+        if st.button(t('🔬 Peneliti Hewan', '🔬 Animal Researcher'), key="btn_klasifikasi", use_container_width=True):
             st.session_state.mode = "klasifikasi"
             st.session_state.start_adventure = False
             st.rerun()
@@ -295,13 +306,13 @@ elif st.session_state.step == 3:
 
     st.divider()
 
-    # === Upload Gambar ===
+    # --- Upload Gambar ---
     st.markdown(f"<h4 style='color:#966543;'>{t('🖼️ Masukkan Gambar','🖼️ Upload Image')}</h4>", unsafe_allow_html=True)
     uploaded_files = st.file_uploader(
         t("Unggah gambar", "Upload images"),
         type=["jpg", "jpeg", "png"],
         accept_multiple_files=True,
-        key="uploader_step2"
+        key="uploader_step3"
     )
 
     mode_selected = st.session_state.get("mode", None)
