@@ -382,9 +382,6 @@ elif st.session_state.step == 3:
                 st.rerun()
 
 # === STEP 4 ===
-import streamlit as st
-import csv, os
-
 elif st.session_state.step == 4:
     st.subheader(t("💬 Cerita Petualanganmu", "💬 Your Adventure Story"))
     st.info(t(
