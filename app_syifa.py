@@ -56,8 +56,7 @@ if st.session_state.step == 0:
             box-shadow:0 4px 12px rgba(0,0,0,0.1);
             transition: transform 0.2s ease;
         '>
-            <h4 style='margin-bottom:10px;'>🇮🇩 Bahasa Indonesia</h4>
-            <p style='font-size:14px; color:#5b4636;'>Gunakan bahasa Indonesia untuk pengalaman penuh.</p>
+            <h4 style='margin-bottom:10px;'ID Bahasa Indonesia</h4>
         </div>
         """, unsafe_allow_html=True)
 
@@ -77,7 +76,6 @@ if st.session_state.step == 0:
             transition: transform 0.2s ease;
         '>
             <h4 style='margin-bottom:10px;'>EN English</h4>
-            <p style='font-size:14px; color:#5b4636;'>Use English for a full experience.</p>
         </div>
         """, unsafe_allow_html=True)
 
