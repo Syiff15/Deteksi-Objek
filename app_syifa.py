@@ -399,7 +399,7 @@ elif st.session_state.step == 4:
 
     feedback_file = "adventure_stories.csv"
 
-    # Tombol kirim cerita
+    # === Simpan cerita ke CSV ===
     if st.button(t("Kirim Cerita Petualanganku", "Send My Story")):
         if feedback_text.strip() == "":
             st.warning(t("Ceritamu sangat berarti bagi kami 😊", "Your story means a lot to us 😊"))
@@ -410,18 +410,21 @@ elif st.session_state.step == 4:
                 if not file_exists:
                     writer.writerow(["Name", "Story"])
                 writer.writerow([first_name, feedback_text.strip()])
-
             st.success(f"✅ {t('Terima kasih atas ceritanya','Thank you for sharing your story')}, {first_name}!")
 
     st.markdown("---")
 
-    # Tombol restart
+    # === Tombol restart ===
     if st.button(t("🔁 Mau memulai lagi?", "🔁 Start again?")):
         st.session_state.step = 0
         st.session_state.name = ""
         st.session_state.mode = None
         st.session_state.start_adventure = False
         st.experimental_rerun()
+
+    # === Inisialisasi session_state untuk toggle history ===
+    if "show_history" not in st.session_state:
+        st.session_state.show_history = False
 
     # === Tombol History di pojok kanan bawah ===
     st.markdown(
@@ -431,31 +434,43 @@ elif st.session_state.step == 4:
             position: fixed;
             bottom: 20px;
             right: 20px;
-            background-color: #FFB300;
+            background-color: #ffb300;
             color: white;
             border: none;
             border-radius: 50px;
-            padding: 12px 20px;
-            font-weight: bold;
+            padding: 12px 22px;
+            font-weight: 600;
             cursor: pointer;
             box-shadow: 0px 4px 10px rgba(0,0,0,0.3);
             z-index: 9999;
         }
+        .history-btn:hover {
+            background-color: #ffa000;
+        }
         </style>
-        <button class="history-btn" onclick="window.location.href='?show_history=true'">📜 History</button>
         """,
         unsafe_allow_html=True
     )
 
-    # === Tampilkan History jika tombol diklik ===
-    query_params = st.experimental_get_query_params()
-    if "show_history" in query_params:
-        st.sidebar.header("📜 History Cerita Petualang")
+    # Gunakan kolom kosong untuk memicu aksi toggle di Streamlit
+    col1, col2, col3 = st.columns([5, 1, 1])
+    with col3:
+        show = st.button("📜 History")
+        if show:
+            st.session_state.show_history = not st.session_state.show_history
+
+    # === Tampilkan daftar cerita jika aktif ===
+    if st.session_state.show_history:
+        st.markdown("### 📚 History Cerita Para Petualang")
         if os.path.exists(feedback_file):
             df = pd.read_csv(feedback_file)
-            for _, row in df.iterrows():
-                st.sidebar.markdown(f"**🧭 {row['Name']}**: {row['Story']}")
-                st.sidebar.markdown("---")
+            if df.empty:
+                st.info("Belum ada cerita yang dikirimkan.")
+            else:
+                for _, row in df.iterrows():
+                    with st.expander(f"🧭 {row['Name']}"):
+                        st.write(row['Story'])
         else:
-            st.sidebar.info("Belum ada cerita yang dikirimkan.")
+            st.info("Belum ada cerita yang dikirimkan.")
+
 
