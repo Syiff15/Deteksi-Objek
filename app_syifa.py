@@ -105,6 +105,7 @@ if st.session_state.step == 0:
 elif st.session_state.step == 1:
     st.image("slide 1.jpg", use_container_width=True)
 
+    # Judul & deskripsi
     st.markdown(f"""
     <h1 style='text-align:center; color:#1E1E1E;'>
         {t('Selamat datang di', 'Welcome to')} 
@@ -118,39 +119,86 @@ elif st.session_state.step == 1:
     </p>
     """, unsafe_allow_html=True)
 
-    col1, col2 = st.columns(2)
+    # Styling dua kotak fitur
+    st.markdown("""
+    <style>
+    .feature-container {
+        display: flex;
+        justify-content: center;
+        gap: 80px;
+        margin-top: 40px;
+    }
 
-    with col1:
-        st.markdown(f"""
-        <div style="background-color:#f2e6d6; padding:25px; border-radius:20px; box-shadow:0 4px 15px rgba(0,0,0,0.07); text-align:center;">
-            <h3>🐻‍❄️ {t('Deteksi Gambar','Image Detection')}</h3>
-            <p style="color:#282328; font-size:16px;">
-            {t('Ursidetect dapat menemukan dan menandai posisi panda atau beruang di dalam gambar menggunakan kotak pembatas (<i>bounding box</i>).',
-               'Ursidetect can locate and highlight the position of pandas or bears in an image using <i>bounding boxes</i>.')}
-            </p>
+    .feature-box {
+        background-color: #f2e6d6;
+        width: 400px;
+        height: 220px;
+        border-radius: 25px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        padding: 25px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+
+    .feature-box:hover {
+        transform: scale(1.03);
+        background-color: #e9dcc6;
+        border: 2px solid #d2b48c;
+    }
+
+    .feature-title {
+        font-size: 22px;
+        font-weight: 700;
+        color: #2f2f2f;
+        margin-bottom: 10px;
+    }
+
+    .feature-text {
+        font-size: 16px;
+        color: #3b3b3b;
+        line-height: 1.4;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
+    # Isi dua kotak fitur
+    st.markdown(f"""
+    <div class="feature-container">
+        <div class="feature-box">
+            <div class="feature-title">🐻‍❄️ {t('Deteksi Gambar','Image Detection')}</div>
+            <div class="feature-text">
+                {t('Ursidetect dapat menemukan dan menandai posisi panda atau beruang di dalam gambar menggunakan kotak pembatas (<i>bounding box</i>).',
+                   'Ursidetect can locate and highlight the position of pandas or bears in an image using <i>bounding boxes</i>.')}
+            </div>
         </div>
-        """, unsafe_allow_html=True)
-
-    with col2:
-        st.markdown(f"""
-        <div style="background-color:#f2e6d6; padding:25px; border-radius:20px; box-shadow:0 4px 15px rgba(0,0,0,0.07); text-align:center;">
-            <h3>🐼 {t('Klasifikasi Gambar','Image Classification')}</h3>
-            <p style="color:#282328; font-size:16px;">
-            {t('Ursidetect dapat menentukan apakah gambar tersebut termasuk panda atau beruang, lengkap dengan tingkat kepercayaan (<i>confidence score</i>).',
-               'Ursidetect can determine whether an image shows a panda or a bear, along with its <i>confidence score</i>.')}
-            </p>
+        <div class="feature-box">
+            <div class="feature-title">🐼 {t('Klasifikasi Gambar','Image Classification')}</div>
+            <div class="feature-text">
+                {t('Ursidetect dapat menentukan apakah gambar tersebut termasuk panda atau beruang, lengkap dengan tingkat kepercayaan (<i>confidence score</i>).',
+                   'Ursidetect can determine whether an image shows a panda or a bear, along with its <i>confidence score</i>.')}
+            </div>
         </div>
-        """, unsafe_allow_html=True)
+    </div>
+    """, unsafe_allow_html=True)
 
+    # Garis dan teks lanjut
     st.markdown("<br><hr>", unsafe_allow_html=True)
-    st.markdown(f"<p style='text-align:center; color:#282328; font-size:18px;'>{t('Yuk lanjut ke langkah berikutnya untuk mulai berpetualang!','Let’s continue to the next step to start the adventure!')}</p>", unsafe_allow_html=True)
+    st.markdown(f"""
+    <p style='text-align:center; color:#282328; font-size:18px;'>
+        {t('Yuk lanjut ke langkah berikutnya untuk mulai berpetualang!','Let’s continue to the next step to start the adventure!')}
+    </p>
+    """, unsafe_allow_html=True)
 
+    # Tombol lanjut
     col1, col2, col3 = st.columns([4, 1, 1])
     with col3:
         if st.button(t("Lanjut 🐾", "Next 🐾")):
             st.session_state.step = 2
             st.rerun()
-
 
 # === STEP 2 ===
 elif st.session_state.step == 2:
