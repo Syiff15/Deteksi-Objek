@@ -323,81 +323,104 @@ elif st.session_state.step == 2:
         # --- Load Model SEKALI ---
         yolo_model, classifier = load_models()  # @st.cache_resource
 
-        for uploaded_file in uploaded_files:
-            image = Image.open(uploaded_file).convert("RGB")
-            col1, col2 = st.columns(2)
+        # ... kode sebelum ini tetap sama ...
 
-            # =========================
-            # MODE DETEKSI
-            # =========================
-            if mode_selected == "deteksi":
-                results = yolo_model(image)
-                detected_img = results[0].plot()
+# pastikan uploaded_files bisa berisi beberapa file
+for idx, uploaded_file in enumerate(uploaded_files):
+    image = Image.open(uploaded_file).convert("RGB")
+    col1, col2 = st.columns(2)
 
-                with col1:
-                    st.image(image, caption=uploaded_file.name, use_container_width=True)
-                    st.markdown("<p style='text-align:center; color:#7B4F27;'>Gambar yang diunggah</p>", unsafe_allow_html=True)
+    # =========================
+    # MODE DETEKSI
+    # =========================
+    if mode_selected == "deteksi":
+        results = yolo_model(image)
+        detected_img = results[0].plot()
 
-                with col2:
-                    st.image(detected_img, caption="Hasil Deteksi", use_container_width=True)
-                    labels = [yolo_model.names[int(c)] for c in results[0].boxes.cls.numpy()] if len(results[0].boxes) > 0 else []
-                    if labels:
-                        st.success(f"🎯 Objek terdeteksi: {', '.join(labels)}")
-                    else:
-                        st.warning("⚠️ Tidak ada objek panda atau beruang yang terdeteksi.")
+        with col1:
+            st.image(image, caption=uploaded_file.name, use_column_width=True)
+            st.markdown("<p style='text-align:center; color:#7B4F27;'>Gambar yang diunggah</p>", unsafe_allow_html=True)
 
-            # =========================
-            # MODE KLASIFIKASI (versi perbaikan error)
-            # =========================
-            elif mode_selected == "klasifikasi":
-                try:
-                    # --- Ambil ukuran input model ---
-                    target_size = classifier.input_shape[1:3] if classifier.input_shape[1] else (224, 224)
-                    st.write("📏 Ukuran input model:", target_size)
+        with col2:
+            st.image(detected_img, caption="Hasil Deteksi", use_column_width=True)
+            labels = [yolo_model.names[int(c)] for c in results[0].boxes.cls.numpy()] if len(results[0].boxes) > 0 else []
+            if labels:
+                st.success(f"🎯 Objek terdeteksi: {', '.join(labels)}")
+            else:
+                st.warning("⚠️ Tidak ada objek panda atau beruang yang terdeteksi.")
 
-                    # --- Resize dan normalisasi gambar ---
-                    img_array = np.array(image.resize(target_size)).astype('float32') / 255.0
+    # =========================
+    # MODE KLASIFIKASI (versi perbaikan error)
+    # =========================
+    elif mode_selected == "klasifikasi":
+        try:
+            # --- Ambil ukuran input model (otomatis jika tersedia) ---
+            try:
+                target_size = tuple(classifier.input_shape[1:3])
+                if None in target_size:
+                    target_size = (224, 224)
+            except Exception:
+                target_size = (224, 224)
 
-                    # --- Pastikan channel 3 ---
-                    if img_array.ndim == 2:
-                        img_array = np.stack([img_array]*3, axis=-1)
-                    elif img_array.shape[2] != 3:
-                        img_array = img_array[..., :3]
+            st.write(f"📏 Ukuran input model: {target_size}")
 
-                    # --- Tambahkan dimensi batch ---
-                    img_array = np.expand_dims(img_array, axis=0)
+            # --- Resize dan normalisasi gambar ---
+            img_array = np.array(image.resize(target_size)).astype('float32') / 255.0
 
-                    # --- Prediksi ---
-                    pred = classifier.predict(img_array)
-                    class_idx = np.argmax(pred, axis=1)[0]
-                    class_names = ["Panda", "Beruang"]
-                    confidence = pred[0][class_idx]
+            # --- Pastikan channel 3 ---
+            if img_array.ndim == 2:
+                img_array = np.stack([img_array]*3, axis=-1)
+            elif img_array.shape[2] != 3:
+                img_array = img_array[..., :3]
 
-                    with col1:
-                        st.image(image, caption=uploaded_file.name, use_container_width=True)
-                        st.markdown("<p style='text-align:center; color:#7B4F27;'>Gambar yang diunggah</p>", unsafe_allow_html=True)
+            # --- Tambahkan dimensi batch ---
+            img_array = np.expand_dims(img_array, axis=0)
 
-                    with col2:
-                        st.markdown(f"""
-                        <div style='background-color:#f2e6d6; padding:20px; border-radius:15px;
-                        box-shadow:0 4px 15px rgba(0,0,0,0.1); text-align:center;'>
-                            <h4 style='color:#6B4226; margin-bottom:10px;'>🔬 Hasil Klasifikasi</h4>
-                            <p style='color:#7B4F27; font-size:16px;'>
-                                {class_names[class_idx]} ({confidence*100:.2f}%)
-                            </p>
-                        </div>
-                        """, unsafe_allow_html=True)
+            # --- Prediksi ---
+            pred = classifier.predict(img_array)
+            class_idx = np.argmax(pred, axis=1)[0]
+            class_names = ["Panda", "Beruang"]
+            confidence = pred[0][class_idx]
 
-                    # --- Tombol lanjut kecil di bawah ---
-                    col1, col2, col3 = st.columns([4, 1, 1])
-                    with col3:
-                        if st.button(t("Lanjut 🐾", "Next 🐾")):
-                            st.session_state.step = 3
-                            st.rerun()
+            with col1:
+                st.image(image, caption=uploaded_file.name, use_column_width=True)
+                st.markdown("<p style='text-align:center; color:#7B4F27;'>Gambar yang diunggah</p>", unsafe_allow_html=True)
 
-                except Exception as e:
-                    st.error(f"Terjadi error saat klasifikasi: {e}")
-                    st.stop()
+            with col2:
+                st.markdown(f"""
+                <div style='background-color:#f2e6d6; padding:20px; border-radius:15px;
+                box-shadow:0 4px 15px rgba(0,0,0,0.1); text-align:center;'>
+                    <h4 style='color:#6B4226; margin-bottom:10px;'>🔬 Hasil Klasifikasi</h4>
+                    <p style='color:#7B4F27; font-size:16px;'>
+                        {class_names[class_idx]} ({confidence*100:.2f}%)
+                    </p>
+                </div>
+                """, unsafe_allow_html=True)
+
+            # --- Tombol lanjut kecil di bawah (beri key unik) ---
+            col_left, col_mid, col_right = st.columns([4, 1, 1])
+            next_key = f"next_btn_{idx}"  # unik per file
+            with col_right:
+                if st.button(t("Lanjut 🐾", "Next 🐾"), key=next_key):
+                    # contoh aksi: pindah step atau simpan hasil
+                    st.session_state.step = 3
+                    st.session_state.last_classified = {
+                        "file_index": idx,
+                        "filename": uploaded_file.name,
+                        "label": class_names[class_idx],
+                        "confidence": float(confidence)
+                    }
+                    st.rerun()
+
+        except Exception as e:
+            st.error(f"Terjadi error saat klasifikasi: {e}")
+            # opsional: tampilkan info debugging
+            try:
+                st.write("Debug - model.input_shape:", classifier.input_shape)
+                st.write("Debug - img_array.shape:", img_array.shape)
+            except Exception:
+                pass
+            st.stop()
 
 
 # === STEP 3 ===
