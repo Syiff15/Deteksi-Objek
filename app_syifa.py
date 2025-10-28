@@ -203,6 +203,10 @@ elif st.session_state.step == 1:
 # === STEP 2 ===
 elif st.session_state.step == 2:
 
+    # --- Ambil dan olah nama user ---
+    name = st.session_state.name.strip()
+    display_name = name.lower().split()[0] if name else t('Petualang', 'Explorer')
+
     # --- Judul Selamat Datang ---
     st.markdown(f"""
     <div style='
@@ -214,7 +218,7 @@ elif st.session_state.step == 2:
         margin-bottom:25px;
     '>
         <h1 style='color:#966543; margin-bottom:10px;'>
-            {t('Hai', 'Hi')}, <span style='text-transform:capitalize;'>{st.session_state.name.lower().split()[0]}</span>! 👋
+            {t('Hai', 'Hi')}, <span style='text-transform:capitalize;'>{display_name}</span>! 👋
         </h1>
         <p style='font-size:18px; color:#5b4636;'>
             {t('Selamat datang di markas petualangan <b>Ursidetect</b>!',
