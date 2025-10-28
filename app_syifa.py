@@ -236,35 +236,66 @@ elif st.session_state.step == 3:
     st.markdown(f"<h4 style='color:#966543; text-align:center;'>{t('Pilih Mode Petualang:','Choose Your Adventure Mode:')}</h4>", unsafe_allow_html=True)
     col1, col2 = st.columns(2, gap="large")
 
+    # --- CSS interaktif untuk kotak yang bisa diklik ---
+    st.markdown("""
+    <style>
+    .mode-card {
+        background-color: #f2e6d6;
+        padding: 25px;
+        border-radius: 15px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        text-align: center;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        cursor: pointer;
+    }
+    .mode-card:hover {
+        transform: scale(1.03);
+        box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+    }
+    .selected {
+        background-color: #e1c9aa !important;
+        border: 3px solid #966543;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
+    # --- Kolom kiri: Deteksi ---
     with col1:
+        deteksi_clicked = st.button("🐾 Pemburu Hewan", key="deteksi_mode", use_container_width=True)
+        css_class = "mode-card selected" if st.session_state.get("mode") == "deteksi" else "mode-card"
         st.markdown(f"""
-        <div style='background-color:#f2e6d6; padding:25px; border-radius:15px; box-shadow:0 4px 12px rgba(0,0,0,0.1); text-align:center;'>
+        <div class="{css_class}">
             <h4 style='color:#966543;'>🐾 {t('Pemburu Hewan','Wildlife Hunter')}</h4>
             <p style='color:#5b4636; font-size:14px;'>{t('Mode <b>Deteksi</b> untuk menemukan lokasi panda dan beruang di gambar.','<b>Detection</b> mode to find pandas and bears in an image.')}</p>
         </div>
         """, unsafe_allow_html=True)
-        if st.button(t("Pilih Mode Deteksi 🐾", "Choose Detection Mode 🐾"), use_container_width=True):
+        if deteksi_clicked:
             st.session_state.mode = "deteksi"
-            st.success(t("Mode dipilih: 🐾 Pemburu Hewan (Deteksi)", "Mode selected: 🐾 Wildlife Hunter (Detection)"))
+            st.rerun()
 
+    # --- Kolom kanan: Klasifikasi ---
     with col2:
+        klasifikasi_clicked = st.button("🔬 Peneliti Hewan", key="klasifikasi_mode", use_container_width=True)
+        css_class = "mode-card selected" if st.session_state.get("mode") == "klasifikasi" else "mode-card"
         st.markdown(f"""
-        <div style='background-color:#f2e6d6; padding:25px; border-radius:15px; box-shadow:0 4px 12px rgba(0,0,0,0.1); text-align:center;'>
+        <div class="{css_class}">
             <h4 style='color:#966543;'>🔬 {t('Peneliti Hewan','Animal Researcher')}</h4>
             <p style='color:#5b4636; font-size:14px;'>{t('Mode <b>Klasifikasi</b> untuk mengenali apakah itu panda atau beruang.','<b>Classification</b> mode to recognize whether it’s a panda or a bear.')}</p>
         </div>
         """, unsafe_allow_html=True)
-        if st.button(t("Pilih Mode Klasifikasi 🔬", "Choose Classification Mode 🔬"), use_container_width=True):
+        if klasifikasi_clicked:
             st.session_state.mode = "klasifikasi"
-            st.success(t("Mode dipilih: 🔬 Peneliti Hewan (Klasifikasi)", "Mode selected: 🔬 Animal Researcher (Classification)"))
+            st.rerun()
 
     st.divider()
 
+    # --- Upload gambar ---
     st.markdown(f"<h4 style='color:#966543;'>{t('🖼️ Masukkan Gambar','🖼️ Upload Image')}</h4>", unsafe_allow_html=True)
-    st.caption(t("Kamu bisa mengunggah satu atau beberapa gambar (jpg, jpeg, png).", "You can upload one or more images (jpg, jpeg, png)."))
-
+    st.caption(t("Kamu bisa mengunggah satu atau beberapa gambar (jpg, jpeg, png).", 
+                 "You can upload one or more images (jpg, jpeg, png)."))
     uploaded_files = st.file_uploader("", type=["jpg", "jpeg", "png"], accept_multiple_files=True)
 
+    # --- Proses hasil ---
     if uploaded_files:
         st.markdown(f"<h4 style='color:#966543;'>{t('📸 Hasil Petualangan Kamu','📸 Your Adventure Results')}</h4>", unsafe_allow_html=True)
         mode = st.session_state.get("mode", "deteksi")
@@ -286,7 +317,6 @@ elif st.session_state.step == 3:
                             st.success(t("✅ Objek berhasil terdeteksi!", "✅ Object detected successfully!"))
                         else:
                             st.warning(t("🚫 Tidak ada objek yang terdeteksi.", "🚫 No objects detected."))
-                            st.info(t("Coba gunakan gambar panda atau beruang yang lebih jelas.", "Try using a clearer image of a panda or bear."))
 
                 elif mode == "klasifikasi":
                     with st.spinner(t(f"🧠 Mengklasifikasi {file.name}...", f"🧠 Classifying {file.name}...")):
@@ -303,16 +333,9 @@ elif st.session_state.step == 3:
                         st.write(f"🎯 {t('Hasil Prediksi','Prediction Result')}: *{predicted_label}* ({confidence:.2f})")
                         st.progress(float(confidence))
 
-                        if confidence > 0.85:
-                            st.success(t("Model sangat yakin dengan hasil prediksi ini!", "Model is highly confident with this prediction!"))
-                        elif confidence > 0.6:
-                            st.warning(t("Model agak ragu, tapi masih cukup yakin.", "Model is somewhat unsure, but fairly confident."))
-                        else:
-                            st.error(t("Model tidak yakin, mungkin ini bukan gambar panda atau beruang.", "Model is uncertain — this might not be a panda or bear."))
-                            st.markdown(t("💡 Saran: Gunakan gambar yang lebih jelas.", "💡 Tip: Use a clearer image."))
-
                 st.markdown("</div>", unsafe_allow_html=True)
 
+    # Tombol lanjut
     col_kiri, col_kanan = st.columns([4, 1])
     with col_kanan:
         if st.button(t("Lanjutkan 🐾", "Continue 🐾")):
