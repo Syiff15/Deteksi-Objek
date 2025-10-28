@@ -264,7 +264,7 @@ elif st.session_state.step == 2:
         klasifikasi_clicked = st.button(
             "🔬 Peneliti Hewan", 
             key="klasifikasi_mode", 
-            use_container_width=True
+            width='stretch'
         )
         css_class = "mode-card selected" if st.session_state.get("mode") == "klasifikasi" else "mode-card"
         st.markdown(f"""
@@ -314,11 +314,11 @@ elif st.session_state.step == 2:
                 detected_img = results[0].plot()
 
                 with col1:
-                    st.image(image, caption=uploaded_file.name, use_container_width=True)
+                    st.image(image, caption=uploaded_file.name, width='stretch')
                     st.markdown("<p style='text-align:center; color:#7B4F27;'>Gambar yang diunggah</p>", unsafe_allow_html=True)
 
                 with col2:
-                    st.image(detected_img, caption="Hasil Deteksi", use_container_width=True)
+                    st.image(detected_img, caption="Hasil Deteksi", width='stretch')
                     labels = [yolo_model.names[int(c)] for c in results[0].boxes.cls.numpy()] if len(results[0].boxes) > 0 else []
                     if labels:
                         st.success(f"🎯 Objek terdeteksi: {', '.join(labels)}")
