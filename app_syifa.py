@@ -219,24 +219,6 @@ elif st.session_state.step == 2:
 
 # === STEP 3 ===
 elif st.session_state.step == 3:
-
-    # --- Ambil nama user ---
-    if "name" not in st.session_state or st.session_state.name.strip() == "":
-        st.session_state.name = st.text_input(
-            t("Masukkan namamu:", "Enter your name:"),
-            placeholder=t("Misal: Syifa", "E.g., Syifa")
-        )
-
-    name = st.session_state.name.strip()
-    if not name:
-        st.info(t(
-            "Tolong masukkan namamu untuk melanjutkan petualangan!",
-            "Please enter your name to continue the adventure!"
-        ))
-        st.stop()
-
-    display_name = name.split()[0]
-
     # --- Sambutan ---
     st.markdown(f"""
     <div style='background-color:#f2e6d6; padding:25px; border-radius:15px;
@@ -264,7 +246,6 @@ elif st.session_state.step == 3:
             st.session_state.mode = "deteksi"
             st.session_state.start_adventure = False
             st.rerun()
-
         deteksi_active = current_mode == "deteksi"
         st.markdown(f"""
         <div style="
@@ -287,7 +268,6 @@ elif st.session_state.step == 3:
             st.session_state.mode = "klasifikasi"
             st.session_state.start_adventure = False
             st.rerun()
-
         klasifikasi_active = current_mode == "klasifikasi"
         st.markdown(f"""
         <div style="
@@ -306,141 +286,99 @@ elif st.session_state.step == 3:
 
     st.divider()
 
-    # --- Upload Gambar ---
-    st.markdown(f"<h4 style='color:#966543;'>{t('🖼️ Masukkan Gambar','🖼️ Upload Image')}</h4>", unsafe_allow_html=True)
-    uploaded_files = st.file_uploader(
-        t("Unggah gambar", "Upload images"),
-        type=["jpg", "jpeg", "png"],
-        accept_multiple_files=True,
-        key="uploader_step3"
-    )
-
+    # --- Upload Gambar (hanya aktif jika mode sudah dipilih) ---
     mode_selected = st.session_state.get("mode", None)
+    st.markdown(f"<h4 style='color:#966543;'>{t('🖼️ Masukkan Gambar','🖼️ Upload Image')}</h4>", unsafe_allow_html=True)
 
-    # --- Pesan panduan ---
-    if not mode_selected and uploaded_files:
-        st.warning(t("ℹ️ Pilih Mode Petualangmu dulu sebelum melanjutkan!", "ℹ️ Choose your adventure mode before continuing!"))
-    elif mode_selected and not uploaded_files:
-        st.info(t("ℹ️ Unggah Gambar Petualangmu untuk memulai petualangan!", "ℹ️ Upload your images to start your adventure!"))
-    elif not mode_selected and not uploaded_files:
-        st.caption(t("ℹ️ Pilih mode dan unggah gambar untuk mulai petualanganmu!", "ℹ️ Choose a mode and upload your images to begin your adventure!"))
+    if not mode_selected:
+        st.info(t("ℹ️ Pilih Mode Petualangmu dulu sebelum mengunggah gambar!", 
+                  "ℹ️ Choose your adventure mode before uploading images!"))
+        uploaded_files = []
     else:
-        st.markdown("<br>", unsafe_allow_html=True)
+        uploaded_files = st.file_uploader(
+            t("Unggah gambar", "Upload images"),
+            type=["jpg", "jpeg", "png"],
+            accept_multiple_files=True,
+            key="uploader_step3"
+        )
 
-        # === Tombol MULAI PETUALANGAN ===
-        start_key = f"start_adventure_{mode_selected if mode_selected else 'none'}"
+    # --- Tombol Mulai Petualangan (hanya muncul jika ada gambar dan mode) ---
+    if mode_selected and uploaded_files:
+        if st.button("🚀 " + t("Mulai Petualangan!", "Start the Adventure!"), key="start_btn", use_container_width=True):
+            st.session_state.start_adventure = True
+            st.rerun()
 
-        # Tombol selalu muncul sejak awal
-        if st.button("🚀 " + t("Mulai Petualangan!", "Start the Adventure!"), key=start_key, use_container_width=True):
-            # Cek kelengkapan sebelum mulai
-            if not mode_selected and not uploaded_files:
-                st.warning(t(
-                    "Pilih mode dan unggah gambar terlebih dahulu.",
-                    "Please choose a mode and upload images first."
-                ))
-                st.session_state.start_adventure = False
-            elif not mode_selected:
-                st.warning(t(
-                    "Kamu belum memilih mode — pilih Deteksi atau Klasifikasi.",
-                    "You haven't chosen a mode — choose Detection or Classification."
-                ))
-                st.session_state.start_adventure = False
-            elif not uploaded_files:
-                st.warning(t(
-                    "Kamu belum mengunggah gambar — unggah minimal 1 gambar.",
-                    "You haven't uploaded any images — please upload at least one."
-                ))
-                st.session_state.start_adventure = False
-            else:
-                # Semua terpenuhi → mulai petualangan
-                st.session_state.start_adventure = True
-                st.rerun()
+    # --- Proses hasil deteksi/klasifikasi ---
+    if st.session_state.get("start_adventure", False):
+        st.session_state.start_adventure = False  # reset flag
+        yolo_model, classifier = load_models()
 
-        # === Jika tombol ditekan dan start_adventure True, mulai deteksi/klasifikasi ===
-        if st.session_state.get("start_adventure", False):
-            # reset flag agar user bisa menekan ulang di sesi berikutnya jika perlu
-            st.session_state.start_adventure = False
+        st.markdown("### 🐾 " + t("Hasil Deteksi", "Detection Results") if mode_selected=="deteksi" else "### 🔬 " + t("Hasil Klasifikasi", "Classification Results"))
 
-            # --- Load model hanya sekali ---
-            yolo_model, classifier = load_models()
+        results_list = []
+        for idx, uploaded_file in enumerate(uploaded_files):
+            image = Image.open(uploaded_file).convert("RGB")
+            col1, col2 = st.columns(2)
 
             if mode_selected == "deteksi":
-                st.markdown("### 🐾 " + t("Hasil Deteksi", "Detection Results"))
-            else:
-                st.markdown("### 🔬 " + t("Hasil Klasifikasi", "Classification Results"))
+                results = yolo_model(image)
+                detected_img = results[0].plot()
+                with col1:
+                    st.image(image, caption=uploaded_file.name, use_column_width=True)
+                with col2:
+                    st.image(detected_img, caption=t("Hasil Deteksi", "Detection Output"), use_column_width=True)
+                    labels = [yolo_model.names[int(c)] for c in results[0].boxes.cls.numpy()] if len(results[0].boxes) > 0 else []
+                    if labels:
+                        st.success("🎯 " + t("Objek terdeteksi:", "Detected objects:") + f" {', '.join(labels)}")
+                    else:
+                        st.warning("⚠️ " + t("Tidak ada objek panda atau beruang yang terdeteksi.", "No panda or bear detected."))
 
-            results_list = []
+            else:  # klasifikasi
+                try:
+                    target_size = tuple(classifier.input_shape[1:3])
+                    if None in target_size:
+                        target_size = (224, 224)
+                    img_array = np.array(image.resize(target_size)).astype('float32') / 255.0
+                    if img_array.ndim == 2:
+                        img_array = np.stack([img_array]*3, axis=-1)
+                    elif img_array.shape[2] != 3:
+                        img_array = img_array[..., :3]
+                    img_array = np.expand_dims(img_array, axis=0)
 
-            # === Proses semua gambar ===
-            for idx, uploaded_file in enumerate(uploaded_files):
-                image = Image.open(uploaded_file).convert("RGB")
-                col1, col2 = st.columns(2)
+                    pred = classifier.predict(img_array)
+                    class_idx = np.argmax(pred, axis=1)[0]
+                    class_names = ["Panda", "Beruang"]
+                    confidence = pred[0][class_idx]
 
-                # === MODE DETEKSI ===
-                if mode_selected == "deteksi":
-                    results = yolo_model(image)
-                    detected_img = results[0].plot()
+                    results_list.append({
+                        "filename": uploaded_file.name,
+                        "label": class_names[class_idx],
+                        "confidence": float(confidence)
+                    })
 
                     with col1:
                         st.image(image, caption=uploaded_file.name, use_column_width=True)
                     with col2:
-                        st.image(detected_img, caption=t("Hasil Deteksi", "Detection Output"), use_column_width=True)
-                        labels = [yolo_model.names[int(c)] for c in results[0].boxes.cls.numpy()] if len(results[0].boxes) > 0 else []
-                        if labels:
-                            st.success("🎯 " + t("Objek terdeteksi:", "Detected objects:") + f" {', '.join(labels)}")
-                        else:
-                            st.warning("⚠️ " + t("Tidak ada objek panda atau beruang yang terdeteksi.", "No panda or bear detected."))
+                        st.markdown(f"""
+                        <div style='background-color:#f2e6d6; padding:20px; border-radius:15px;
+                        box-shadow:0 4px 15px rgba(0,0,0,0.1); text-align:center;'>
+                            <h4 style='color:#6B4226; margin-bottom:10px;'>🔬 {t('Hasil Klasifikasi', 'Classification Result')}</h4>
+                            <p style='color:#7B4F27; font-size:16px;'>
+                                {class_names[class_idx]} ({confidence*100:.2f}%)
+                            </p>
+                        </div>
+                        """, unsafe_allow_html=True)
 
-                # === MODE KLASIFIKASI ===
-                elif mode_selected == "klasifikasi":
-                    try:
-                        target_size = tuple(classifier.input_shape[1:3])
-                        if None in target_size:
-                            target_size = (224, 224)
+                except Exception as e:
+                    st.error(f"Terjadi error saat klasifikasi: {e}")
 
-                        img_array = np.array(image.resize(target_size)).astype('float32') / 255.0
-                        if img_array.ndim == 2:
-                            img_array = np.stack([img_array]*3, axis=-1)
-                        elif img_array.shape[2] != 3:
-                            img_array = img_array[..., :3]
-                        img_array = np.expand_dims(img_array, axis=0)
-
-                        pred = classifier.predict(img_array)
-                        class_idx = np.argmax(pred, axis=1)[0]
-                        class_names = ["Panda", "Beruang"]
-                        confidence = pred[0][class_idx]
-
-                        results_list.append({
-                            "filename": uploaded_file.name,
-                            "label": class_names[class_idx],
-                            "confidence": float(confidence)
-                        })
-
-                        with col1:
-                            st.image(image, caption=uploaded_file.name, use_column_width=True)
-                        with col2:
-                            st.markdown(f"""
-                            <div style='background-color:#f2e6d6; padding:20px; border-radius:15px;
-                            box-shadow:0 4px 15px rgba(0,0,0,0.1); text-align:center;'>
-                                <h4 style='color:#6B4226; margin-bottom:10px;'>🔬 {t('Hasil Klasifikasi', 'Classification Result')}</h4>
-                                <p style='color:#7B4F27; font-size:16px;'>
-                                    {class_names[class_idx]} ({confidence*100:.2f}%)
-                                </p>
-                            </div>
-                            """, unsafe_allow_html=True)
-
-                    except Exception as e:
-                        st.error(f"Terjadi error saat klasifikasi: {e}")
-
-            # === Tombol Lanjut (hanya muncul setelah semua gambar selesai) ===
-            st.divider()
-            next_key = f"next_btn_{mode_selected}_final"
-            if st.button("🐾 " + t("Lanjut", "Next"), key=next_key, use_container_width=True):
-                st.session_state.step = 4
-                if mode_selected == "klasifikasi":
-                    st.session_state.last_classified = results_list
-                st.rerun()
-
+        # Tombol lanjut ke step berikutnya
+        st.divider()
+        if st.button("🐾 " + t("Lanjut", "Next"), key="next_btn", use_container_width=True):
+            st.session_state.step = 4
+            if mode_selected == "klasifikasi":
+                st.session_state.last_classified = results_list
+            st.rerun()
 
 # === STEP 4 ===
 elif st.session_state.step == 4:
