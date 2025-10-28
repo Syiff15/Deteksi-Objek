@@ -236,7 +236,7 @@ elif st.session_state.step == 3:
     st.markdown(f"<h4 style='color:#966543; text-align:center;'>{t('Pilih Mode Petualang:','Choose Your Adventure Mode:')}</h4>", unsafe_allow_html=True)
     col1, col2 = st.columns(2, gap="large")
 
-    # --- CSS interaktif untuk kotak yang bisa diklik ---
+    # --- CSS interaktif untuk kotak klik ---
     st.markdown("""
     <style>
     .mode-card {
@@ -261,31 +261,34 @@ elif st.session_state.step == 3:
 
     # --- Kolom kiri: Deteksi ---
     with col1:
-        deteksi_clicked = st.button("🐾 Pemburu Hewan", key="deteksi_mode", use_container_width=True)
         css_class = "mode-card selected" if st.session_state.get("mode") == "deteksi" else "mode-card"
-        st.markdown(f"""
-        <div class="{css_class}">
-            <h4 style='color:#966543;'>🐾 {t('Pemburu Hewan','Wildlife Hunter')}</h4>
-            <p style='color:#5b4636; font-size:14px;'>{t('Mode <b>Deteksi</b> untuk menemukan lokasi panda dan beruang di gambar.','<b>Detection</b> mode to find pandas and bears in an image.')}</p>
-        </div>
-        """, unsafe_allow_html=True)
-        if deteksi_clicked:
+        if st.markdown(
+            f"""
+            <div class="{css_class}" onclick="window.location.href='?mode=deteksi'">
+                <h4 style='color:#966543;'>🐾 {t('Pemburu Hewan','Wildlife Hunter')}</h4>
+                <p style='color:#5b4636; font-size:14px;'>{t('Mode <b>Deteksi</b> untuk menemukan lokasi panda dan beruang di gambar.','<b>Detection</b> mode to find pandas and bears in an image.')}</p>
+            </div>
+            """, unsafe_allow_html=True
+        ):
+            pass
+        # deteksi klik simulasi (karena Streamlit gak bisa baca onclick langsung)
+        if st.session_state.get("mode") == "deteksi":
             st.session_state.mode = "deteksi"
-            st.rerun()
 
     # --- Kolom kanan: Klasifikasi ---
     with col2:
-        klasifikasi_clicked = st.button("🔬 Peneliti Hewan", key="klasifikasi_mode", use_container_width=True)
         css_class = "mode-card selected" if st.session_state.get("mode") == "klasifikasi" else "mode-card"
-        st.markdown(f"""
-        <div class="{css_class}">
-            <h4 style='color:#966543;'>🔬 {t('Peneliti Hewan','Animal Researcher')}</h4>
-            <p style='color:#5b4636; font-size:14px;'>{t('Mode <b>Klasifikasi</b> untuk mengenali apakah itu panda atau beruang.','<b>Classification</b> mode to recognize whether it’s a panda or a bear.')}</p>
-        </div>
-        """, unsafe_allow_html=True)
-        if klasifikasi_clicked:
+        if st.markdown(
+            f"""
+            <div class="{css_class}" onclick="window.location.href='?mode=klasifikasi'">
+                <h4 style='color:#966543;'>🔬 {t('Peneliti Hewan','Animal Researcher')}</h4>
+                <p style='color:#5b4636; font-size:14px;'>{t('Mode <b>Klasifikasi</b> untuk mengenali apakah itu panda atau beruang.','<b>Classification</b> mode to recognize whether it’s a panda or a bear.')}</p>
+            </div>
+            """, unsafe_allow_html=True
+        ):
+            pass
+        if st.session_state.get("mode") == "klasifikasi":
             st.session_state.mode = "klasifikasi"
-            st.rerun()
 
     st.divider()
 
