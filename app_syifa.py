@@ -38,7 +38,10 @@ if "name" not in st.session_state:
 def t(id_text, en_text):
     return id_text if st.session_state.language == "id" else en_text
 
-# === STEP 0: Pemilihan Bahasa ===
+# === STEP 0: PILIH BAHASA ===
+if "step" not in st.session_state:
+    st.session_state.step = 0
+
 if st.session_state.step == 0:
     st.image("slide 1.jpg", use_container_width=True)
     st.markdown("<h3 style='text-align:center; color:#966543;'>🌐 Pilih Bahasa / Choose Language</h3>", unsafe_allow_html=True)
@@ -46,40 +49,45 @@ if st.session_state.step == 0:
 
     col1, col2 = st.columns(2, gap="large")
 
+    # ====== Bahasa Indonesia ======
     with col1:
         st.markdown("""
-        <div style='
-            background-color:#f2e6d6;
-            padding:20px;
-            border-radius:15px;
-            text-align:center;
-            box-shadow:0 4px 12px rgba(0,0,0,0.1);
-            transition: transform 0.2s ease;
-        '>
-            <h4 style='margin-bottom:10px; font-weight:600;'>ID BAHASA INDONESIA</h4>
+        <style>
+        .lang-box {
+            background-color: #f2e6d6;
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        .lang-box:hover {
+            transform: scale(1.05);
+            background-color: #e9dcc6;
+        }
+        </style>
+
+        <div class="lang-box">
+            <h4 style='margin:0; font-weight:700;'>ID BAHASA INDONESIA</h4>
         </div>
         """, unsafe_allow_html=True)
 
-        if st.button("Pilih ID Bahasa Indonesia", use_container_width=True):
+        if st.button("Pilih Bahasa Indonesia", use_container_width=True):
             st.session_state.language = "id"
             st.session_state.step = 1
             st.rerun()
 
+    # ====== English ======
     with col2:
         st.markdown("""
-        <div style='
-            background-color:#f2e6d6;
-            padding:20px;
-            border-radius:15px;
-            text-align:center;
-            box-shadow:0 4px 12px rgba(0,0,0,0.1);
-            transition: transform 0.2s ease;
-        '>
-            <h4 style='margin-bottom:10px; font-weight:600;'>EN ENGLISH</h4>
+        <div class="lang-box">
+            <h4 style='margin:0; font-weight:700;'>EN ENGLISH</h4>
         </div>
         """, unsafe_allow_html=True)
 
-        if st.button("Pilih EN English", use_container_width=True):
+        if st.button("Choose English", use_container_width=True):
             st.session_state.language = "en"
             st.session_state.step = 1
             st.rerun()
