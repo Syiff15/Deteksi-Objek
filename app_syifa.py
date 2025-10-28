@@ -300,16 +300,36 @@ elif st.session_state.step == 2:
 
         # === Tombol MULAI PETUALANGAN ===
         start_key = f"start_adventure_{mode_selected}"
-        start_enabled = mode_selected is not None and uploaded_files
-        start_disabled = not start_enabled
+        # tampilkan tombol kalau salah satu sudah ada (mode dipilih atau ada file)
+        start_visible = bool(mode_selected) or bool(uploaded_files)
+        if start_visible:
+            # tombol muncul — tapi saat ditekan kita cek lengkap/tidaknya kondisi
+            if st.button("🚀 " + t("Mulai Petualangan!", "Start the Adventure!"), key=start_key, use_container_width=True):
+                # jika salah satu belum lengkap, beri peringatan dan jangan mulai
+                if not mode_selected and not uploaded_files:
+                    st.warning(t("Pilih mode atau unggah gambar terlebih dahulu.", "Please choose a mode or upload images first."))
+                    st.session_state.start_adventure = False
+                elif not mode_selected:
+                    st.warning(t("Kamu belum memilih mode — pilih Deteksi atau Klasifikasi.", "You haven't chosen a mode — choose Detection or Classification."))
+                    st.session_state.start_adventure = False
+                elif not uploaded_files:
+                    st.warning(t("Kamu belum mengunggah gambar — unggah minimal 1 gambar.", "You haven't uploaded images — please upload at least 1 image."))
+                    st.session_state.start_adventure = False
+                else:
+                    # semua terpenuhi: mulai petualangan
+                    st.session_state.start_adventure = True
+                    st.rerun()
+        else:
+            # tombol tidak ditampilkan, tapi beri panduan singkat
+            st.caption(t("Tombol mulai akan muncul setelah kamu memilih mode atau mengunggah gambar.",
+                         "The Start button will appear after you choose a mode or upload images."))
 
-        if st.button("🚀 " + t("Mulai Petualangan!", "Start the Adventure!"), key=start_key, use_container_width=True, disabled=start_disabled):
-            st.session_state.start_adventure = True
-            st.rerun()
-
-        # === Jika tombol ditekan, mulai deteksi/klasifikasi ===
+        # === Jika tombol ditekan dan start_adventure True, mulai deteksi/klasifikasi ===
         if st.session_state.get("start_adventure", False):
+            # reset flag agar user bisa menekan ulang di sesi berikutnya jika perlu
+            st.session_state.start_adventure = False
 
+            # --- Load model hanya sekali ---
             yolo_model, classifier = load_models()
 
             if mode_selected == "deteksi":
@@ -387,8 +407,8 @@ elif st.session_state.step == 2:
                 st.session_state.step = 3
                 if mode_selected == "klasifikasi":
                     st.session_state.last_classified = results_list
-                st.session_state.start_adventure = False
                 st.rerun()
+
 
 # === STEP 3 ===
 elif st.session_state.step == 3:
