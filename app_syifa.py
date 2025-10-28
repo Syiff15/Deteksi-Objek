@@ -52,12 +52,12 @@ if st.session_state.step == 0:
     col1, col2 = st.columns(2)
     with col1:
         if st.button("🇮🇩 Bahasa Indonesia", use_container_width=True):
-            st.session_state.language = "id"
+            st.session_state.language = "ID"
             st.session_state.step = 1
             st.rerun()
     with col2:
         if st.button("🇬🇧 English", use_container_width=True):
-            st.session_state.language = "en"
+            st.session_state.language = "EN"
             st.session_state.step = 1
             st.rerun()
 
@@ -140,7 +140,8 @@ elif st.session_state.step == 3:
         <p style='font-size:18px; color:#5b4636;'>
             {t('Selamat datang di markas petualangan <b>Ursidetect</b>!',
                'Welcome to the adventure base of <b>Ursidetect</b>!')}<br>
-            {t('Pilih mode favoritmu — mau jadi <b>pemburu hewan</b> (deteksi) atau <b>peneliti hewan</b> (klasifikasi)?',
+            {t('Pilih mode favoritmu')},
+            {t('mau jadi <b>pemburu hewan</b> (deteksi) atau <b>peneliti hewan</b> (klasifikasi)?',
                'Choose your mode — be a <b>Wildlife Hunter</b> (detection) or <b>Animal Researcher</b> (classification)?')}
         </p>
     </div>
