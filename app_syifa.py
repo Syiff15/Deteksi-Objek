@@ -212,7 +212,7 @@ elif st.session_state.step == 2:
     # === Tampilkan teks sesuai bahasa ===
     st.write(t(
         "Sekarang giliran kamu! Masukkan namamu supaya Ursidetect tahu siapa partner barunya.",
-        "Now it’s your turn! Enter your name so Ursidetect knows its new partner."
+        "Your turn now! Enter your name so Ursidetect knows its new adventure partner."
     ))
 
     name_input = st.text_input("", placeholder=t("Contoh: Ursi", "Example: Ursi"))
