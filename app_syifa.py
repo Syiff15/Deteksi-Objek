@@ -47,7 +47,7 @@ if st.session_state.step == 0:
     col1, col2 = st.columns(2, gap="large")
 
     with col1:
-        if st.button("🇮🇩 BAHASA INDONESIA", key="btn_id"):
+        if st.button("🇮🇩 BAHASA INDONESIA", key="id_box", help="Klik untuk memilih Bahasa Indonesia"):
             st.session_state.language = "id"
             st.session_state.step = 1
             st.rerun()
@@ -55,20 +55,21 @@ if st.session_state.step == 0:
             st.markdown("""
             <div style='
                 background-color:#f2e6d6;
-                padding:40px 20px;
+                padding:60px 20px;
                 border-radius:15px;
                 text-align:center;
                 box-shadow:0 4px 12px rgba(0,0,0,0.1);
-                transition: transform 0.2s ease;
-                font-size:24px;
+                font-size:28px;
                 font-weight:bold;
+                cursor:pointer;
+                transition: transform 0.2s ease;
             '>
                 🇮🇩 BAHASA INDONESIA
             </div>
             """, unsafe_allow_html=True)
 
     with col2:
-        if st.button("EN ENGLISH", key="btn_en"):
+        if st.button("EN ENGLISH", key="en_box", help="Click to choose English"):
             st.session_state.language = "en"
             st.session_state.step = 1
             st.rerun()
@@ -76,18 +77,18 @@ if st.session_state.step == 0:
             st.markdown("""
             <div style='
                 background-color:#f2e6d6;
-                padding:40px 20px;
+                padding:60px 20px;
                 border-radius:15px;
                 text-align:center;
                 box-shadow:0 4px 12px rgba(0,0,0,0.1);
-                transition: transform 0.2s ease;
-                font-size:24px;
+                font-size:28px;
                 font-weight:bold;
+                cursor:pointer;
+                transition: transform 0.2s ease;
             '>
                 EN ENGLISH
             </div>
             """, unsafe_allow_html=True)
-
 
 # === STEP 1 ===
 elif st.session_state.step == 1:
