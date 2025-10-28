@@ -282,6 +282,10 @@ elif st.session_state.step == 2:
         # --- Load Model SEKALI ---
         yolo_model, classifier = load_models()  # pastikan @st.cache_resource
 
+        # --- Ambil input shape model klasifikasi ---
+        input_shape = classifier.input_shape  # contoh: (None, 127008)
+        expected_features = input_shape[1]
+
         for uploaded_file in uploaded_files:
             image = Image.open(uploaded_file).convert("RGB")
             col1, col2 = st.columns(2)
@@ -310,24 +314,30 @@ elif st.session_state.step == 2:
             # =========================
             elif st.session_state.mode == "klasifikasi":
                 try:
-                    img_array = np.array(image.resize((224,224))).astype('float32') / 255.0
-                    if img_array.ndim == 2:
-                        img_array = np.stack([img_array]*3, axis=-1)
-                    elif img_array.shape[2] != 3:
-                        img_array = img_array[..., :3]
-                    img_array = np.expand_dims(img_array, axis=0)
+                    # --- Resize & konversi ke float32 ---
+                    img_array = np.array(image).astype('float32') / 255.0
 
-                    st.write("Shape input ke model:", img_array.shape)
+                    # --- Flatten agar sesuai Dense input ---
+                    img_array = img_array.flatten()
+                    # --- Sesuaikan jumlah fitur jika perlu (resize sebelumnya) ---
+                    if img_array.shape[0] != expected_features:
+                        # Resize gambar sesuai sqrt(expected_features / 3)
+                        side = int((expected_features / 3)**0.5)
+                        img_array = np.array(image.resize((side,side))).astype('float32') / 255.0
+                        img_array = img_array.flatten()
 
+                    img_array = np.expand_dims(img_array, axis=0)  # (1, fitur)
+
+                    # --- Prediksi ---
                     pred = classifier.predict(img_array)
                     class_idx = np.argmax(pred, axis=1)[0]
-                    class_names = ["Panda", "Beruang"]
+                    class_names = ["Panda","Beruang"]
                     confidence = pred[0][class_idx]
 
+                    # --- Tampilkan gambar & hasil ---
                     with col1:
                         st.image(image, caption=uploaded_file.name, use_container_width=True)
                         st.markdown("<p style='text-align:center; color:#7B4F27;'>Gambar yang diunggah</p>", unsafe_allow_html=True)
-
                     with col2:
                         st.markdown(f"""
                         <div style='background-color:#f2e6d6; padding:20px; border-radius:15px;
@@ -341,18 +351,10 @@ elif st.session_state.step == 2:
 
                 except Exception as e:
                     st.error(f"Terjadi error saat klasifikasi: {e}")
-
-        # Tombol lanjut
-        col_kiri, col_kanan = st.columns([4,1])
-        with col_kanan:
-            if st.button(t("Lanjutkan 🐾","Continue 🐾"), key="lanjutkan_step4"):
-                st.session_state.step = 4
-                st.rerun()
-
     else:
         st.info("⬆️ Silakan unggah gambar terlebih dahulu untuk memproses objek.")
 
-    # Tombol lanjut kecil di bawah
+    # --- Tombol lanjut kecil di bawah ---
     col1, col2, col3 = st.columns([4, 1, 1])
     with col3:
         if st.button(t("Lanjut 🐾", "Next 🐾")):
