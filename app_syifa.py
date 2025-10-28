@@ -41,25 +41,46 @@ def t(id_text, en_text):
 # === STEP 0: Pemilihan Bahasa ===
 if st.session_state.step == 0:
     st.image("slide 1.jpg", use_container_width=True)
-    st.markdown(
-        """
-        <h2 style='text-align:center; color:#1E1E1E;'>🌍 Pilih Bahasa / Choose Your Language</h2>
-        <p style='text-align:center; color:#555;'>Silakan pilih bahasa yang ingin kamu gunakan dalam petualangan ini!</p>
-        """,
-        unsafe_allow_html=True
-    )
+    st.markdown("<h3 style='text-align:center; color:#966543;'>🌐 Pilih Bahasa / Choose Language</h3>", unsafe_allow_html=True)
+    st.markdown("<br>", unsafe_allow_html=True)
     
-    col1, col2 = st.columns(2)
+    col1, col2 = st.columns(2, gap="large")
     with col1:
-        if st.button("🇮🇩 Bahasa Indonesia", use_container_width=True):
-            st.session_state.language = "id"
-            st.session_state.step = 1
-            st.rerun()
+    st.markdown("""
+    <div style='
+        background-color:#f2e6d6;
+        padding:20px;
+        border-radius:15px;
+        text-align:center;
+        box-shadow:0 4px 12px rgba(0,0,0,0.1);
+        transition: transform 0.2s ease;
+    '>
+        <h4 style='margin-bottom:10px;'>🇮🇩 Bahasa Indonesia</h4>
+        <p style='font-size:14px; color:#5b4636;'>Gunakan bahasa Indonesia untuk pengalaman penuh.</p>
+    </div>
+    """, unsafe_allow_html=True)
+    if st.button("Pilih Bahasa Indonesia", use_container_width=True):
+        st.session_state.language = "id"
+        st.session_state.step = 1
+        st.rerun()
     with col2:
-        if st.button("🇬🇧 English", use_container_width=True):
-            st.session_state.language = "en"
-            st.session_state.step = 1
-            st.rerun()
+    st.markdown("""
+    <div style='
+        background-color:#f2e6d6;
+        padding:20px;
+        border-radius:15px;
+        text-align:center;
+        box-shadow:0 4px 12px rgba(0,0,0,0.1);
+        transition: transform 0.2s ease;
+    '>
+        <h4 style='margin-bottom:10px;'>EN English</h4>
+        <p style='font-size:14px; color:#5b4636;'>Use English for a full experience.</p>
+    </div>
+    """, unsafe_allow_html=True)
+    if st.button("Pilih EN English", use_container_width=True):
+        st.session_state.language = "en"
+        st.session_state.step = 1
+        st.rerun()
 
 # === STEP 1 ===
 elif st.session_state.step == 1:
