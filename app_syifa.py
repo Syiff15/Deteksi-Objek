@@ -349,38 +349,63 @@ elif st.session_state.step == 2:
             # =========================
             # MODE KLASIFIKASI
             # =========================
-            elif mode_selected == "klasifikasi":
-                try:
-                    target_size = (224, 224)
-                    img_array = np.array(image.resize(target_size)).astype('float32') / 255.0
-                    if img_array.ndim == 2:
-                        img_array = np.stack([img_array]*3, axis=-1)
-                    elif img_array.shape[2] != 3:
-                        img_array = img_array[..., :3]
-                    img_array = np.expand_dims(img_array, axis=0)
+            # =========================
+# MODE KLASIFIKASI
+# =========================
+elif mode_selected == "klasifikasi":
+    try:
+        # --- Resize sesuai training model ---
+        target_size = (224, 224)
+        img_array = np.array(image.resize(target_size)).astype('float32') / 255.0
 
-                    pred = classifier.predict(img_array)
-                    class_idx = np.argmax(pred, axis=1)[0]
-                    class_names = ["Panda", "Beruang"]
-                    confidence = pred[0][class_idx]
+        # --- Pastikan channel 3 ---
+        if img_array.ndim == 2:
+            img_array = np.stack([img_array]*3, axis=-1)
+        elif img_array.shape[2] != 3:
+            img_array = img_array[..., :3]
 
-                    with col1:
-                        st.image(image, caption=uploaded_file.name, use_container_width=True)
-                        st.markdown("<p style='text-align:center; color:#7B4F27;'>Gambar yang diunggah</p>", unsafe_allow_html=True)
+        # --- Batch dimension ---
+        img_array = np.expand_dims(img_array, axis=0)  # (1, H, W, 3)
 
-                    with col2:
-                        st.markdown(f"""
-                        <div style='background-color:#f2e6d6; padding:20px; border-radius:15px;
-                        box-shadow:0 4px 15px rgba(0,0,0,0.1); text-align:center;'>
-                            <h4 style='color:#6B4226; margin-bottom:10px;'>🔬 Hasil Klasifikasi</h4>
-                            <p style='color:#7B4F27; font-size:16px;'>
-                                {class_names[class_idx]} ({confidence*100:.2f}%)
-                            </p>
-                        </div>
-                        """, unsafe_allow_html=True)
+        # --- Prediksi ---
+        pred = classifier.predict(img_array)
+        class_idx = np.argmax(pred, axis=1)[0]
+        class_names = ["Panda", "Beruang"]
+        confidence = pred[0][class_idx]
 
-                except Exception as e:
-                    st.error(f"Terjadi error saat klasifikasi: {e}")
+        # --- Tampilkan gambar dan hasil ---
+        with col1:
+            st.image(
+                image,
+                caption=uploaded_file.name,
+                width=300  # <-- ubah sesuai keinginan, atau gunakan width='stretch'
+            )
+            st.markdown(
+                "<p style='text-align:center; color:#7B4F27;'>Gambar yang diunggah</p>",
+                unsafe_allow_html=True
+            )
+
+        with col2:
+            st.markdown(f"""
+            <div style='background-color:#f2e6d6; padding:20px; border-radius:15px;
+            box-shadow:0 4px 15px rgba(0,0,0,0.1); text-align:center;'>
+                <h4 style='color:#6B4226; margin-bottom:10px;'>🔬 Hasil Klasifikasi</h4>
+                <p style='color:#7B4F27; font-size:16px;'>
+                    {class_names[class_idx]} ({confidence*100:.2f}%)
+                </p>
+            </div>
+            """, unsafe_allow_html=True)
+
+        # --- Tombol lanjut kecil di bawah ---
+        col1, col2, col3 = st.columns([4, 1, 1])
+        with col3:
+            if st.button(t("Lanjut 🐾", "Next 🐾")):
+                st.session_state.step = 2
+                st.rerun()
+
+    except Exception as e:
+        st.error(f"Terjadi error saat klasifikasi: {e}")
+
 
                 # --- Tombol lanjut kecil di bawah ---
                 col1, col2, col3 = st.columns([4, 1, 1])
