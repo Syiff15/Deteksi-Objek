@@ -39,28 +39,32 @@ def t(id_text, en_text):
     return id_text if st.session_state.language == "id" else en_text
 
 # === STEP 0: PILIH BAHASA ===
-import streamlit as st
-
-# === STEP 0: PILIH BAHASA ===
 if "step" not in st.session_state:
     st.session_state.step = 0
 
 if st.session_state.step == 0:
     st.image("slide 1.jpg", use_container_width=True)
-    st.markdown("<h3 style='text-align:center; color:#966543;'>🌐 Pilih Bahasa / Choose Language</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='text-align:center; color:#966543; margin-top:-20px;'>🌐 Pilih Bahasa / Choose Language</h3>", unsafe_allow_html=True)
     st.markdown("<br>", unsafe_allow_html=True)
 
-    # CSS styling
+    # ===== CSS Styling =====
     st.markdown("""
     <style>
+    .lang-container {
+        display: flex;
+        justify-content: center;
+        gap: 100px;
+        margin-top: -10px; /* lebih dekat ke atas */
+    }
     .lang-option {
         background-color: #f2e6d6;
+        width: 300px;         /* lebar sejajar logo */
         height: 130px;
         display: flex;
         align-items: center;
         justify-content: center;
-        border-radius: 18px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        border-radius: 20px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         transition: all 0.3s ease;
         font-weight: 700;
         color: #2f2f2f;
@@ -74,16 +78,10 @@ if st.session_state.step == 0:
         background-color: #e9dcc6;
         border: 2px solid #d2b48c;
     }
-    .lang-container {
-        display: flex;
-        justify-content: center;
-        gap: 80px;
-        margin-top: 30px;
-    }
     </style>
     """, unsafe_allow_html=True)
 
-    # HTML structure
+    # ===== HTML Layout =====
     st.markdown("""
     <div class="lang-container">
         <div class="lang-option" onclick="window.location.href='?lang=id'">🇮🇩 ID BAHASA INDONESIA</div>
@@ -91,7 +89,7 @@ if st.session_state.step == 0:
     </div>
     """, unsafe_allow_html=True)
 
-    # Logic to detect chosen language
+    # ===== Logic untuk Pilihan Bahasa =====
     query_params = st.query_params
     if "lang" in query_params:
         lang = query_params["lang"][0]
@@ -101,7 +99,6 @@ if st.session_state.step == 0:
             st.session_state.language = "en"
         st.session_state.step = 1
         st.rerun()
-
 
 # === STEP 1 ===
 elif st.session_state.step == 1:
