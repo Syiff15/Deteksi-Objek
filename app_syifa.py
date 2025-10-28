@@ -195,7 +195,7 @@ elif st.session_state.step == 1:
     # Tombol lanjut
     col1, col2, col3 = st.columns([4, 1, 1])
     with col1:
-        if st.button(t("⬅️ Kembali", "⬅️ Back")::
+        if st.button(t("⬅️ Kembali", "⬅️ Back"):
             st.session_state.step = 0
             st.rerun()
     with col3:
