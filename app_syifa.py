@@ -382,6 +382,11 @@ elif st.session_state.step == 3:
                 st.rerun()
 
 # === STEP 4 ===
+import os
+import csv
+import pandas as pd
+import streamlit as st
+
 elif st.session_state.step == 4:
     st.subheader(t("💬 Cerita Petualanganmu", "💬 Your Adventure Story"))
     st.info(t(
@@ -452,7 +457,7 @@ elif st.session_state.step == 4:
         unsafe_allow_html=True
     )
 
-    # Gunakan kolom kosong untuk memicu aksi toggle di Streamlit
+    # Kolom untuk toggle button (agar Streamlit tahu state-nya)
     col1, col2, col3 = st.columns([5, 1, 1])
     with col3:
         show = st.button("📜 History")
@@ -462,15 +467,34 @@ elif st.session_state.step == 4:
     # === Tampilkan daftar cerita jika aktif ===
     if st.session_state.show_history:
         st.markdown("### 📚 History Cerita Para Petualang")
-        if os.path.exists(feedback_file):
+
+        stories_html = ""
+
+        if os.path.isfile(feedback_file):
             df = pd.read_csv(feedback_file)
+
             if df.empty:
-                st.info("Belum ada cerita yang dikirimkan.")
+                stories_html += f"<p>{t('Belum ada cerita yang dikirim.', 'No stories have been submitted yet.')}</p>"
             else:
+                # === Versi Streamlit Expander ===
                 for _, row in df.iterrows():
                     with st.expander(f"🧭 {row['Name']}"):
                         st.write(row['Story'])
+
+                # === Versi HTML Card-Style ===
+                stories_html += "<hr><h4>✨ Semua Cerita:</h4>"
+                for _, row in df.iterrows():
+                    stories_html += f"""
+                        <div style='background:#fff3cd;padding:10px;margin:8px 0;border-radius:10px;
+                                    box-shadow:0px 2px 6px rgba(0,0,0,0.1);'>
+                            <b>{row['Name']}</b>: {row['Story']}
+                        </div>
+                    """
         else:
-            st.info("Belum ada cerita yang dikirimkan.")
+            stories_html += f"<p>{t('Belum ada cerita yang dikirim.', 'No stories have been submitted yet.')}</p>"
+
+        # Tampilkan versi HTML-nya
+        st.markdown(stories_html, unsafe_allow_html=True)
+
 
 
