@@ -423,29 +423,63 @@ elif st.session_state.step == 4:
         st.session_state.start_adventure = False
         st.experimental_rerun()
 
-    # === STATE untuk popup cerita ===
+    # === STATE popup ===
     if "show_stories" not in st.session_state:
         st.session_state.show_stories = False
 
-    # === CSS tombol melayang kanan bawah ===
+    # === CSS tombol dan panel melayang di kanan bawah ===
     st.markdown("""
         <style>
-        div[data-testid="stFloatingButton"] {
+        .floating-container {
             position: fixed;
             bottom: 20px;
             right: 25px;
             z-index: 9999;
+            text-align: right;
+        }
+        .floating-button {
+            background-color: #6B4226;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 30px;
+            font-size: 16px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .floating-button:hover {
+            background-color: #8B5E3C;
+            transform: scale(1.05);
+        }
+        .story-popup {
+            background-color: #f2e6d6;
+            padding: 15px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            width: 320px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+        }
+        .close-btn {
+            text-align: right;
+            margin-top: -5px;
+        }
+        .close-btn button {
+            background: none;
+            border: none;
+            color: #6B4226;
+            font-size: 18px;
+            cursor: pointer;
         }
         </style>
     """, unsafe_allow_html=True)
 
-    # === Tombol melayang ===
-    float_col = st.container()
-    with float_col:
-        if st.button("📖 " + t("Lihat Semua Cerita", "View All Stories"), key="floating_story_btn"):
-            st.session_state.show_stories = not st.session_state.show_stories
+    # === Container melayang ===
+    st.markdown("<div class='floating-container'>", unsafe_allow_html=True)
 
-    # === Popup daftar cerita ===
+    # === Popup daftar cerita (muncul di atas tombol) ===
     if st.session_state.show_stories:
         if os.path.isfile(feedback_file):
             with open(feedback_file, "r", encoding="utf-8") as f:
@@ -453,12 +487,12 @@ elif st.session_state.step == 4:
                 stories = list(reader)
 
             if len(stories) > 1:
+                st.markdown("<div class='story-popup'>", unsafe_allow_html=True)
                 st.markdown("""
-                    <div style='position:fixed; bottom:70px; right:25px;
-                    background-color:#f2e6d6; padding:15px; border-radius:15px;
-                    box-shadow:0 4px 20px rgba(0,0,0,0.3); width:320px;
-                    max-height:300px; overflow-y:auto; z-index:9999;'>
-                        <h4 style='text-align:center; color:#6B4226;'>📖 Cerita Petualang</h4>
+                    <div class='close-btn'>
+                        <button onClick="window.location.reload()">✖</button>
+                    </div>
+                    <h4 style='text-align:center; color:#6B4226;'>📖 Cerita Petualang</h4>
                 """, unsafe_allow_html=True)
 
                 for i, row in enumerate(stories[1:], start=1):
@@ -470,3 +504,9 @@ elif st.session_state.step == 4:
         else:
             st.toast(t("Belum ada cerita yang dikirim.", "No stories have been submitted yet."))
 
+    # === Tombol melayang ===
+    if st.button("📖 " + t("Lihat Semua Cerita", "View All Stories"), key="floating_story_btn"):
+        st.session_state.show_stories = not st.session_state.show_stories
+        st.experimental_rerun()
+
+    st.markdown("</div>", unsafe_allow_html=True)
