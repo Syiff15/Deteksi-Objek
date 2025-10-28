@@ -307,7 +307,7 @@ elif st.session_state.step == 3:
 
     # --- Tombol Mulai Petualangan (hanya muncul jika ada gambar dan mode) ---
     if mode_selected and uploaded_files:
-        if st.button("🚀 " + t("Mulai Petualangan!", "Start the Adventure!"), key="start_btn", use_container_width=True):
+        if st.button("🚀 " + t("Mulai Petualangan!", "Start the Adventure!"), key="start_btn", use_container_width=False):
             st.session_state.start_adventure = True
             st.rerun()
 
