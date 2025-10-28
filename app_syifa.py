@@ -219,9 +219,6 @@ elif st.session_state.step == 2:
 
 # === STEP 3 ===
 elif st.session_state.step == 3:
-    # ====================================================
-    # 🟫 PENYAMBUT & PILIH MODE PETUALANG
-    # ====================================================
     st.markdown(f"""
     <div style='
         background-color:#f2e6d6;
@@ -317,113 +314,51 @@ elif st.session_state.step == 3:
     # 🟠 HASIL DETEKSI / KLASIFIKASI
     # ====================================================
     if uploaded_files:
-        st.markdown(f"<h4 style='color:#966543;'>{t('📸 Hasil Petualangan Kamu','📸 Your Adventure Results')}</h4>", unsafe_allow_html=True)
-        mode = st.session_state.get("mode", "deteksi")
-        cols = st.columns(2) if len(uploaded_files) > 1 else [st]
+        for uploaded_file in uploaded_files:
+            image = Image.open(uploaded_file).convert("RGB")
 
-        for i, file in enumerate(uploaded_files):
-            col = st.container()
-            with col:            
+            # Load model YOLO (gunakan modelmu sendiri)
+            model = torch.hub.load('ultralytics/yolov5', 'custom', path='model_panda_beruang.pt', force_reload=False)
+
+            # Deteksi objek
+            results = model(image)
+            detected_img = results.render()[0]
+            detected_img = Image.fromarray(detected_img)
+
+            # Layout dua kolom
+            col1, col2 = st.columns([1, 1])
+            with col1:
+                st.image(image, caption=uploaded_file.name, use_column_width=True)
+                st.markdown("<p style='text-align:center; color:#7B4F27;'>Gambar yang diunggah</p>", unsafe_allow_html=True)
+
+            with col2:
                 st.markdown("""
-                    <div style='
-                        background-color:#FFF8E7;
-                        border-radius:20px;
-                        box-shadow:0 4px 12px rgba(0,0,0,0.1);
-                        padding:20px;
-                        margin-bottom:20px;
-                        text-align:center;
-                    '>
+                <div style='background-color:#f2e6d6; padding:25px; border-radius:15px; 
+                box-shadow:0 4px 15px rgba(0,0,0,0.1); text-align:center;'>
+                    <h2 style='color:#6B4226; margin-bottom:15px;'>🔍 Hasil Deteksi Objek</h2>
+                    <p style='color:#7B4F27; font-size:16px;'>
+                        Sistem AI Vision berhasil mendeteksi objek pada gambar berikut menggunakan model YOLO.
+                    </p>
+                </div>
                 """, unsafe_allow_html=True)
 
-                img = Image.open(file).convert("RGB")
-                st.image(img, caption=f"🖼️ {file.name}", use_container_width=True)
+                st.image(detected_img, caption="Hasil Deteksi", use_column_width=True)
 
-                # --- MODE DETEKSI ---
-                if mode == "deteksi":
-                    with st.spinner(t(f"🔍 Mendeteksi objek pada {file.name}...", f"🔍 Detecting objects in {file.name}...")):
-                        results = yolo_model(img)
-                        boxes = results[0].boxes
-                        if boxes is not None and len(boxes) > 0:
-                            result_img = results[0].plot()
-                            st.markdown("""
-                                <div style="
-                                    background:white;
-                                    border-left: 6px solid #966543;
-                                    border-radius:14px;
-                                    padding:22px;
-                                    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-                                    margin-top:25px;
-                                ">
-                                    <h3 style="color:#966543; margin-bottom:10px;">🔍 Hasil Deteksi Objek</h3>
-                                    <p style="color:#5b4636; font-size:15px;">
-                                        Sistem AI Vision berhasil mendeteksi objek pada gambar berikut menggunakan model YOLO.
-                                    </p>
-                                </div>
-                            """, unsafe_allow_html=True)
-                            st.image(result_img, caption="🖼️ Hasil Deteksi", use_container_width=True)
-                            st.success(t("✅ Objek berhasil terdeteksi!", "✅ Object detected successfully!"))
-                        else:
-                            st.warning(t("🚫 Tidak ada objek yang terdeteksi.", "🚫 No objects detected."))
+                # Tampilkan hasil deteksi dalam teks
+                labels = results.pandas().xyxy[0]['name'].unique()
+                if len(labels) > 0:
+                    st.success(f"🎯 Objek terdeteksi: {', '.join(labels)}")
+                else:
+                    st.warning("⚠️ Tidak ada objek panda atau beruang yang terdeteksi.")
 
-                # --- MODE KLASIFIKASI ---
-                elif mode == "klasifikasi":
-                    with st.spinner(t(f"🧠 Mengklasifikasi {file.name}...", f"🧠 Classifying {file.name}...")):
-                        target_size = classifier.input_shape[1:3]
-                        img_resized = img.resize(target_size)
-                        img_array = image.img_to_array(img_resized)
-                        img_array = np.expand_dims(img_array, axis=0).astype("float32") / 255.0
-
-                        prediction = classifier.predict(img_array)
-                        predicted_class = np.argmax(prediction, axis=1)[0]
-                        confidence = np.max(prediction)
-
-                        class_names = [
-                            "AMERICAN GOLDFINCH",
-                            "BARN OWL",
-                            "CARMINE BEE-EATER",
-                            "DOWNY WOODPECKER",
-                            "EMPEROR PENGUIN",
-                            "FLAMINGO"
-                        ]
-                        predicted_label = class_names[predicted_class]
-
-                        st.image(img_resized, caption="📸 Gambar yang Dianalisis", use_column_width=True)
-                        st.markdown(f"""
-                            <div style="
-                                background:white;
-                                border-left: 6px solid #966543;
-                                border-radius:14px;
-                                padding:22px;
-                                box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-                                margin-top:25px;
-                            ">
-                                <h3 style="color:#966543; margin-bottom:8px;">🧠 Hasil Klasifikasi Gambar</h3>
-                                <p style="color:#5b4636; font-size:15px;">
-                                    Model AI Vision mengenali gambar sebagai spesies:
-                                    <b style="color:#966543;">{predicted_label}</b>
-                                </p>
-                                <p style="color:#5b4636; margin-top:6px;">
-                                    Confidence Score: <b>{confidence:.2f}</b>
-                                </p>
-                            </div>
-                        """, unsafe_allow_html=True)
-
-                st.markdown("</div>", unsafe_allow_html=True)
-
-        # ====================================================
-        # 🟢 TOMBOL LANJUT
-        # ====================================================
+        # Tombol lanjut di bawah hasil
         col_kiri, col_kanan = st.columns([4, 1])
         with col_kanan:
             if st.button(t("Lanjutkan 🐾", "Continue 🐾")):
                 st.session_state.step = 4
                 st.rerun()
-                
-    col_kiri, col_kanan = st.columns([4, 1])
-    with col_kanan:
-        if st.button(t("Lanjutkan 🐾", "Continue 🐾")):
-            st.session_state.step = 4
-            st.rerun()
+    else:
+        st.info("⬆️ Silakan unggah gambar terlebih dahulu untuk mendeteksi objek.")
 
 # === STEP 4 ===
 elif st.session_state.step == 4:
