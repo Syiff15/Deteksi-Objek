@@ -1,7 +1,6 @@
-ultralytics
+ultralytics==8.1.0
 streamlit
-tensorflow
-numpy
+tensorflow==2.13.0
+numpy==1.23.5
 pillow
-opencv-python-headless
-import cv2
+opencv-python-headless==4.7.0.72
